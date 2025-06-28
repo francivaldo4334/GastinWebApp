@@ -5,6 +5,7 @@ import { Scaffold } from "@/presenter/ui/Scaffold";
 import { HomePageDrawer } from "./HomePageDrawer";
 import { AccountBalance } from "./Widgets/AccountBalance";
 import { Overview } from "./Widgets/Overview";
+import { PieChart } from "./Widgets/PieChart";
 export const HomePage: Component = () => {
 
   const {
@@ -23,6 +24,7 @@ export const HomePage: Component = () => {
         >
           <AccountBalance />
           <Overview />
+          <PieChart />
         </Flex>
       </Scaffold.Body>
 

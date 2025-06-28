@@ -12,6 +12,7 @@ const Card: CardComponent = (props) => {
     borderRadius="$lg"
     overflow="hidden"
     padding="$3"
+    maxH="$md"
   >
     {props.children}
   </Box>
