@@ -5,8 +5,8 @@ import { Component } from "solid-js";
 
 export const Overview: Component = () => {
 
-  const expenditure = "0,00"
-  const receipt = "0,00"
+  const expenditure = "0,00" //TODO: implementar toais de despesas
+  const receipt = "0,00"//TODO: implementar totais de receitas
 
 
   return <Card>
