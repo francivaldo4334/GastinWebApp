@@ -9,6 +9,10 @@ const Title: ParentComponent = (props) => {
   return <Text class="p-3" size="lg">{props.children}</Text>
 }
 
+const Body: ParentComponent = (props) => {
+  return <div class="w-screen h-screen pt-14">{props.children}</div>
+}
+
 interface AppBarComponent extends ParentComponent {
   Actions: ParentComponent;
   Title: ParentComponent;
@@ -23,6 +27,7 @@ AppBar.Title = Title
 
 interface ScaffoldComponent extends ParentComponent {
   AppBar: AppBarComponent;
+  Body: ParentComponent;
 }
 
 const Scaffold: ScaffoldComponent = (props) => {
@@ -31,6 +36,7 @@ const Scaffold: ScaffoldComponent = (props) => {
 
 
 Scaffold.AppBar = AppBar;
+Scaffold.Body = Body
 
 export { Scaffold };
 

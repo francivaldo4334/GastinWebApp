@@ -10,6 +10,7 @@ import {
   useColorMode,
   Text,
 } from "@hope-ui/solid";
+import { useNavigate } from "@solidjs/router";
 import { CircleQuestionMark, Minus, Plus, Tag } from "lucide-solid";
 import { Accessor, Component } from "solid-js";
 
@@ -17,8 +18,13 @@ export const HomePageDrawer: Component<{
   isOpen: Accessor<boolean>;
   onClose: () => void;
 }> = (props) => {
+
   const { toggleColorMode, colorMode } = useColorMode()
+
   const { openNewCategory, openNewExpenditure, openNewReceipt } = useStore()
+
+  const navigate = useNavigate()
+
   return <Drawer
     opened={props.isOpen()}
     placement="right"
@@ -89,6 +95,9 @@ export const HomePageDrawer: Component<{
           colorScheme="neutral"
           size="lg"
           padding="$1"
+          onClick={() => {
+            navigate("/help")
+          }}
         >
           <Text
             class="w-full"
