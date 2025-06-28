@@ -5,6 +5,7 @@ import { Form } from "@/presenter/ui/Form"
 import { SchemaNewCategory } from "./schema";
 import { FormColorField } from "@/presenter/ui/FormColorField";
 import { FormTextField } from "@/presenter/ui/FormTextField";
+import { FormOptionalTextField } from "@/presenter/ui/FormOptionalTextField";
 
 export const DrawerNewCategory: Component = () => {
   const { isOpenNewCategory, closeNewCategory } = useStore()
@@ -18,7 +19,9 @@ export const DrawerNewCategory: Component = () => {
       <DrawerHeader>Nova Categoria</DrawerHeader>
       <Form
         schema={SchemaNewCategory}
-        onSubmit={(data) => { }}
+        onSubmit={(data) => {
+          console.log("DATA:", data)
+        }}
         render={({ control, onSubmit }) => (
           <>
             <DrawerBody>
@@ -32,7 +35,7 @@ export const DrawerNewCategory: Component = () => {
                 <Form.Field
                   control={control}
                   name="description"
-                  render={FormTextField}
+                  render={FormOptionalTextField}
                   label="Descrição"
                 />
                 <Form.Field

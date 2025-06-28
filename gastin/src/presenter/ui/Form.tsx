@@ -69,15 +69,19 @@ const Form = <SCHEMA extends z.ZodSchema>(props: {
 
 }): JSXElement => {
   const [form, setForm] = createStore<z.input<SCHEMA>>({});
-  const [error, setError] = createStore<Partial<ERROR<SCHEMA>>>({});
+  const [errors, setErrors] = createStore<Partial<ERROR<SCHEMA>>>({});
 
   const onSubmit = () => {
+    Object.keys(errors).forEach(key => {
+      //@ts-ignore
+      setErrors(key, "")
+    })
     const { data, error } = props.schema.safeParse(form)
     if (error) {
       const errorField = error.formErrors.fieldErrors;
       Object.keys(errorField).forEach(key => {
         //@ts-ignore
-        setError(key, errorField[key]?.join(",") || "")
+        setErrors(key, errorField[key]?.join(",") || "")
       })
       return
     }
@@ -88,7 +92,7 @@ const Form = <SCHEMA extends z.ZodSchema>(props: {
     onSubmit,
     control: {
       store: [form, setForm],
-      errorStore: [error, setError],
+      errorStore: [errors, setErrors],
     }
   });
 }
