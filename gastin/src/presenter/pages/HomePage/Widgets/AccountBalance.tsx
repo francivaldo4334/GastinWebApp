@@ -7,8 +7,8 @@ export const AccountBalance: Component = () => {
   const [initValidity, setInitValidity] = createSignal<string>()
   const [endValidity, setendValidity] = createSignal<string>()
 
-  const received = "0,00"
-  const balance = "0,00"
+  const received = "0,00" //TODO: implementar saldo recebido
+  const balance = "0,00" //TODO: implementar saldo restante
 
   return <Card>
     <Card.Header>
