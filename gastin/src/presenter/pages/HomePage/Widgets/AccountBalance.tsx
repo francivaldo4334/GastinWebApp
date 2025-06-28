@@ -2,6 +2,7 @@ import { Component, createSignal } from "solid-js";
 import { Card } from "@/presenter/ui/Card";
 import { Flex, FormControl, FormLabel, Grid, GridItem, Spacer, Text } from "@hope-ui/solid";
 import { FormDateField } from "@/presenter/ui/FormDateField";
+import { formatMoney } from "@/presenter/utils/formatMoney";
 
 export const AccountBalance: Component = () => {
   const [initValidity, setInitValidity] = createSignal<string>()
@@ -45,13 +46,13 @@ export const AccountBalance: Component = () => {
           width="$full"
           padding="$2"
         >
-          <GridItem>
+          <GridItem class="opacity-70">
             <Text size="sm">Recebido</Text>
-            <Text size="xl">{received}</Text>
+            <Text size="xl">{formatMoney(received)}</Text>
           </GridItem>
           <GridItem >
             <Text size="sm">Saldo</Text>
-            <Text size="xl">{balance}</Text>
+            <Text size="xl">{formatMoney(balance)}</Text>
           </GridItem>
         </Grid>
       </Flex>

@@ -1,4 +1,5 @@
 import { Card } from "@/presenter/ui/Card";
+import { formatMoney } from "@/presenter/utils/formatMoney";
 import { Badge, Button, Divider, Text } from "@hope-ui/solid";
 import { Minus, Plus } from "lucide-solid";
 import { Component } from "solid-js";
@@ -27,7 +28,7 @@ export const Overview: Component = () => {
       }
     >
       <Text width="$full" textAlign="start">Despesas</Text>
-      <Text>R$ {expenditure}</Text>
+      <Text>R$ {formatMoney(expenditure)}</Text>
     </Button>
 
     <Button
@@ -42,7 +43,7 @@ export const Overview: Component = () => {
       }
     >
       <Text width="$full" textAlign="start">Receitas</Text>
-      <Text>R$ {receipt}</Text>
+      <Text>R$ {formatMoney(receipt)}</Text>
     </Button>
   </Card>
 }
