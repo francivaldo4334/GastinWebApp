@@ -35,7 +35,7 @@ export const DrawerNewExpenditure: Component = () => {
       value: 2,
       label: "Categoria 2"
     },
-  ]
+  ]//TODO: realizar chamado para listar categorias
 
   return <Drawer
     opened={isOpenNewExpenditure()}
@@ -51,7 +51,7 @@ export const DrawerNewExpenditure: Component = () => {
         }}
         schema={SchemaNewExpenditure}
         onSubmit={(data) => {
-          //TODO:implementar criação de categoria
+          //TODO:implementar criação de despesa 
         }}
         render={({ control, onSubmit }) => {
           const [fields,] = control.store
