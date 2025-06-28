@@ -1,10 +1,12 @@
-import { HopeProvider } from "@hope-ui/solid";
 import { ParentComponent } from "solid-js";
+import { UseHopeProvider } from "./UseHopeProvider";
+
+
 
 export const Providers: ParentComponent = (props) => {
   return (
-    <HopeProvider>
+    <UseHopeProvider >
       {props.children}
-    </HopeProvider>
+    </UseHopeProvider>
   )
 }

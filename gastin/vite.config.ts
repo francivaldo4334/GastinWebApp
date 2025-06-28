@@ -8,6 +8,12 @@ export default defineConfig({
   plugins: [solidPlugin(), tailwindcss()],
   server: {
     port: 3000,
+    watch: {
+      ignored: ["**/*.svg", "**/*.md", "**/*.json", "**/node_modules/**"]
+    },
+    fs: {
+      strict: true,
+    }
   },
   build: {
     target: 'esnext',
