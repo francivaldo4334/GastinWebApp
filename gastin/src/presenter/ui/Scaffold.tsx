@@ -1,17 +1,25 @@
+import { Text } from "@hope-ui/solid";
 import { ParentComponent } from "solid-js";
 const Actions: ParentComponent = (props) => {
-  return <div class="flex gap-2 h-14 absolute left-0">{props.children}</div>
+  return <div class="flex gap-2 h-14 absolute right-0 top-0 py-2 pr-2">{props.children}</div>
+}
+
+
+const Title: ParentComponent = (props) => {
+  return <Text class="p-3" size="lg">{props.children}</Text>
 }
 
 interface AppBarComponent extends ParentComponent {
   Actions: ParentComponent;
+  Title: ParentComponent;
 }
 
 const AppBar: AppBarComponent = (props) => {
-  return <div class="">ok{props.children}</div>
+  return <div class="">{props.children}</div>
 }
 
 AppBar.Actions = Actions
+AppBar.Title = Title
 
 interface ScaffoldComponent extends ParentComponent {
   AppBar: AppBarComponent;

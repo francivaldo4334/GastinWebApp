@@ -3,6 +3,7 @@ import { render } from 'solid-js/web';
 
 import './index.css';
 import { RouterController } from './presenter/routers/RouterController';
+import { Providers } from './presenter/providers';
 
 const root = document.getElementById('root');
 
@@ -12,4 +13,8 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(() => <RouterController />, root!);
+render(() => (
+  <Providers>
+    <RouterController />
+  </Providers>
+), root!);
