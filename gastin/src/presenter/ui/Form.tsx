@@ -1,0 +1,82 @@
+import { Accessor, Component, JSXElement, Setter } from "solid-js";
+import { createStore, SetStoreFunction } from "solid-js/store";
+import z from "zod";
+
+export type FieldProps<T> = {
+  value: Accessor<T>;
+  setValue: (value: T) => void;
+  errorMessage?: Accessor<string>;
+};
+
+type ERROR<SCHEMA extends z.ZodSchema> = Record<keyof z.input<SCHEMA>, string>
+
+type Control<SCHEMA extends z.ZodSchema> = {
+  store: [
+    get: z.input<SCHEMA>,
+    set: SetStoreFunction<z.input<SCHEMA>>
+  ];
+  errorStore: [
+    get: Partial<ERROR<SCHEMA>>,
+    set: SetStoreFunction<Partial<ERROR<SCHEMA>>>
+  ];
+}
+
+const Field = <
+  SCHEMA extends z.ZodSchema,
+  F = z.input<SCHEMA>,
+  K extends keyof F = keyof F
+>(props: {
+  control: Control<SCHEMA>;
+  name: K;
+  render: (params: FieldProps<F[K]>) => JSXElement;
+}): JSXElement => {
+  const [field, setField] = props.control.store
+  return props.render({
+    value: () => field[props.name],
+    setValue: (value) => {
+      setField(props.name as any, value)
+    }
+  });
+};
+
+const Form = <SCHEMA extends z.ZodSchema>(props: {
+  schema: SCHEMA;
+  onSubmit: (data: z.output<SCHEMA>) => void;
+  render: (args: {
+    onSubmit: () => void;
+    control: Control<SCHEMA>
+  }) => JSXElement;
+
+}): JSXElement => {
+  const [form, setForm] = createStore<z.input<SCHEMA>>({});
+  const [error, setError] = createStore<Partial<ERROR<SCHEMA>>>({});
+
+  const onSubmit = () => {
+    const { data, error } = props.schema.safeParse(form)
+    if (error) {
+      const errorField = error.formErrors.fieldErrors;
+      Object.keys(errorField).forEach(key => {
+        //@ts-ignore
+        setError(key, errorField[key]?.join(",") || "")
+      })
+      return
+    }
+    props.onSubmit(data)
+  };
+
+  return props.render({
+    onSubmit,
+    control: {
+      store: [form, setForm],
+      errorStore: [error, setError],
+    }
+  });
+}
+
+interface FormComponent<SCHEMA extends z.ZodSchema> extends Component<Parameters<typeof Form>[0]> {
+  Field: typeof Field<SCHEMA>;
+}
+
+Form.Field = Field;
+
+export { Form };

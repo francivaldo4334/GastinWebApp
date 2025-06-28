@@ -13,6 +13,9 @@ export default defineConfig({
     },
     fs: {
       strict: true,
+    },
+    hmr: {
+      overlay: false,
     }
   },
   build: {
