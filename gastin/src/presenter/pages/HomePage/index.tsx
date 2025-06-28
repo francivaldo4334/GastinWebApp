@@ -1,8 +1,9 @@
 import { Component } from "solid-js";
-import { createDisclosure, IconButton } from "@hope-ui/solid";
+import { createDisclosure, Flex, IconButton } from "@hope-ui/solid";
 import { MoreVertical } from "lucide-solid";
 import { Scaffold } from "@/presenter/ui/Scaffold";
 import { HomePageDrawer } from "./HomePageDrawer";
+import { AccountBalance } from "./Widgets/AccountBalance";
 export const HomePage: Component = () => {
 
   const {
@@ -12,6 +13,16 @@ export const HomePage: Component = () => {
   } = createDisclosure()
   return <>
     <Scaffold>
+      <Scaffold.Body>
+        <Flex
+          direction="column"
+          width="$full"
+          padding="$4"
+        >
+          <AccountBalance />
+        </Flex>
+      </Scaffold.Body>
+
       <Scaffold.AppBar>
         <Scaffold.AppBar.Title>
           Tela Principal
