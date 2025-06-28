@@ -2,8 +2,7 @@
 import { render } from 'solid-js/web';
 
 import './index.css';
-import { RouterController } from './presenter/routers/RouterController';
-import { Providers } from './presenter/providers';
+import { Main } from './presenter/Main';
 
 const root = document.getElementById('root');
 
@@ -13,8 +12,4 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(() => (
-  <Providers>
-    <RouterController />
-  </Providers>
-), root!);
+render(() => <Main />, root!);

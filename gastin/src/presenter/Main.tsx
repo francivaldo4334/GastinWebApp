@@ -1,8 +1,11 @@
 import { Component } from "solid-js";
-import { NavigationMenu } from "@kobalte/core/navigation-menu"
+import { Providers } from "./providers";
+import { RouterController } from "./routers/RouterController";
 
 export const Main: Component = () => {
-  return <>
-    <NavigationMenu.Item />
-  </>
+  return (
+    <Providers>
+      <RouterController />
+    </Providers>
+  )
 }
