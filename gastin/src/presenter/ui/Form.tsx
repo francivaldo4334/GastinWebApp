@@ -55,7 +55,11 @@ const Field = <
     >
       <FormErrorMessage>{error[props.name]}</FormErrorMessage>
     </Show>
-    <FormHelperText>{props.helpText}</FormHelperText>
+    <Show
+      when={!!props.helpText}
+    >
+      <FormHelperText>{props.helpText}</FormHelperText>
+    </Show>
   </FormControl>;
 };
 
@@ -66,9 +70,10 @@ const Form = <SCHEMA extends z.ZodSchema>(props: {
     onSubmit: () => void;
     control: Control<SCHEMA>
   }) => JSXElement;
+  default?: Partial<z.input<SCHEMA>>;
 
 }): JSXElement => {
-  const [form, setForm] = createStore<z.input<SCHEMA>>({});
+  const [form, setForm] = createStore<z.input<SCHEMA>>(props.default || {});
   const [errors, setErrors] = createStore<Partial<ERROR<SCHEMA>>>({});
 
   const onSubmit = () => {

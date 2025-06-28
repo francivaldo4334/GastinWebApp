@@ -3,6 +3,8 @@ import { Form } from "@/presenter/ui/Form"
 import { Button, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, VStack } from "@hope-ui/solid"
 import { Component } from "solid-js"
 import { SchemaNewExpenditure } from "./schema"
+import { FormMonetaryValueField } from "@/presenter/ui/FormMonetaryValueField"
+import { FormOptionalTextField } from "@/presenter/ui/FormOptionalTextField"
 
 export const DrawerNewExpenditure: Component = () => {
   const { isOpenNewExpenditure, closeNewExpenditure } = useStore()
@@ -15,6 +17,9 @@ export const DrawerNewExpenditure: Component = () => {
     <DrawerContent>
       <DrawerHeader>Nova Despesa</DrawerHeader>
       <Form
+        default={{
+          value: "0,00"
+        }}
         schema={SchemaNewExpenditure}
         onSubmit={(data) => {
           //TODO:implementar criação de categoria
@@ -23,18 +28,18 @@ export const DrawerNewExpenditure: Component = () => {
           <>
             <DrawerBody>
               <VStack spacing="$4">
-                {/* <Form.Field */}
-                {/*   control={control} */}
-                {/*   name="title" */}
-                {/*   render={FormTextField} */}
-                {/*   label="Titulo" */}
-                {/* /> */}
-                {/* <Form.Field */}
-                {/*   control={control} */}
-                {/*   name="description" */}
-                {/*   render={FormOptionalTextField} */}
-                {/*   label="Descrição" */}
-                {/* /> */}
+                <Form.Field
+                  control={control}
+                  name="value"
+                  render={FormMonetaryValueField}
+                  label="Valor em centavos"
+                />
+                <Form.Field
+                  control={control}
+                  name="description"
+                  render={FormOptionalTextField}
+                  label="Descrição"
+                />
                 {/* <Form.Field */}
                 {/*   control={control} */}
                 {/*   name="color" */}

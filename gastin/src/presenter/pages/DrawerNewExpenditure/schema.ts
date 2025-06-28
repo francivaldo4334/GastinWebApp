@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const SchemaNewExpenditure = z.object({
-  value: z.string(),
+  value: z.string().transform(it => it.replace(/\D/g, "")).transform(Number),
   description: z.string().default(""),
   category: z.string(),
   isRecurrent: z.boolean(),
