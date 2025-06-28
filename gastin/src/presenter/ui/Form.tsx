@@ -5,7 +5,7 @@ import z from "zod";
 
 export type FieldProps<T> = {
   value: Accessor<T>;
-  setValue: (value: T) => void;
+  setValue: Setter<T>;
   errorMessage?: Accessor<string>;
 };
 
@@ -32,7 +32,8 @@ const Field = <
   render: (params: FieldProps<F[K]>) => JSXElement;
   label?: string;
   helpText?: string;
-  isRequired?: boolean
+  isRequired?: boolean;
+  isDisabled?: boolean;
 }): JSXElement => {
   const [field, setField] = props.control.store
   const [error, setError] = props.control.errorStore
@@ -40,14 +41,15 @@ const Field = <
     as="fieldset"
     required={props.isRequired}
     invalid={!!error[props.name]}
+    disabled={props.isDisabled}
   >
     <FormLabel as="legend">{props.label}</FormLabel>
     {
       props.render({
         value: () => field[props.name],
-        setValue: (value) => {
+        setValue: ((value) => {
           setField(props.name as any, value)
-        }
+        }) as Setter<any>
       })
     }
     <Show

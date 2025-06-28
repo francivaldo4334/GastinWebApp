@@ -1,13 +1,42 @@
 import { useStore } from "@/presenter/stores/Store"
 import { Form } from "@/presenter/ui/Form"
-import { Button, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, VStack } from "@hope-ui/solid"
+import {
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  Grid,
+  GridItem,
+  Spacer,
+  VStack
+} from "@hope-ui/solid"
 import { Component } from "solid-js"
 import { SchemaNewExpenditure } from "./schema"
 import { FormMonetaryValueField } from "@/presenter/ui/FormMonetaryValueField"
 import { FormOptionalTextField } from "@/presenter/ui/FormOptionalTextField"
+import { FormSwithField } from "@/presenter/ui/FormSwithField"
+import { FormDateField } from "@/presenter/ui/FormDateField"
+import { createMemo } from "solid-js"
+import { FormSelectField } from "@/presenter/ui/FormSelectField"
 
 export const DrawerNewExpenditure: Component = () => {
+
   const { isOpenNewExpenditure, closeNewExpenditure } = useStore()
+
+  const categories = [
+    {
+      value: 1,
+      label: "Categoria 1"
+    },
+    {
+      value: 2,
+      label: "Categoria 2"
+    },
+  ]
+
   return <Drawer
     opened={isOpenNewExpenditure()}
     onClose={closeNewExpenditure}
@@ -18,44 +47,107 @@ export const DrawerNewExpenditure: Component = () => {
       <DrawerHeader>Nova Despesa</DrawerHeader>
       <Form
         default={{
-          value: "0,00"
+          value: "0,00",
         }}
         schema={SchemaNewExpenditure}
         onSubmit={(data) => {
           //TODO:implementar criação de categoria
         }}
-        render={({ control, onSubmit }) => (
-          <>
-            <DrawerBody>
-              <VStack spacing="$4">
-                <Form.Field
-                  control={control}
-                  name="value"
-                  render={FormMonetaryValueField}
-                  label="Valor em centavos"
-                />
-                <Form.Field
-                  control={control}
-                  name="description"
-                  render={FormOptionalTextField}
-                  label="Descrição"
-                />
-                {/* <Form.Field */}
-                {/*   control={control} */}
-                {/*   name="color" */}
-                {/*   render={FormColorField} */}
-                {/*   label="Definir cor" */}
-                {/* /> */}
-              </VStack>
-            </DrawerBody>
-            <DrawerFooter>
-              <Button
-                onClick={onSubmit}
-              >Salvar</Button>
-            </DrawerFooter>
-          </>
-        )}
+        render={({ control, onSubmit }) => {
+          const [fields,] = control.store
+
+          const disableValidity = createMemo(() => {
+            return !(fields.isRecurrent && !fields.isEveryDays)
+          })
+
+          const disableIsEveryDaysField = createMemo(() => {
+            return !fields.isRecurrent
+          })
+
+          return (
+            <>
+              <DrawerBody>
+                <VStack spacing="$4">
+                  <Form.Field
+                    control={control}
+                    name="value"
+                    render={FormMonetaryValueField}
+                    label="Valor em centavos"
+                  />
+                  <Form.Field
+                    control={control}
+                    name="description"
+                    render={FormOptionalTextField}
+                    label="Descrição"
+                  />
+                  <Form.Field
+                    control={control}
+                    name="category"
+                    render={props => (
+                      <FormSelectField
+                        {...props}
+                        items={categories}
+                        placeholder="Selecione uma categoria"
+                      />
+                    )}
+                    label="Categoria"
+                  />
+                  <Form.Field
+                    control={control}
+                    name="isRecurrent"
+                    render={props => (
+                      <FormSwithField {...props}>
+                        Recorrência:
+                      </FormSwithField>
+                    )}
+                  />
+
+                  <Form.Field
+                    control={control}
+                    name="isEveryDays"
+                    render={props => (
+                      <FormSwithField {...props}>
+                        Todos os dias:
+                      </FormSwithField>
+                    )}
+                    isDisabled={disableIsEveryDaysField()}
+                  />
+                  <Grid
+                    templateColumns="repeat(2, 1fr)"
+                    width="$full"
+                    gap="$4"
+                  >
+                    <GridItem>
+                      <Form.Field
+                        control={control}
+                        name="initValidity"
+                        label="Início da vigência"
+                        render={FormDateField}
+                        isDisabled={disableValidity()}
+                      />
+                    </GridItem>
+                    <GridItem>
+                      <Form.Field
+                        control={control}
+                        name="initValidity"
+                        label="Fim da vigência"
+                        render={FormDateField}
+                        isDisabled={disableValidity()}
+                      />
+                    </GridItem>
+                  </Grid>
+                  <Spacer height="$4" />
+                </VStack>
+              </DrawerBody >
+              <DrawerFooter>
+                <Button
+                  onClick={onSubmit}
+                >Salvar</Button>
+              </DrawerFooter>
+            </>
+          )
+        }}
       />
     </DrawerContent>
-  </Drawer>
+  </Drawer >
 }

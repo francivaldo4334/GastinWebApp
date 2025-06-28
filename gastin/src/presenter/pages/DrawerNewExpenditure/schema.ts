@@ -3,9 +3,9 @@ import { z } from "zod";
 export const SchemaNewExpenditure = z.object({
   value: z.string().transform(it => it.replace(/\D/g, "")).transform(Number),
   description: z.string().default(""),
-  category: z.string(),
-  isRecurrent: z.boolean(),
-  isEveryDays: z.boolean(),
+  category: z.coerce.number(),
+  isRecurrent: z.boolean().default(false),
+  isEveryDays: z.boolean().default(false),
   initValidity: z.string().date().optional(),
   endValidity: z.string().date().optional()
 }).superRefine((attrs, ctx) => {
@@ -29,7 +29,6 @@ export const SchemaNewExpenditure = z.object({
         received: "undefined"
       })
     }
-    return
+    return z.NEVER
   }
-  return z.NEVER
 })
