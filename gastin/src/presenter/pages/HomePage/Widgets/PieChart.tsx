@@ -1,4 +1,4 @@
-import { Component } from "solid-js"
+import { Component, createMemo } from "solid-js"
 import { onMount } from 'solid-js'
 import {
   Chart,
@@ -15,20 +15,35 @@ import { MoreVertical } from "lucide-solid"
 
 export const PieChart: Component = () => {
 
+  const pieItems = [
+    {
+      label: "Gastos",
+      value: 45,
+      color: "#f87171"
+    },
+    {
+      label: "Ganhos",
+      value: 30,
+      color: "#34d399"
+    },
+    {
+      label: "Poupança",
+      value: 25,
+      color: "#60a5fa"
+    },
+  ]
 
-  const chartData = {
-    labels: ['Gastos', 'Ganhos', 'Poupança'],
-    datasets: [
-      {
-        data: [45, 30, 25],
-        backgroundColor: ["#f87171", "#34d399", "#60a5fa"]
-      },
-    ],
-  }
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-  }
+  const chartData = createMemo(() => {
+    return {
+      labels: pieItems.map(it => it.label),
+      datasets: [
+        {
+          data: pieItems.map(it => it.value),
+          backgroundColor: pieItems.map(it => it.color),
+        }
+      ]
+    }
+  })
 
   onMount(() => {
     Chart.register(LineController, CategoryScale, PointElement, LineElement, LinearScale)
@@ -48,15 +63,18 @@ export const PieChart: Component = () => {
     </Card.Header>
     <Grid
       templateColumns="repeat(2,1fr)"
-      gap="$2"
+      gap="$4"
       width="$full"
       marginTop="$4"
     >
       <GridItem>
         <DefaultChart
           type="pie"
-          data={chartData}
-          options={chartOptions}
+          data={chartData()}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+          }}
         />
       </GridItem>
       <GridItem>
