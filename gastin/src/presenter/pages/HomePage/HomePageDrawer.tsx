@@ -1,4 +1,15 @@
-import { Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Switch, Text, useColorMode } from "@hope-ui/solid";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  Switch,
+  Button,
+  useColorMode,
+  Text,
+} from "@hope-ui/solid";
+import { CircleQuestionMark, Minus, Plus, Tag } from "lucide-solid";
 import { Accessor, Component } from "solid-js";
 
 export const HomePageDrawer: Component<{
@@ -13,18 +24,63 @@ export const HomePageDrawer: Component<{
   >
     <DrawerOverlay />
     <DrawerContent>
-      <DrawerCloseButton />
       <DrawerHeader />
-      <DrawerBody >
-
+      <DrawerBody class="*:h-12 *:w-full">
         <Switch
           size="lg"
-          labelPlacement="end"
           w="$full"
           class="*:w-full"
           onChange={toggleColorMode}
           checked={colorMode() === 'dark'}
         > Modo Escuro </Switch>
+        <Button
+          leftIcon={<Tag />}
+          variant="ghost"
+          colorScheme="neutral"
+          size="lg"
+          padding="$1"
+        >
+          <Text
+            class="w-full"
+            textAlign="start"
+          >Adicionar Categoria</Text>
+        </Button>
+        <Button
+          leftIcon={<Minus />}
+          variant="ghost"
+          colorScheme="neutral"
+          size="lg"
+          padding="$1"
+        >
+          <Text
+            class="w-full"
+            textAlign="start"
+          >Adicionar Despesa</Text>
+        </Button>
+        <Button
+          leftIcon={<Plus />}
+          variant="ghost"
+          colorScheme="neutral"
+          size="lg"
+          padding="$1"
+        >
+          <Text
+            class="w-full"
+            textAlign="start"
+          >Adicionar Receita</Text>
+        </Button>
+        <Button
+          leftIcon={<CircleQuestionMark />}
+          variant="ghost"
+          colorScheme="neutral"
+          size="lg"
+          padding="$1"
+        >
+          <Text
+            class="w-full"
+            textAlign="start"
+          >Como funciona?</Text>
+        </Button>
       </DrawerBody>
     </DrawerContent>
   </Drawer>
