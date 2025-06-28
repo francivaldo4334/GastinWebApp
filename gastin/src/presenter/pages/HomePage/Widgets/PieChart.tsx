@@ -1,7 +1,7 @@
-import { Component, createMemo } from "solid-js"
+import { Component, createMemo, For } from "solid-js"
 import { DefaultChart } from 'solid-chartjs'
 import { Card } from "@/presenter/ui/Card"
-import { Grid, GridItem, IconButton, Spacer, Text } from "@hope-ui/solid"
+import { Badge, Grid, GridItem, IconButton, List, ListIcon, ListItem, Spacer, Text } from "@hope-ui/solid"
 import { MoreVertical } from "lucide-solid"
 
 export const PieChart: Component = () => {
@@ -68,6 +68,21 @@ export const PieChart: Component = () => {
         />
       </GridItem>
       <GridItem>
+        <List>
+          <For
+            each={pieItems}
+          >
+            {item => (
+              <ListItem
+                class="flex w-full justify-between h-10"
+              >
+                <Badge bgColor={item.color} boxSize="$6" />
+                <Text>{item.label}</Text>
+                <Text>{item.percentage} %</Text>
+              </ListItem>
+            )}
+          </For>
+        </List>
       </GridItem>
     </Grid>
   </Card>
