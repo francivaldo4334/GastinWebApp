@@ -20,7 +20,7 @@ export const DrawerNewCategory: Component = () => {
       <Form
         schema={SchemaNewCategory}
         onSubmit={(data) => {
-          console.log("DATA:", data)
+          //TODO:implementar criação de categoria
         }}
         render={({ control, onSubmit }) => (
           <>

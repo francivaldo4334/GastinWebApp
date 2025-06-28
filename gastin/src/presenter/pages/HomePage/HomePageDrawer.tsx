@@ -18,7 +18,7 @@ export const HomePageDrawer: Component<{
   onClose: () => void;
 }> = (props) => {
   const { toggleColorMode, colorMode } = useColorMode()
-  const { openNewCategory } = useStore()
+  const { openNewCategory, openNewExpenditure } = useStore()
   return <Drawer
     opened={props.isOpen()}
     placement="right"
@@ -57,6 +57,10 @@ export const HomePageDrawer: Component<{
           colorScheme="neutral"
           size="lg"
           padding="$1"
+          onClick={() => {
+            props.onClose()
+            openNewExpenditure()
+          }}
         >
           <Text
             class="w-full"
