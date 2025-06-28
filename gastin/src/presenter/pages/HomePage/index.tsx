@@ -4,6 +4,7 @@ import { MoreVertical } from "lucide-solid";
 import { Scaffold } from "@/presenter/ui/Scaffold";
 import { HomePageDrawer } from "./HomePageDrawer";
 import { AccountBalance } from "./Widgets/AccountBalance";
+import { Overview } from "./Widgets/Overview";
 export const HomePage: Component = () => {
 
   const {
@@ -18,8 +19,10 @@ export const HomePage: Component = () => {
           direction="column"
           width="$full"
           padding="$4"
+          gap="$4"
         >
           <AccountBalance />
+          <Overview />
         </Flex>
       </Scaffold.Body>
 

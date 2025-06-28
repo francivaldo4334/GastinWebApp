@@ -22,7 +22,7 @@ import { FormDateField } from "@/presenter/ui/FormDateField"
 import { createMemo } from "solid-js"
 import { FormSelectField } from "@/presenter/ui/FormSelectField"
 
-export const DrawerNewRecipt: Component = () => {
+export const DrawerNewReceipt: Component = () => {
 
   const { isOpenNewReceipt, closeNewReceipt } = useStore()
 
