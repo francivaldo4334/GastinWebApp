@@ -1,14 +1,5 @@
 import { Component, createMemo } from "solid-js"
-import { onMount } from 'solid-js'
-import {
-  Chart,
-  LineController,
-  CategoryScale,
-  PointElement,
-  LineElement,
-  LinearScale,
-} from 'chart.js'
-import { DefaultChart, Pie } from 'solid-chartjs'
+import { DefaultChart } from 'solid-chartjs'
 import { Card } from "@/presenter/ui/Card"
 import { Grid, GridItem, IconButton, Spacer, Text } from "@hope-ui/solid"
 import { MoreVertical } from "lucide-solid"
@@ -19,17 +10,20 @@ export const PieChart: Component = () => {
     {
       label: "Gastos",
       value: 45,
-      color: "#f87171"
+      color: "#f87171",
+      percentage: 45,
     },
     {
       label: "Ganhos",
       value: 30,
-      color: "#34d399"
+      color: "#34d399",
+      percentage: 30,
     },
     {
       label: "Poupança",
       value: 25,
-      color: "#60a5fa"
+      color: "#60a5fa",
+      percentage: 25,
     },
   ]
 
@@ -43,10 +37,6 @@ export const PieChart: Component = () => {
         }
       ]
     }
-  })
-
-  onMount(() => {
-    Chart.register(LineController, CategoryScale, PointElement, LineElement, LinearScale)
   })
 
   return <Card>
