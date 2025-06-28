@@ -1,4 +1,5 @@
-import { Accessor, Component, JSXElement, Setter } from "solid-js";
+import { FormControl, FormErrorMessage, FormHelperText, FormLabel } from "@hope-ui/solid";
+import { Accessor, Component, JSXElement, Setter, Show } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 import z from "zod";
 
@@ -29,14 +30,33 @@ const Field = <
   control: Control<SCHEMA>;
   name: K;
   render: (params: FieldProps<F[K]>) => JSXElement;
+  label?: string;
+  helpText?: string;
+  isRequired?: boolean
 }): JSXElement => {
   const [field, setField] = props.control.store
-  return props.render({
-    value: () => field[props.name],
-    setValue: (value) => {
-      setField(props.name as any, value)
+  const [error, setError] = props.control.errorStore
+  return <FormControl
+    as="fieldset"
+    required={props.isRequired}
+    invalid={!!error[props.name]}
+  >
+    <FormLabel as="legend">{props.label}</FormLabel>
+    {
+      props.render({
+        value: () => field[props.name],
+        setValue: (value) => {
+          setField(props.name as any, value)
+        }
+      })
     }
-  });
+    <Show
+      when={!!error[props.name]}
+    >
+      <FormErrorMessage>{error[props.name]}</FormErrorMessage>
+    </Show>
+    <FormHelperText>{props.helpText}</FormHelperText>
+  </FormControl>;
 };
 
 const Form = <SCHEMA extends z.ZodSchema>(props: {
