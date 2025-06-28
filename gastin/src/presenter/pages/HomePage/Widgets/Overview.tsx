@@ -1,7 +1,8 @@
 import { Card } from "@/presenter/ui/Card";
-import { Badge, Button, Divider, Flex, Text } from "@hope-ui/solid";
+import { Badge, Button, Divider, Text } from "@hope-ui/solid";
 import { Minus, Plus } from "lucide-solid";
 import { Component } from "solid-js";
+
 
 export const Overview: Component = () => {
 
