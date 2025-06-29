@@ -6,9 +6,11 @@ const [isOpenNewReceipt, setIsOpenNewReceipt] = createSignal(false)
 
 const [isOpenEditCategory, setIsOpenEditCategory] = createSignal(false)
 const [isOpenEditExpenditure, setIsOpenEditExpenditure] = createSignal(false)
+const [isOpenEditReceipt, setIsOpenEditReceipt] = createSignal(false)
 
 const [categoryDetailId, setCategoryDetailId] = createSignal(0)
 const [expenditureDetailId, setExpenditureDetailId] = createSignal(0)
+const [receiptDetailId, setReceiptDetailId] = createSignal(0)
 
 export const useStore = () => {
   return {
@@ -44,7 +46,19 @@ export const useStore = () => {
       setExpenditureDetailId(0)
     },
 
+
+    isOpenEditReceipt: isOpenEditReceipt,
+    openEditReceipt(id: number) {
+      setIsOpenEditReceipt(true)
+      setReceiptDetailId(id)
+    },
+    closeEditReceipt() {
+      setIsOpenEditReceipt(false)
+      setReceiptDetailId(0)
+    },
+
     categoryDetailId,
     expenditureDetailId,
+    receiptDetailId,
   }
 }

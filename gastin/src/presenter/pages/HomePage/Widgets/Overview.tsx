@@ -45,6 +45,7 @@ export const Overview: Component = () => {
           <Plus />
         </Badge>
       }
+      onClick={() => navigate("/receipts")}
     >
       <Text width="$full" textAlign="start">Receitas</Text>
       <Text>R$ {formatMoney(receipt)}</Text>

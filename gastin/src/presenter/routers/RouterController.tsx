@@ -4,6 +4,7 @@ import { HomePage } from "@/presenter/pages/HomePage/index";
 import HelpPage from "../pages/HelpPage";
 import { CategoriesPage } from "../pages/CategoriesPage";
 import { ExpenditurePage } from "../pages/ExpenditurePage";
+import { ReceiptsPage } from "../pages/ReceiptsPage";
 
 export const RouterController: Component = () => {
   return <Router>
@@ -11,5 +12,6 @@ export const RouterController: Component = () => {
     <Route path="/help" component={HelpPage} />
     <Route path="/categories" component={CategoriesPage} />
     <Route path="/expenditures" component={ExpenditurePage} />
+    <Route path="/receipts" component={ReceiptsPage} />
   </Router>
 }
