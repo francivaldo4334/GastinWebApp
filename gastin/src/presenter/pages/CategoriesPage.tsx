@@ -1,42 +1,40 @@
-import { Component, createMemo, createSignal, For } from "solid-js";
+import { Component, createMemo, createSignal, For, onMount } from "solid-js";
 import { Scaffold } from "../ui/Scaffold";
 import { Edit, ListChecks, MoreVertical, Plus, Trash2, Undo } from "lucide-solid";
 import { Badge, Flex, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid";
 import { useNavigate } from "@solidjs/router";
 import { FormCheckboxField } from "../ui/FormCheckboxField";
 import { useStore } from "../stores/Store";
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 
 export const CategoriesPage: Component = () => {
+
+  const repo = FactoryRepositoryDomain.getRepository("category")
 
   const navigate = useNavigate()
 
   const [categoriesSelected, setCategoriesSelected] = createSignal<number[]>([])
-
-  const { openNewCategory, openEditCategory } = useStore()
-
-  const categories: {
+  const [categories, setCategories] = createSignal<{
     id: number;
     title: string;
     description?: string;
     color: string;
-  }[] = [
-      {
-        id: 1,
-        title: "Teste",
-        description: "teste",
-        color: "#ff00ff"
-      },
-      {
-        id: 2,
-        title: "Teste2",
-        description: "teste2",
-        color: "#ff00ff"
-      },
-    ]//TODO: lista de categorias
+  }[]>([])
 
-  const handlerExclude = () => {
-    //TODO: implementar exclusão de categoria
+  const { openNewCategory, openEditCategory } = useStore()
+
+  const handlerExclude = async () => {
+    await Promise.all(categoriesSelected().map(it => repo.delete(it)))
+    const list = await repo.list()
+    setCategories(list)
   }
+
+  onMount(() => {
+    repo.list().then(it => {
+      setCategories(it)
+      return it
+    })
+  })
 
   return <Scaffold>
     <Scaffold.AppBar>
@@ -66,7 +64,7 @@ export const CategoriesPage: Component = () => {
             <MenuItem
               icon={<ListChecks />}
               onSelect={() => {
-                setCategoriesSelected(categories.map(it => it.id))
+                setCategoriesSelected(categories().map(it => it.id))
               }}
             > Selecionar todo </MenuItem>
             <MenuItem
@@ -91,7 +89,7 @@ export const CategoriesPage: Component = () => {
     </Scaffold.AppBar>
     <Scaffold.Body>
       <List>
-        <For each={categories}>
+        <For each={categories()}>
           {item => {
             const selected = createMemo(() => {
               return categoriesSelected().includes(item.id)
