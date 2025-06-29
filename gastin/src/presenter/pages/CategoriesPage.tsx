@@ -1,15 +1,18 @@
 import { Component, createMemo, createSignal, For } from "solid-js";
 import { Scaffold } from "../ui/Scaffold";
-import { MoreVertical, Undo } from "lucide-solid";
-import { Badge, Flex, IconButton, List, ListItem, Spacer, Text } from "@hope-ui/solid";
+import { Edit, ListChecks, MoreVertical, Plus, Trash2, Undo } from "lucide-solid";
+import { Badge, Flex, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid";
 import { useNavigate } from "@solidjs/router";
 import { FormCheckboxField } from "../ui/FormCheckboxField";
+import { useStore } from "../stores/Store";
 
 export const CategoriesPage: Component = () => {
 
   const navigate = useNavigate()
 
   const [categoriesSelected, setCategoriesSelected] = createSignal<number[]>([])
+
+  const { openNewCategory } = useStore()
 
   const categories: {
     id: number;
@@ -29,7 +32,15 @@ export const CategoriesPage: Component = () => {
         description: "teste2",
         color: "#ff00ff"
       },
-    ]
+    ]//TODO: lista de categorias
+
+  const disableEditButton = createMemo(() => {
+    return !(categoriesSelected().length == 1)
+  })
+
+  const disableTrashButton = createMemo(() => {
+    return !categoriesSelected().length
+  })
 
 
   return <Scaffold>
@@ -48,12 +59,35 @@ export const CategoriesPage: Component = () => {
         Categorias
       </Scaffold.AppBar.Title>
       <Scaffold.AppBar.Actions>
-        <IconButton
-          icon={<MoreVertical />}
-          colorScheme="neutral"
-          variant="ghost"
-          aria-label="More options"
-        />
+        <Menu>
+          <MenuTrigger
+            as={IconButton}
+            icon={<MoreVertical />}
+            colorScheme="neutral"
+            variant="ghost"
+            aria-label="More options"
+          />
+          <MenuContent>
+            <MenuItem
+              icon={<ListChecks />}
+              onSelect={() => {
+                setCategoriesSelected(categories.map(it => it.id))
+              }}
+            > Selecionar todo </MenuItem>
+            <MenuItem
+              icon={<Plus />}
+              onSelect={openNewCategory}
+            > Adicionar </MenuItem>
+            <MenuItem
+              icon={<Trash2 />}
+              disabled={disableTrashButton()}
+            > Excluir </MenuItem>
+            <MenuItem
+              icon={<Edit />}
+              disabled={disableEditButton()}
+            > Editar </MenuItem>
+          </MenuContent>
+        </Menu>
       </Scaffold.AppBar.Actions>
     </Scaffold.AppBar>
     <Scaffold.Body>
