@@ -10,7 +10,7 @@ const Title: ParentComponent = (props) => {
 }
 
 const Body: ParentComponent = (props) => {
-  return <div class="absolute w-wcreen h-[calc(100vh-14rem)] inset-0 top-14">{props.children}</div>
+  return <div class="absolute w-wcreen h-[calc(100vh-3.5rem)] inset-0 top-14 overflow-x-auto">{props.children}</div>
 }
 
 interface AppBarComponent extends ParentComponent {

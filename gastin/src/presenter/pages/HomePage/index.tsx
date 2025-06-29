@@ -6,6 +6,7 @@ import { HomePageDrawer } from "./HomePageDrawer";
 import { AccountBalance } from "./Widgets/AccountBalance";
 import { Overview } from "./Widgets/Overview";
 import { PieChart } from "./Widgets/PieChart";
+import { BarChart } from "./Widgets/BarChart";
 export const HomePage: Component = () => {
 
   const {
@@ -25,6 +26,7 @@ export const HomePage: Component = () => {
           <AccountBalance />
           <Overview />
           <PieChart />
+          <BarChart />
         </Flex>
       </Scaffold.Body>
 

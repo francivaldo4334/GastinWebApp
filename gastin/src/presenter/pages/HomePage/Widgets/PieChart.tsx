@@ -48,7 +48,7 @@ export const PieChart: Component = () => {
 
   return <Card>
     <Card.Header>
-      <Text>Despesas mensais</Text>
+      <Text>Despesas por categoria</Text>
       <Spacer />
       <Menu>
         <MenuTrigger
