@@ -1,43 +1,33 @@
 import { Component, createMemo, For } from "solid-js";
 import { Scaffold } from "../ui/Scaffold";
-import { Flex, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid";
+import { createDisclosure, Flex, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid";
 import { Edit, ListChecks, MoreVertical, Plus, Trash2, Undo } from "lucide-solid";
 import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import { useStore } from "../stores/Store";
 import { FormCheckboxField } from "../ui/FormCheckboxField";
 import { formatMoney } from "../utils/formatMoney";
+import { ModalConfirm } from "../ui/ModalConfirm";
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+import { RecordDomainModel } from "@/domain/models/RecordDomainModel";
 
 export const ReceiptsPage: Component = () => {
+
+  const repo = FactoryRepositoryDomain.getRepository("receipt")
+
+  const { isOpen, onOpen, onClose } = createDisclosure()
 
   const { openNewReceipt, openEditReceipt } = useStore()
 
   const [receiptsSelected, setReciptsSelected] = createSignal<number[]>([])
+  const [receipts, setRecipts] = createSignal<RecordDomainModel[]>([])
 
   const navigate = useNavigate()
 
-  const receipts: {
-    id: number;
-    title: string;
-    description?: string;
-    value: number;
-  }[] = [
-      {
-        id: 1,
-        title: "Teste",
-        description: "teste",
-        value: 100
-      },
-      {
-        id: 2,
-        title: "Teste2",
-        description: "teste2",
-        value: 100
-      },
-    ]//TODO: lista de despesas 
-
-  const handlerExclude = () => {
-    //TODO: implementar exclusão de receita 
+  const handlerExclude = async () => {
+    await Promise.all(receiptsSelected().map(it => repo.delete(it)))
+    const list = await repo.list()
+    setRecipts(list)
   }
 
   return <Scaffold>
@@ -66,7 +56,7 @@ export const ReceiptsPage: Component = () => {
             <MenuItem
               icon={<ListChecks />}
               onSelect={() => {
-                setReciptsSelected(receipts.map(it => it.id))
+                setReciptsSelected(receipts().map(it => it.id))
               }}
             > Selecionar todo </MenuItem>
             <MenuItem
@@ -75,7 +65,7 @@ export const ReceiptsPage: Component = () => {
             > Adicionar </MenuItem>
             <MenuItem
               icon={<Trash2 />}
-              onSelect={handlerExclude}
+              onSelect={onOpen}
             > Excluir </MenuItem>
             <MenuItem
               icon={<Edit />}
@@ -91,7 +81,7 @@ export const ReceiptsPage: Component = () => {
     </Scaffold.AppBar>
     <Scaffold.Body>
       <List>
-        <For each={receipts}>
+        <For each={receipts()}>
           {item => {
             const selected = createMemo(() => {
 
@@ -131,5 +121,13 @@ export const ReceiptsPage: Component = () => {
         </For>
       </List>
     </Scaffold.Body>
+
+    <ModalConfirm
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Atenção"
+      message="Deseja excluir o(s) lançamento(s)?"
+      onConfirm={handlerExclude}
+    />
   </Scaffold>
 }
