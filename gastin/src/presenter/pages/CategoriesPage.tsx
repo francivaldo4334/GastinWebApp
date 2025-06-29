@@ -92,7 +92,10 @@ export const CategoriesPage: Component = () => {
             > Adicionar </MenuItem>
             <MenuItem
               icon={<Trash2 />}
-              onSelect={onOpen}
+              onSelect={() => {
+                if (!categoriesSelected().length) return
+                onOpen()
+              }}
             > Excluir </MenuItem>
             <MenuItem
               icon={<Edit />}

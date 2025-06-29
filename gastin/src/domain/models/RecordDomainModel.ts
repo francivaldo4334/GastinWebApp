@@ -4,7 +4,6 @@ import { ValidityDataModel } from "@/data/models/ValidityDataModel";
 export class RecordDomainModel implements IDomainModel {
   id: number;
   value: number;
-  title: string;
   description: string;
   categoryId: number;
   isRecurrent: boolean;
@@ -13,9 +12,8 @@ export class RecordDomainModel implements IDomainModel {
   endValidity?: string;
 
   constructor(data: {
-    id: number;
+    id?: number;
     value: number;
-    title: string;
     description: string;
     categoryId: number;
     isRecurrent: boolean;
@@ -24,9 +22,8 @@ export class RecordDomainModel implements IDomainModel {
     endValidity?: string;
   }) {
 
-    this.id = data.id;
+    this.id = data.id!;
     this.value = data.value;
-    this.title = data.title;
     this.description = data.description;
     this.categoryId = data.categoryId;
     this.isRecurrent = data.isRecurrent;
@@ -43,7 +40,6 @@ export const mapToDomain = (
   return new RecordDomainModel({
     id: record.id,
     value: record.value,
-    title: record.title,
     description: record.description,
     categoryId: record.categoryId,
     isRecurrent: Boolean(record.validityId),
@@ -61,7 +57,6 @@ export const mapToRecordData = (
   return new RecordDataModel({
     id: domain.id,
     value: domain.value,
-    title: domain.title,
     description: domain.description,
     categoryId: domain.categoryId,
     validityId,

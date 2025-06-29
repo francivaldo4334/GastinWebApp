@@ -95,7 +95,6 @@ export const ReceiptsPage: Component = () => {
                 <Flex
                   direction="column"
                 >
-                  <Text>{item.title}</Text>
                   <Text size="sm">{item.description}</Text>
                 </Flex>
                 <Spacer />
