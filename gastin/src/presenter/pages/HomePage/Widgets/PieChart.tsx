@@ -4,11 +4,14 @@ import { Card } from "@/presenter/ui/Card"
 import { Badge, Grid, GridItem, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid"
 import { MoreVertical, List as ListIcon, Tag } from "lucide-solid"
 import { ValidityRange } from "@/presenter/ui/ValidityRange"
+import { useStore } from "@/presenter/stores/Store"
 
 export const PieChart: Component = () => {
 
   const [initValidity, setInitValidity] = createSignal<string>()
   const [endValidity, setEndValidity] = createSignal<string>()
+
+  const { openNewCategory } = useStore()
 
   const pieItems = [
     {
@@ -64,6 +67,7 @@ export const PieChart: Component = () => {
           </MenuItem>
           <MenuItem
             icon={<Tag />}
+            onSelect={openNewCategory}
           >
             Adicionar categoria
           </MenuItem>

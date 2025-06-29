@@ -34,11 +34,11 @@ export const AccountBalance: Component = () => {
       >
         <GridItem class="opacity-70">
           <Text size="sm">Recebido</Text>
-          <Text size="xl">{formatMoney(received)}</Text>
+          <Text size="xl">R$ {formatMoney(received)}</Text>
         </GridItem>
         <GridItem >
           <Text size="sm">Saldo</Text>
-          <Text size="xl">{formatMoney(balance)}</Text>
+          <Text size="xl">R$ {formatMoney(balance)}</Text>
         </GridItem>
       </Grid>
     </Flex>

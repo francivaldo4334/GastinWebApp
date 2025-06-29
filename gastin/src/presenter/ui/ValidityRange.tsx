@@ -19,7 +19,6 @@ export const ValidityRange: Component<{
   >
     <Divider />
     <Flex
-      width="$sm"
       gap="$2"
     >
       <FormControl class="flex gap-2" >
