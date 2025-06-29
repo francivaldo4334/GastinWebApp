@@ -1,10 +1,14 @@
-import { Component, createMemo, For } from "solid-js"
+import { Component, createMemo, createSignal, For } from "solid-js"
 import { DefaultChart } from 'solid-chartjs'
 import { Card } from "@/presenter/ui/Card"
-import { Badge, Grid, GridItem, IconButton, List, ListIcon, ListItem, Spacer, Text } from "@hope-ui/solid"
-import { MoreVertical } from "lucide-solid"
+import { Badge, Grid, GridItem, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid"
+import { MoreVertical, List as ListIcon, Tag } from "lucide-solid"
+import { ValidityRange } from "@/presenter/ui/ValidityRange"
 
 export const PieChart: Component = () => {
+
+  const [initValidity, setInitValidity] = createSignal<string>()
+  const [endValidity, setEndValidity] = createSignal<string>()
 
   const pieItems = [
     {
@@ -43,14 +47,35 @@ export const PieChart: Component = () => {
     <Card.Header>
       <Text>Despesas mensais</Text>
       <Spacer />
-      <IconButton
-        aria-label="More options of pie chart"
-        icon={<MoreVertical size={20} />}
-        variant="ghost"
-        colorScheme="neutral"
-        size="sm"
-      />
+      <Menu>
+        <MenuTrigger
+          as={IconButton}
+          variant="ghost"
+          colorScheme="neutral"
+          aria-label="More options of pie chart"
+          icon={<MoreVertical size={20} />}
+          size="sm"
+        />
+        <MenuContent>
+          <MenuItem
+            icon={<ListIcon />}
+          >
+            Ver categorias
+          </MenuItem>
+          <MenuItem
+            icon={<Tag />}
+          >
+            Adicionar categoria
+          </MenuItem>
+        </MenuContent>
+      </Menu>
     </Card.Header>
+    <ValidityRange
+      initValidity={initValidity}
+      setInitValidity={setInitValidity}
+      endValidity={endValidity}
+      setEndValidity={setEndValidity}
+    />
     <Grid
       templateColumns="repeat(2,1fr)"
       gap="$4"
