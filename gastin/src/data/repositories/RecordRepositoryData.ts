@@ -1,37 +1,32 @@
-import { RecordModel } from "../dbmodels/RecordModel";
+import { Database } from "../Database";
 import { mapFromRecordDataModel, mapToRecordDataModel, RecordDataModel } from "../models/RecordDataModel";
 import { IRepositoryData } from "./IRepositoryData";
 
 export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
   async list(): Promise<RecordDataModel[]> {
-    const list = await RecordModel.all();
+    const list = await Database.instance.records.toArray();
     return list.map(mapToRecordDataModel);
   }
 
   async get(id: number): Promise<RecordDataModel> {
-    const it = await RecordModel.get({ id });
+    const it = await Database.instance.records.get(id);
     return mapToRecordDataModel(it);
   }
 
   async set(m: RecordDataModel): Promise<RecordDataModel> {
-    const it = await RecordModel.create(mapFromRecordDataModel(m));
+    const id = await Database.instance.records.add(mapFromRecordDataModel(m));
+    const it = await Database.instance.records.get(id);
     return mapToRecordDataModel(it);
   }
 
   async edit(id: number, m: RecordDataModel): Promise<RecordDataModel> {
-    const it = await RecordModel.get({ id });
-    it.value = m.value;
-    it.title = m.title;
-    it.description = m.description;
-    it.categoryId = m.categoryId;
-    it.validityId = m.validityId;
-    await it.save();
+    await Database.instance.records.update(id, mapFromRecordDataModel(m));
+    const it = await Database.instance.records.get(id);
     return mapToRecordDataModel(it);
   }
 
   async delete(id: number): Promise<boolean> {
-    const it = await RecordModel.get({ id });
-    await it.delete();
+    await Database.instance.records.delete(id);
     return true;
   }
 }
