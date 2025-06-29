@@ -1,10 +1,12 @@
-import { Component } from "solid-js";
+import { Component, createMemo, For } from "solid-js";
 import { Scaffold } from "../ui/Scaffold";
-import { IconButton, Menu, MenuContent, MenuItem, MenuTrigger, Text } from "@hope-ui/solid";
+import { Flex, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid";
 import { Edit, ListChecks, MoreVertical, Plus, Trash2, Undo } from "lucide-solid";
 import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import { useStore } from "../stores/Store";
+import { FormCheckboxField } from "../ui/FormCheckboxField";
+import { formatMoney } from "../utils/formatMoney";
 
 export const ExpenditurePage: Component = () => {
 
@@ -87,5 +89,47 @@ export const ExpenditurePage: Component = () => {
         </Menu>
       </Scaffold.AppBar.Actions>
     </Scaffold.AppBar>
+    <Scaffold.Body>
+      <List>
+        <For each={expenditures}>
+          {item => {
+            const selected = createMemo(() => {
+
+              return expendituresSelected().includes(item.id)
+            })
+            return (
+              <ListItem
+                padding="$4"
+                class="flex items-center gap-3"
+              >
+                <Flex
+                  direction="column"
+                >
+                  <Text>{item.title}</Text>
+                  <Text size="sm">{item.description}</Text>
+                </Flex>
+                <Spacer />
+                <Text>R$ {formatMoney(String(item.value))}</Text>
+                <FormCheckboxField
+                  value={selected}
+                  setValue={() => {
+                    if (selected()) {
+                      setexpendituresSelected(prev => {
+                        const list: number[] = prev
+                        return list.filter(it => it != item.id)
+                      })
+                      return
+                    }
+                    setexpendituresSelected(prev => {
+                      return [...prev, item.id]
+                    })
+                  }}
+                />
+              </ListItem>
+            )
+          }}
+        </For>
+      </List>
+    </Scaffold.Body>
   </Scaffold>
 }
