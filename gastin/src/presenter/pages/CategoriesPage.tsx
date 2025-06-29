@@ -34,14 +34,9 @@ export const CategoriesPage: Component = () => {
       },
     ]//TODO: lista de categorias
 
-  const disableEditButton = createMemo(() => {
-    return !(categoriesSelected().length == 1)
-  })
-
-  const disableTrashButton = createMemo(() => {
-    return !categoriesSelected().length
-  })
-
+  const handlerExclude = () => {
+    //TODO: implementar exclusão de categoria
+  }
 
   return <Scaffold>
     <Scaffold.AppBar>
@@ -80,7 +75,7 @@ export const CategoriesPage: Component = () => {
             > Adicionar </MenuItem>
             <MenuItem
               icon={<Trash2 />}
-              disabled={disableTrashButton()}
+              onSelect={handlerExclude}
             > Excluir </MenuItem>
             <MenuItem
               icon={<Edit />}
