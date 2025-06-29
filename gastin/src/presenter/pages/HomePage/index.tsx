@@ -1,5 +1,5 @@
 import { Component } from "solid-js";
-import { createDisclosure, Flex, IconButton } from "@hope-ui/solid";
+import { createDisclosure, Flex, IconButton, Text } from "@hope-ui/solid";
 import { MoreVertical } from "lucide-solid";
 import { Scaffold } from "@/presenter/ui/Scaffold";
 import { HomePageDrawer } from "./HomePageDrawer";
@@ -32,7 +32,7 @@ export const HomePage: Component = () => {
 
       <Scaffold.AppBar>
         <Scaffold.AppBar.Title>
-          Tela Principal
+          <Text paddingLeft="$2">Tela Principal</Text>
         </Scaffold.AppBar.Title>
         <Scaffold.AppBar.Actions>
           <IconButton
