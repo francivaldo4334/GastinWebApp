@@ -3,9 +3,14 @@ import solidPlugin from 'vite-plugin-solid';
 import path from "path"
 //@ts-ignore
 import tailwindcss from '@tailwindcss/vite'
+import checker form "vite-plugin-checker"
 
 export default defineConfig({
-  plugins: [solidPlugin(), tailwindcss()],
+  plugins: [
+    solidPlugin(),
+    tailwindcss(),
+    checker
+  ],
   server: {
     port: 3000,
     watch: {
