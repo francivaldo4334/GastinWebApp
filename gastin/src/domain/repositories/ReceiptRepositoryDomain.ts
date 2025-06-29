@@ -26,7 +26,6 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
 
   async get(id: number): Promise<RecordDomainModel> {
     const record = await this.recordRepository.get(id);
-    if (record.value <= 0) throw new Error("Not a receipt");
 
     const validity = record.validityId
       ? await this.validityRepository.get(record.validityId)
@@ -36,34 +35,41 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
   }
 
   async set(m: RecordDomainModel): Promise<RecordDomainModel> {
-    if (m.value <= 0) throw new Error("Value must be positive");
-
-    let validityId: number | undefined;
-
     if (m.isRecurrent) {
-      const validity = mapToValidityData(m, 0);
+      const validity = mapToValidityData(m);
       const created = await this.validityRepository.set(validity);
-      validityId = created.id;
+      m.validityId = created.id;
     }
 
-    const record = await this.recordRepository.set(mapToRecordData(m, validityId));
-    const validity = validityId ? await this.validityRepository.get(validityId) : undefined;
+    const record = await this.recordRepository.set(mapToRecordData(m));
+    const validity = record.validityId ? await this.validityRepository.get(record.validityId) : undefined;
 
     return mapToDomain(record, validity);
   }
 
   async edit(id: number, m: RecordDomainModel): Promise<RecordDomainModel> {
-    if (m.value <= 0) throw new Error("Value must be positive");
-
     let validityId: number | undefined;
 
+    const localModel = await this.get(id)
+
     if (m.isRecurrent) {
-      const validity = mapToValidityData(m, m.id);
-      const updated = await this.validityRepository.edit(m.id, validity);
-      validityId = updated.id;
+      const validity = mapToValidityData(m);
+
+      if (!localModel.isRecurrent && m.isRecurrent) {
+        validityId = (await this.validityRepository.set(validity)).id
+      }
+
+      if (localModel.isRecurrent && !m.isRecurrent) {
+        await this.validityRepository.delete(localModel.validityId!)
+      }
+
+      if (localModel.isRecurrent && m.isRecurrent) {
+        const updated = await this.validityRepository.edit(m.id, validity);
+        validityId = updated.id;
+      }
     }
 
-    const record = await this.recordRepository.edit(id, mapToRecordData(m, validityId));
+    const record = await this.recordRepository.edit(id, mapToRecordData(m));
     const validity = validityId ? await this.validityRepository.get(validityId) : undefined;
 
     return mapToDomain(record, validity);

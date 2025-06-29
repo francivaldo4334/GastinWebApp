@@ -38,13 +38,12 @@ export const DrawerEditCategory: Component = () => {
   })
 
   const isOpenDrawer = createMemo(() => {
-    return isOpenEditCategory() && !!details.success
+    return isOpenEditCategory()
   })
 
   const handlerClose = () => {
-    closeEditCategory()
     setDetails("success", false)
-    // setDetails("model", undefined)
+    closeEditCategory()
   }
 
   return <Drawer

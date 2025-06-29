@@ -13,7 +13,7 @@ import {
   Spacer,
   VStack
 } from "@hope-ui/solid"
-import { Component } from "solid-js"
+import { Component, createEffect } from "solid-js"
 import { SchemaEditReceipt } from "./schema"
 import { FormMonetaryValueField } from "@/presenter/ui/FormMonetaryValueField"
 import { FormOptionalTextField } from "@/presenter/ui/FormOptionalTextField"
@@ -21,141 +21,192 @@ import { FormSwithField } from "@/presenter/ui/FormSwithField"
 import { FormDateField } from "@/presenter/ui/FormDateField"
 import { createMemo } from "solid-js"
 import { FormSelectField } from "@/presenter/ui/FormSelectField"
+import { createStore } from "solid-js/store"
+import { RecordDomainModel } from "@/domain/models/RecordDomainModel"
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain"
+import { formatMoney } from "@/presenter/utils/formatMoney"
+import { Show } from "solid-js"
 
 export const DrawerEditReceipt: Component = () => {
+
+  const categoryRepo = FactoryRepositoryDomain.getRepository("category")
+  const repo = FactoryRepositoryDomain.getRepository("receipt")
 
   const {
     isOpenEditReceipt,
     closeEditReceipt,
-    expenditureDetailId,
+    receiptDetailId,
   } = useStore()
 
-  const details = {
+  const [details, setDetails] = createStore<{
+    success: boolean;
+    model?: RecordDomainModel
+  }>({
+    success: false,
+  })
 
-  }//TODO: implementar chamado ao detalhes de receita 
+  const [categories, setCategories] = createStore<{ value: number; label: string; }[]>([])
 
-  const categories = [
-    {
-      value: 1,
-      label: "Categoria 1"
-    },
-    {
-      value: 2,
-      label: "Categoria 2"
-    },
-  ]//TODO: realizar chamado para listar categorias
+  createEffect(async () => {
+    if (!isOpenEditReceipt()) {
+      return
+    }
+    const it = await repo.get(receiptDetailId())
+    setDetails({
+      success: true,
+      model: it
+    })
+  })
+
+  createEffect(async () => {
+    if (!isOpenEditReceipt()) return
+    const list = await categoryRepo.list()
+    setCategories(list.map(it => ({
+      value: it.id,
+      label: it.title,
+    })))
+  })
+
+  const isOpenDrawer = createMemo(() => {
+    return isOpenEditReceipt() && !!details.success
+  })
+
+  const handlerClose = () => {
+    closeEditReceipt()
+    setDetails("success", false)
+  }
 
   return <Drawer
-    opened={isOpenEditReceipt()}
-    onClose={closeEditReceipt}
+    opened={isOpenDrawer()}
+    onClose={handlerClose}
     placement="bottom"
   >
     <DrawerOverlay />
     <DrawerContent>
       <DrawerHeader>Editar Receita</DrawerHeader>
-      <Form
-        default={{
-          value: "0,00",
-        }}
-        schema={SchemaEditReceipt}
-        onSubmit={(data) => {
-          //TODO:implementar criação de receita 
-        }}
-        render={({ control, onSubmit }) => {
-          const [fields,] = control.store
+      <Show
+        when={details.success}
+      >
+        <Form
+          default={{
+            value: formatMoney(String(details.model!.value)),
+            description: details.model!.description,
+            category: details.model!.categoryId,
+            isRecurrent: details.model!.isRecurrent,
+            isEveryDays: details.model!.isEveryDays,
+            initValidity: details.model!.initValidity,
+            endValidity: details.model!.endValidity,
+          }}
+          schema={SchemaEditReceipt}
+          onSubmit={(data) => {
+            repo.edit(receiptDetailId(), new RecordDomainModel({
+              value: data.value,
+              description: data.description,
+              categoryId: data.category,
+              isRecurrent: data.isRecurrent,
+              isEveryDays: data.isEveryDays,
+              initValidity: data.initValidity,
+              endValidity: data.endValidity,
+            })).then(it => {
+              handlerClose()
+            })
+          }}
+          render={({ control, onSubmit }) => {
+            const [fields,] = control.store
 
-          const disableValidity = createMemo(() => {
-            return !(fields.isRecurrent && !fields.isEveryDays)
-          })
+            const disableValidity = createMemo(() => {
+              return !(fields.isRecurrent && !fields.isEveryDays)
+            })
 
-          const disableIsEveryDaysField = createMemo(() => {
-            return !fields.isRecurrent
-          })
+            const disableIsEveryDaysField = createMemo(() => {
+              return !fields.isRecurrent
+            })
 
-          return (
-            <>
-              <DrawerBody>
-                <VStack spacing="$4">
-                  <Form.Field
-                    control={control}
-                    name="value"
-                    render={FormMonetaryValueField}
-                    label="Valor em centavos"
-                  />
-                  <Form.Field
-                    control={control}
-                    name="description"
-                    render={FormOptionalTextField}
-                    label="Descrição"
-                  />
-                  <Form.Field
-                    control={control}
-                    name="category"
-                    render={props => (
-                      <FormSelectField
-                        {...props}
-                        items={categories}
-                        placeholder="Selecione uma categoria"
-                      />
-                    )}
-                    label="Categoria"
-                  />
-                  <Form.Field
-                    control={control}
-                    name="isRecurrent"
-                    render={props => (
-                      <FormSwithField {...props}>
-                        Recorrência:
-                      </FormSwithField>
-                    )}
-                  />
+            return (
+              <>
+                <DrawerBody>
+                  <VStack spacing="$4">
+                    <Form.Field
+                      control={control}
+                      name="value"
+                      render={FormMonetaryValueField}
+                      label="Valor em centavos"
+                    />
+                    <Form.Field
+                      control={control}
+                      name="description"
+                      render={FormOptionalTextField}
+                      label="Descrição"
+                    />
+                    <Form.Field
+                      control={control}
+                      name="category"
+                      render={props => (
+                        <FormSelectField
+                          {...props}
+                          items={categories}
+                          placeholder="Selecione uma categoria"
+                        />
+                      )}
+                      label="Categoria"
+                    />
+                    <Form.Field
+                      control={control}
+                      name="isRecurrent"
+                      render={props => (
+                        <FormSwithField {...props}>
+                          Recorrência:
+                        </FormSwithField>
+                      )}
+                    />
 
-                  <Form.Field
-                    control={control}
-                    name="isEveryDays"
-                    render={props => (
-                      <FormSwithField {...props}>
-                        Todos os dias:
-                      </FormSwithField>
-                    )}
-                    isDisabled={disableIsEveryDaysField()}
-                  />
-                  <Grid
-                    templateColumns="repeat(2, 1fr)"
-                    width="$full"
-                    gap="$4"
-                  >
-                    <GridItem>
-                      <Form.Field
-                        control={control}
-                        name="initValidity"
-                        label="Início da vigência"
-                        render={FormDateField}
-                        isDisabled={disableValidity()}
-                      />
-                    </GridItem>
-                    <GridItem>
-                      <Form.Field
-                        control={control}
-                        name="initValidity"
-                        label="Fim da vigência"
-                        render={FormDateField}
-                        isDisabled={disableValidity()}
-                      />
-                    </GridItem>
-                  </Grid>
-                  <Spacer height="$4" />
-                </VStack>
-              </DrawerBody >
-              <DrawerFooter>
-                <Button
-                  onClick={onSubmit}
-                >Salvar</Button>
-              </DrawerFooter>
-            </>
-          )
-        }}
-      />
+                    <Form.Field
+                      control={control}
+                      name="isEveryDays"
+                      render={props => (
+                        <FormSwithField {...props}>
+                          Todos os dias:
+                        </FormSwithField>
+                      )}
+                      isDisabled={disableIsEveryDaysField()}
+                    />
+                    <Grid
+                      templateColumns="repeat(2, 1fr)"
+                      width="$full"
+                      gap="$4"
+                    >
+                      <GridItem>
+                        <Form.Field
+                          control={control}
+                          name="initValidity"
+                          label="Início da vigência"
+                          render={FormDateField}
+                          isDisabled={disableValidity()}
+                        />
+                      </GridItem>
+                      <GridItem>
+                        <Form.Field
+                          control={control}
+                          name="initValidity"
+                          label="Fim da vigência"
+                          render={FormDateField}
+                          isDisabled={disableValidity()}
+                        />
+                      </GridItem>
+                    </Grid>
+                    <Spacer height="$4" />
+                  </VStack>
+                </DrawerBody >
+                <DrawerFooter>
+                  <Button
+                    onClick={onSubmit}
+                  >Salvar</Button>
+                </DrawerFooter>
+              </>
+            )
+          }}
+        />
+      </Show>
     </DrawerContent>
   </Drawer >
 }

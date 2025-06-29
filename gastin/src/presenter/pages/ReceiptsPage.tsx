@@ -92,7 +92,7 @@ export const ReceiptsPage: Component = () => {
               icon={<Edit />}
               onSelect={() => {
                 const id = receiptsSelected()?.[0]
-                if (!id) return;
+                if (!id || !receiptsSelected().length) return;
                 openEditReceipt(id)
               }}
             > Editar </MenuItem>

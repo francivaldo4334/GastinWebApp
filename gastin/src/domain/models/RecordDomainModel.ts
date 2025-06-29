@@ -8,6 +8,7 @@ export class RecordDomainModel implements IDomainModel {
   categoryId: number;
   isRecurrent: boolean;
   isEveryDays: boolean;
+  validityId?: number;
   initValidity?: string;
   endValidity?: string;
 
@@ -52,24 +53,22 @@ export const mapToDomain = (
 
 export const mapToRecordData = (
   domain: RecordDomainModel,
-  validityId?: number
 ): RecordDataModel => {
   return new RecordDataModel({
     id: domain.id,
     value: domain.value,
     description: domain.description,
     categoryId: domain.categoryId,
-    validityId,
+    validityId: domain.validityId,
   });
 };
 
 
 export const mapToValidityData = (
   domain: RecordDomainModel,
-  id: number
 ): ValidityDataModel => {
   return new ValidityDataModel({
-    id,
+    id: domain.validityId,
     isEveryDays: domain.isEveryDays,
     initValidity: domain.initValidity,
     endValidity: domain.endValidity,

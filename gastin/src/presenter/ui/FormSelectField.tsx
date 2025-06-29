@@ -3,7 +3,7 @@ import { FieldProps } from "./Form";
 import { Select, SelectContent, SelectIcon, SelectListbox, SelectOption, SelectOptionIndicator, SelectOptionText, SelectPlaceholder, SelectTrigger, SelectValue } from "@hope-ui/solid";
 
 export const FormSelectField: Component<{
-  items: { value: any, label: string }[]
+  items: { value: number, label: string }[]
   placeholder?: string;
 } & FieldProps<number>> = (props) => {
   return <Select
