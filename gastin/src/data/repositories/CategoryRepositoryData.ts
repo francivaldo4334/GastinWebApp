@@ -1,13 +1,8 @@
-import { Database } from "../Database";
 import { CategoryModel } from "../dbmodels/CategoryModel";
 import { CategoryDataModel, mapFromCategoryDataModel, mapToCategoryDataModel } from "../models/CategoryDataModel";
 import { IRepositoryData } from "./IRepositoryData";
 
 export class CategoryRepositoryData implements IRepositoryData<CategoryDataModel> {
-  db: Database
-  constructor() {
-    this.db = Database.getInstance()
-  }
   async list(): Promise<CategoryDataModel[]> {
     const list = await CategoryModel.all()
     return list.map(mapToCategoryDataModel)

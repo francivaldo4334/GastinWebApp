@@ -6,8 +6,11 @@ import { SchemaNewCategory } from "./schema";
 import { FormColorField } from "@/presenter/ui/FormColorField";
 import { FormTextField } from "@/presenter/ui/FormTextField";
 import { FormOptionalTextField } from "@/presenter/ui/FormOptionalTextField";
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
 
 export const DrawerNewCategory: Component = () => {
+  const repo = FactoryRepositoryDomain.getRepository("category")
   const { isOpenNewCategory, closeNewCategory } = useStore()
   return <Drawer
     opened={isOpenNewCategory()}
@@ -20,7 +23,13 @@ export const DrawerNewCategory: Component = () => {
       <Form
         schema={SchemaNewCategory}
         onSubmit={(data) => {
-          //TODO:implementar criação de categoria
+          repo.set(new CategoryDomainModel(
+            {
+              title: data.title,
+              description: data.description,
+              color: data.color,
+            }
+          ))
         }}
         render={({ control, onSubmit }) => (
           <>

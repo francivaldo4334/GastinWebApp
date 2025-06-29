@@ -7,13 +7,13 @@ export class CategoryDomainModel implements IDomainModel {
   color: string;
 
   constructor(data: {
-    id: number;
+    id?: number;
     title: string;
     description: string;
     color: string;
   }) {
 
-    this.id = data.id;
+    this.id = data.id!;
     this.title = data.title;
     this.description = data.description;
     this.color = data.color;

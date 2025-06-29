@@ -1,12 +1,15 @@
 import { ParentComponent } from "solid-js";
 import { UseHopeProvider } from "./UseHopeProvider";
+import { DatabaseProvider } from "./DatabaseProvider";
 
 
 
 export const Providers: ParentComponent = (props) => {
   return (
     <UseHopeProvider >
-      {props.children}
+      <DatabaseProvider>
+        {props.children}
+      </DatabaseProvider>
     </UseHopeProvider>
   )
 }

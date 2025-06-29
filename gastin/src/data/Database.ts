@@ -5,16 +5,14 @@ import { ValidityModel } from "./dbmodels/ValidityModel"
 
 export class Database {
   static instance: Database
-  static getInstance() {
-    if (!this.instance) {
+  static async init() {
+    return await models.register({
+      databaseName: "gastindatabase",
+      version: 1,
+      type: "indexedDB",
+      models: [CategoryModel, RecordModel, ValidityModel]
+    }).then(it => {
       this.instance = new Database()
-      models.register({
-        databaseName: "gastindatabase",
-        version: 1,
-        type: "indexedDB",
-        models: [CategoryModel, RecordModel, ValidityModel]
-      })
-    }
-    return this.instance
+    })
   }
 }
