@@ -5,13 +5,13 @@ export class CategoryDataModel implements IDataModel {
   color: string;
 
   constructor(data: {
-    id: number;
+    id?: number;
     title: string;
     description: string;
     color: string;
   }) {
 
-    this.id = data.id;
+    this.id = data.id!;
     this.title = data.title;
     this.description = data.description;
     this.color = data.color;
@@ -20,7 +20,6 @@ export class CategoryDataModel implements IDataModel {
 
 export const mapToCategoryDataModel = (data: any): CategoryDataModel => {
   return new CategoryDataModel({
-    id: Number(data.id),
     title: String(data.title ?? ""),
     description: String(data.description ?? ""),
     color: String(data.color ?? "#000000"),
@@ -29,7 +28,6 @@ export const mapToCategoryDataModel = (data: any): CategoryDataModel => {
 
 export const mapFromCategoryDataModel = (model: CategoryDataModel): any => {
   return {
-    id: model.id,
     title: model.title,
     description: model.description,
     color: model.color,
