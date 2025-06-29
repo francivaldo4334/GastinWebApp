@@ -12,7 +12,7 @@ export const CategoriesPage: Component = () => {
 
   const [categoriesSelected, setCategoriesSelected] = createSignal<number[]>([])
 
-  const { openNewCategory } = useStore()
+  const { openNewCategory, openEditCategory } = useStore()
 
   const categories: {
     id: number;
@@ -84,7 +84,11 @@ export const CategoriesPage: Component = () => {
             > Excluir </MenuItem>
             <MenuItem
               icon={<Edit />}
-              disabled={disableEditButton()}
+              onSelect={() => {
+                const id = categoriesSelected()?.[0]
+                if (!id) return;
+                openEditCategory(id)
+              }}
             > Editar </MenuItem>
           </MenuContent>
         </Menu>
@@ -134,5 +138,5 @@ export const CategoriesPage: Component = () => {
         </For>
       </List>
     </Scaffold.Body>
-  </Scaffold>
+  </Scaffold >
 }

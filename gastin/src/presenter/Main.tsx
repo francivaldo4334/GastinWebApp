@@ -4,6 +4,7 @@ import { RouterController } from "./routers/RouterController";
 import { DrawerNewCategory } from "./pages/DrawerNewCategory";
 import { DrawerNewExpenditure } from "./pages/DrawerNewExpenditure";
 import { DrawerNewReceipt } from "./pages/DrawerNewReceipt";
+import { DrawerEditCategory } from "./pages/DrawerEditCategory";
 
 export const Main: Component = () => {
   return (
@@ -12,6 +13,8 @@ export const Main: Component = () => {
       <DrawerNewCategory />
       <DrawerNewExpenditure />
       <DrawerNewReceipt />
+
+      <DrawerEditCategory />
     </Providers>
   )
 }
