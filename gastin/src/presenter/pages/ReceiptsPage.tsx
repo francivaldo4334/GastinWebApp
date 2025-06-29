@@ -1,4 +1,4 @@
-import { Component, createMemo, For } from "solid-js";
+import { Component, createEffect, createMemo, For, onMount } from "solid-js";
 import { Scaffold } from "../ui/Scaffold";
 import { createDisclosure, Flex, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid";
 import { Edit, ListChecks, MoreVertical, Plus, Trash2, Undo } from "lucide-solid";
@@ -17,18 +17,39 @@ export const ReceiptsPage: Component = () => {
 
   const { isOpen, onOpen, onClose } = createDisclosure()
 
-  const { openNewReceipt, openEditReceipt } = useStore()
+  const { openNewReceipt, isOpenEditReceipt, isOpenNewReceipt, openEditReceipt } = useStore()
 
   const [receiptsSelected, setReciptsSelected] = createSignal<number[]>([])
   const [receipts, setRecipts] = createSignal<RecordDomainModel[]>([])
 
   const navigate = useNavigate()
 
-  const handlerExclude = async () => {
-    await Promise.all(receiptsSelected().map(it => repo.delete(it)))
+  const loadList = async () => {
     const list = await repo.list()
     setRecipts(list)
   }
+
+  const handlerExclude = async () => {
+    await Promise.all([
+      ...receiptsSelected().map(it => repo.delete(it)),
+      loadList()
+    ])
+  }
+
+  onMount(() => {
+    loadList()
+  })
+
+  createEffect(() => {
+    if (!isOpenEditReceipt()) {
+      loadList()
+    }
+  })
+  createEffect(() => {
+    if (!isOpenNewReceipt()) {
+      loadList()
+    }
+  })
 
   return <Scaffold>
     <Scaffold.AppBar>
