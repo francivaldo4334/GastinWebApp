@@ -1,4 +1,4 @@
-import { Component, createMemo, createSignal, For, onMount } from "solid-js";
+import { Component, createEffect, createMemo, createSignal, For, onMount } from "solid-js";
 import { Scaffold } from "../ui/Scaffold";
 import { Edit, ListChecks, MoreVertical, Plus, Trash2, Undo } from "lucide-solid";
 import { Badge, Flex, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid";
@@ -21,7 +21,11 @@ export const CategoriesPage: Component = () => {
     color: string;
   }[]>([])
 
-  const { openNewCategory, openEditCategory } = useStore()
+  const {
+    openNewCategory,
+    openEditCategory,
+    isOpenNewCategory,
+  } = useStore()
 
   const handlerExclude = async () => {
     await Promise.all(categoriesSelected().map(it => repo.delete(it)))
@@ -29,11 +33,16 @@ export const CategoriesPage: Component = () => {
     setCategories(list)
   }
 
-  onMount(() => {
-    repo.list().then(it => {
-      setCategories(it)
-      return it
-    })
+  onMount(async () => {
+    const list = await repo.list()
+    setCategories(list)
+  })
+
+  createEffect(async () => {
+    if (!isOpenNewCategory()) {
+      const list = await repo.list()
+      setCategories(list)
+    }
   })
 
   return <Scaffold>

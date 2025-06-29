@@ -29,7 +29,9 @@ export const DrawerNewCategory: Component = () => {
               description: data.description,
               color: data.color,
             }
-          ))
+          )).then(it => {
+            closeNewCategory()
+          })
         }}
         render={({ control, onSubmit }) => (
           <>

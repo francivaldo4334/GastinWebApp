@@ -20,6 +20,7 @@ export class CategoryDataModel implements IDataModel {
 
 export const mapToCategoryDataModel = (data: any): CategoryDataModel => {
   return new CategoryDataModel({
+    id: Number(data.id),
     title: String(data.title ?? ""),
     description: String(data.description ?? ""),
     color: String(data.color ?? "#000000"),
