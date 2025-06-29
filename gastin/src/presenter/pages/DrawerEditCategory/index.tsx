@@ -26,7 +26,7 @@ export const DrawerEditCategory: Component = () => {
   >
     <DrawerOverlay />
     <DrawerContent>
-      <DrawerHeader>Nova Categoria</DrawerHeader>
+      <DrawerHeader>Editar Categoria</DrawerHeader>
       <Form
         schema={SchemaEditCategory}
         onSubmit={(data) => {

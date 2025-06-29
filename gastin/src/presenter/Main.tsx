@@ -5,6 +5,7 @@ import { DrawerNewCategory } from "./pages/DrawerNewCategory";
 import { DrawerNewExpenditure } from "./pages/DrawerNewExpenditure";
 import { DrawerNewReceipt } from "./pages/DrawerNewReceipt";
 import { DrawerEditCategory } from "./pages/DrawerEditCategory";
+import { DrawerEditExpenditure } from "./pages/DrawerEditExpenditure";
 
 export const Main: Component = () => {
   return (
@@ -15,6 +16,7 @@ export const Main: Component = () => {
       <DrawerNewReceipt />
 
       <DrawerEditCategory />
+      <DrawerEditExpenditure />
     </Providers>
   )
 }
