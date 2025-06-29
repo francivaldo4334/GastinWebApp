@@ -23,3 +23,23 @@ export class RecordDataModel implements IDataModel {
     this.validityId = data.validityId;
   }
 }
+
+
+export const mapToRecordDataModel = (data: any): RecordDataModel =>
+  new RecordDataModel({
+    id: Number(data.id),
+    value: Number(data.value),
+    title: String(data.title ?? ""),
+    description: String(data.description ?? ""),
+    categoryId: Number(data.categoryId),
+    validityId: data.validityId ? Number(data.validityId) : undefined,
+  });
+
+export const mapFromRecordDataModel = (m: RecordDataModel): any => ({
+  id: m.id,
+  value: m.value,
+  title: m.title,
+  description: m.description,
+  categoryId: m.categoryId,
+  validityId: m.validityId,
+});

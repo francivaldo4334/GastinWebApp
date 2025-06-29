@@ -16,3 +16,19 @@ export class ValidityDataModel implements IDataModel {
     this.endValidity = data.endValidity;
   }
 }
+
+export const mapToValidityDataModel = (data: any): ValidityDataModel =>
+  new ValidityDataModel({
+    id: Number(data.id),
+    isEveryDays: Boolean(data.isEveryDays),
+    initValidity: data.initValidity ?? undefined,
+    endValidity: data.endValidity ?? undefined,
+  });
+
+export const mapFromValidityDataModel = (m: ValidityDataModel): any => ({
+  id: m.id,
+  isEveryDays: m.isEveryDays,
+  initValidity: m.initValidity,
+  endValidity: m.endValidity,
+});
+
