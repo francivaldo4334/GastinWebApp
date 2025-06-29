@@ -55,7 +55,7 @@ export const BarChart: Component = () => {
 
   return <Card>
     <Card.Header>
-      <Text>Evolução na semana</Text>
+      <Text>Evolução</Text>
       <Spacer />
       <Menu>
         <MenuTrigger

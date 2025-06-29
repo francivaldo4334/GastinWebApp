@@ -5,11 +5,14 @@ import { Badge, Grid, GridItem, IconButton, List, ListItem, Menu, MenuContent, M
 import { MoreVertical, List as ListIcon, Tag } from "lucide-solid"
 import { ValidityRange } from "@/presenter/ui/ValidityRange"
 import { useStore } from "@/presenter/stores/Store"
+import { useNavigate } from "@solidjs/router"
 
 export const PieChart: Component = () => {
 
   const [initValidity, setInitValidity] = createSignal<string>()
   const [endValidity, setEndValidity] = createSignal<string>()
+
+  const navigate = useNavigate()
 
   const { openNewCategory } = useStore()
 
@@ -62,6 +65,9 @@ export const PieChart: Component = () => {
         <MenuContent>
           <MenuItem
             icon={<ListIcon />}
+            onSelect={() => {
+              navigate("/categories")
+            }}
           >
             Ver categorias
           </MenuItem>
