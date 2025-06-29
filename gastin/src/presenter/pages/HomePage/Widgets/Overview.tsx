@@ -1,11 +1,14 @@
 import { Card } from "@/presenter/ui/Card";
 import { formatMoney } from "@/presenter/utils/formatMoney";
 import { Badge, Button, Divider, Text } from "@hope-ui/solid";
+import { useNavigate } from "@solidjs/router";
 import { Minus, Plus } from "lucide-solid";
 import { Component } from "solid-js";
 
 
 export const Overview: Component = () => {
+
+  const navigate = useNavigate()
 
   const expenditure = "0,00" //TODO: implementar toais de despesas
   const receipt = "0,00"//TODO: implementar totais de receitas
@@ -26,6 +29,7 @@ export const Overview: Component = () => {
           <Minus />
         </Badge>
       }
+      onClick={() => navigate("/expenditures")}
     >
       <Text width="$full" textAlign="start">Despesas</Text>
       <Text>R$ {formatMoney(expenditure)}</Text>
