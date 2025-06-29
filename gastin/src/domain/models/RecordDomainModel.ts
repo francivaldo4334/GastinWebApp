@@ -1,3 +1,6 @@
+import { RecordDataModel } from "@/data/models/RecordDataModel";
+import { ValidityDataModel } from "@/data/models/ValidityDataModel";
+
 export class RecordDomainModel implements IDomainModel {
   id: number;
   value: number;
@@ -32,3 +35,48 @@ export class RecordDomainModel implements IDomainModel {
     this.endValidity = data.endValidity;
   }
 }
+
+export const mapToDomain = (
+  record: RecordDataModel,
+  validity?: ValidityDataModel
+): RecordDomainModel => {
+  return new RecordDomainModel({
+    id: record.id,
+    value: record.value,
+    title: record.title,
+    description: record.description,
+    categoryId: record.categoryId,
+    isRecurrent: Boolean(record.validityId),
+    isEveryDays: validity?.isEveryDays ?? false,
+    initValidity: validity?.initValidity,
+    endValidity: validity?.endValidity,
+  });
+};
+
+
+export const mapToRecordData = (
+  domain: RecordDomainModel,
+  validityId?: number
+): RecordDataModel => {
+  return new RecordDataModel({
+    id: domain.id,
+    value: domain.value,
+    title: domain.title,
+    description: domain.description,
+    categoryId: domain.categoryId,
+    validityId,
+  });
+};
+
+
+export const mapToValidityData = (
+  domain: RecordDomainModel,
+  id: number
+): ValidityDataModel => {
+  return new ValidityDataModel({
+    id,
+    isEveryDays: domain.isEveryDays,
+    initValidity: domain.initValidity,
+    endValidity: domain.endValidity,
+  });
+};
