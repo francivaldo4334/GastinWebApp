@@ -1,6 +1,6 @@
 import { useStore } from "@/presenter/stores/Store";
 import { Button, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, VStack } from "@hope-ui/solid";
-import { Component, createSignal, onMount, Show } from "solid-js";
+import { Component, createEffect, createMemo, onMount, Show } from "solid-js";
 import { Form } from "@/presenter/ui/Form"
 import { SchemaEditCategory } from "./schema";
 import { FormColorField } from "@/presenter/ui/FormColorField";
@@ -8,11 +8,17 @@ import { FormTextField } from "@/presenter/ui/FormTextField";
 import { FormOptionalTextField } from "@/presenter/ui/FormOptionalTextField";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
+import { createStore } from "solid-js/store";
 
 export const DrawerEditCategory: Component = () => {
 
   const repo = FactoryRepositoryDomain.getRepository("category")
-  const [details, setDetails] = createSignal<CategoryDomainModel>()
+  const [details, setDetails] = createStore<{
+    success: boolean;
+    model?: CategoryDomainModel
+  }>({
+    success: false,
+  })
 
   const {
     isOpenEditCategory,
@@ -20,29 +26,46 @@ export const DrawerEditCategory: Component = () => {
     categoryDetailId,
   } = useStore()
 
-  onMount(async () => {
+  createEffect(async () => {
+    if (!isOpenEditCategory()) {
+      return
+    }
     const it = await repo.get(categoryDetailId())
-    setDetails(it)
+    setDetails({
+      success: true,
+      model: it
+    })
   })
 
+  const isOpenDrawer = createMemo(() => {
+    return isOpenEditCategory() && !!details.success
+  })
+
+  const handlerClose = () => {
+    closeEditCategory()
+    setDetails("success", false)
+    // setDetails("model", undefined)
+  }
 
   return <Drawer
-    opened={isOpenEditCategory()}
-    onClose={closeEditCategory}
+    opened={isOpenDrawer()}
+    onClose={handlerClose}
     placement="bottom"
   >
     <DrawerOverlay />
-    <Show
-      when={!!details()}
-    >
-      <DrawerContent>
-        <DrawerHeader>Editar Categoria</DrawerHeader>
+    <DrawerContent>
+      <DrawerHeader>Editar Categoria</DrawerHeader>
+      <Show
+        when={details.success}
+      >
         <Form
           schema={SchemaEditCategory}
           onSubmit={(data) => {
-            repo.edit(categoryDetailId(), details()!)
+            repo.edit(categoryDetailId(), details.model!).then(it => {
+              handlerClose()
+            })
           }}
-          default={details()}
+          default={details.model}
           render={({ control, onSubmit }) => (
             <>
               <DrawerBody>
@@ -75,7 +98,7 @@ export const DrawerEditCategory: Component = () => {
             </>
           )}
         />
-      </DrawerContent>
-    </Show>
+      </Show>
+    </DrawerContent>
   </Drawer>
 }

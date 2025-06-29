@@ -25,6 +25,7 @@ export const CategoriesPage: Component = () => {
     openNewCategory,
     openEditCategory,
     isOpenNewCategory,
+    isOpenEditCategory,
   } = useStore()
 
   const handlerExclude = async () => {
@@ -40,6 +41,12 @@ export const CategoriesPage: Component = () => {
 
   createEffect(async () => {
     if (!isOpenNewCategory()) {
+      const list = await repo.list()
+      setCategories(list)
+    }
+  })
+  createEffect(async () => {
+    if (!isOpenEditCategory()) {
       const list = await repo.list()
       setCategories(list)
     }
@@ -88,7 +95,7 @@ export const CategoriesPage: Component = () => {
               icon={<Edit />}
               onSelect={() => {
                 const id = categoriesSelected()?.[0]
-                if (!id) return;
+                if (!id || categoriesSelected().length > 1) return;
                 openEditCategory(id)
               }}
             > Editar </MenuItem>
