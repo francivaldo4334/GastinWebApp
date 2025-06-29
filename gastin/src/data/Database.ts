@@ -11,8 +11,6 @@ export class Database {
       version: 1,
       type: "indexedDB",
       models: [CategoryModel, RecordModel, ValidityModel]
-    }).then(it => {
-      this.instance = new Database()
     })
   }
 }
