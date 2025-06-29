@@ -49,7 +49,7 @@ export const ExpenditurePage: Component = () => {
           marginRight="$8"
           onClick={() => navigate(-1)}
         />
-        <Text>Despesas</Text>
+        Despesas
       </Scaffold.AppBar.Title>
       <Scaffold.AppBar.Actions>
         <Menu>
