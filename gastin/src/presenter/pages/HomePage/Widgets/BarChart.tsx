@@ -2,7 +2,6 @@ import { Card } from "@/presenter/ui/Card";
 import { Component, createMemo, createSelector, createSignal, Match, Switch } from "solid-js";
 import { DefaultChart } from 'solid-chartjs'
 import {
-  type ChartData,
   type ChartOptions,
 } from "chart.js";
 import { FormWeekField } from "@/presenter/ui/FormWeekField";
