@@ -1,17 +1,20 @@
 import { Component, createEffect, createMemo, createSignal, For, onMount } from "solid-js";
 import { Scaffold } from "../ui/Scaffold";
 import { Edit, ListChecks, MoreVertical, Plus, Trash2, Undo } from "lucide-solid";
-import { Badge, Flex, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid";
+import { Badge, createDisclosure, Flex, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid";
 import { useNavigate } from "@solidjs/router";
 import { FormCheckboxField } from "../ui/FormCheckboxField";
 import { useStore } from "../stores/Store";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+import { ModalConfirm } from "../ui/ModalConfirm";
 
 export const CategoriesPage: Component = () => {
 
   const repo = FactoryRepositoryDomain.getRepository("category")
 
   const navigate = useNavigate()
+
+  const { isOpen, onOpen, onClose } = createDisclosure()
 
   const [categoriesSelected, setCategoriesSelected] = createSignal<number[]>([])
   const [categories, setCategories] = createSignal<{
@@ -89,7 +92,7 @@ export const CategoriesPage: Component = () => {
             > Adicionar </MenuItem>
             <MenuItem
               icon={<Trash2 />}
-              onSelect={handlerExclude}
+              onSelect={onOpen}
             > Excluir </MenuItem>
             <MenuItem
               icon={<Edit />}
@@ -147,5 +150,12 @@ export const CategoriesPage: Component = () => {
         </For>
       </List>
     </Scaffold.Body>
+    <ModalConfirm
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Atenção"
+      message="Deseja excluir a categoria?"
+      onConfirm={handlerExclude}
+    />
   </Scaffold >
 }
