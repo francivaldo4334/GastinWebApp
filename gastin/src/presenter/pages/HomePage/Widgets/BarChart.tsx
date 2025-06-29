@@ -22,7 +22,7 @@ export const BarChart: Component = () => {
   const years = [
     { label: "2025", value: 2025 },
     { label: "2024", value: 2024 },
-  ]
+  ]//TODO: obter lista de anos no banco de dados
 
   const metrics = [
     { label: "Segunda", value: 150 },
@@ -32,7 +32,7 @@ export const BarChart: Component = () => {
     { label: "Sexta", value: 304 },
     { label: "Sabado", value: 30 },
     { label: "Domingo", value: 60 },
-  ]
+  ]//TODO: implementar lista de metricas de periodo
 
 
   const data = createMemo(() => {
