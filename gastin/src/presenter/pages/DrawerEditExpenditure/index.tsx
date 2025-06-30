@@ -17,7 +17,7 @@ import { Component } from "solid-js"
 import { SchemaEditExpenditure } from "./schema"
 import { FormMonetaryValueField } from "@/presenter/ui/FormMonetaryValueField"
 import { FormOptionalTextField } from "@/presenter/ui/FormOptionalTextField"
-import { FormSwithField } from "@/presenter/ui/FormSwithField"
+import { FormSwitchField } from "@/presenter/ui/FormSwithField"
 import { FormDateField } from "@/presenter/ui/FormDateField"
 import { createMemo } from "solid-js"
 import { FormSelectField } from "@/presenter/ui/FormSelectField"
@@ -104,9 +104,9 @@ export const DrawerEditExpenditure: Component = () => {
                     control={control}
                     name="isRecurrent"
                     render={props => (
-                      <FormSwithField {...props}>
+                      <FormSwitchField {...props}>
                         Recorrência:
-                      </FormSwithField>
+                      </FormSwitchField>
                     )}
                   />
 
@@ -114,9 +114,9 @@ export const DrawerEditExpenditure: Component = () => {
                     control={control}
                     name="isEveryDays"
                     render={props => (
-                      <FormSwithField {...props}>
+                      <FormSwitchField {...props}>
                         Todos os dias:
-                      </FormSwithField>
+                      </FormSwitchField>
                     )}
                     isDisabled={disableIsEveryDaysField()}
                   />
