@@ -1,4 +1,4 @@
-import { Component, createMemo, For } from "solid-js";
+import { Component, createEffect, createMemo, For, onMount } from "solid-js";
 import { Scaffold } from "../ui/Scaffold";
 import { Flex, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid";
 import { Edit, ListChecks, MoreVertical, Plus, Trash2, Undo } from "lucide-solid";
@@ -7,38 +7,35 @@ import { createSignal } from "solid-js";
 import { useStore } from "../stores/Store";
 import { FormCheckboxField } from "../ui/FormCheckboxField";
 import { formatMoney } from "../utils/formatMoney";
+import { RecordDomainModel } from "@/domain/models/RecordDomainModel";
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 
 export const ExpenditurePage: Component = () => {
 
-  const { openNewExpenditure, openEditExpenditure } = useStore()
+  const repo = FactoryRepositoryDomain.getRepository("expenditure")
+
+  const { openNewExpenditure, openEditExpenditure, expenditureDetailId, } = useStore()
 
   const [expendituresSelected, setexpendituresSelected] = createSignal<number[]>([])
+  const [expenditures, setExpenditures] = createSignal<RecordDomainModel[]>([])
 
   const navigate = useNavigate()
 
-  const expenditures: {
-    id: number;
-    title: string;
-    description?: string;
-    value: number;
-  }[] = [
-      {
-        id: 1,
-        title: "Teste",
-        description: "teste",
-        value: 100
-      },
-      {
-        id: 2,
-        title: "Teste2",
-        description: "teste2",
-        value: 100
-      },
-    ]//TODO: lista de despesas 
-
-  const handlerExclude = () => {
-    //TODO: implementar exclusão de despesa
+  const loadList = async () => {
+    const list = await repo.list()
+    setExpenditures(list)
   }
+
+  const handlerExclude = async () => {
+    Promise.all([
+      repo.delete(expenditureDetailId()),
+      loadList()
+    ])
+  }
+
+  onMount(() => {
+    loadList()
+  })
 
   return <Scaffold>
     <Scaffold.AppBar>
@@ -66,7 +63,7 @@ export const ExpenditurePage: Component = () => {
             <MenuItem
               icon={<ListChecks />}
               onSelect={() => {
-                setexpendituresSelected(expenditures.map(it => it.id))
+                setexpendituresSelected(expenditures().map(it => it.id))
               }}
             > Selecionar todo </MenuItem>
             <MenuItem
@@ -91,7 +88,7 @@ export const ExpenditurePage: Component = () => {
     </Scaffold.AppBar>
     <Scaffold.Body>
       <List>
-        <For each={expenditures}>
+        <For each={expenditures()}>
           {item => {
             const selected = createMemo(() => {
 
@@ -105,7 +102,6 @@ export const ExpenditurePage: Component = () => {
                 <Flex
                   direction="column"
                 >
-                  <Text>{item.title}</Text>
                   <Text size="sm">{item.description}</Text>
                 </Flex>
                 <Spacer />
