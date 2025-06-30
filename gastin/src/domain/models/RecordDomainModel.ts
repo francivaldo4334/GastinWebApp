@@ -40,7 +40,7 @@ export const mapToDomain = (
 ): RecordDomainModel => {
   return new RecordDomainModel({
     id: record.id,
-    value: record.value,
+    value: Math.abs(record.value),
     description: record.description,
     categoryId: record.categoryId,
     isRecurrent: !!record.validityId,
@@ -56,7 +56,7 @@ export const mapToRecordData = (
 ): RecordDataModel => {
   return new RecordDataModel({
     id: domain.id,
-    value: domain.value,
+    value: -Math.abs(domain.value),
     description: domain.description,
     categoryId: domain.categoryId,
     validityId: domain.validityId,
