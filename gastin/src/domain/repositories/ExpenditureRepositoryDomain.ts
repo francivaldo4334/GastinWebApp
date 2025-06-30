@@ -22,7 +22,11 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     const records = await this.recordRepository.list();
     const validities = await this.validityRepository.list();
     return records
-      .filter(it => it.value < 0)
+      .filter(it =>
+        IRule.use()
+          .and(new ValueLowerThanZero())
+          .applyAllValidations(it)
+      )
       .map(r => {
         const v = validities.find(v => v.id === r.validityId);
         return mapToDomain(r, v);

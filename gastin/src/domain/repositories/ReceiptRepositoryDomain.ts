@@ -22,7 +22,10 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
     const records = await this.recordRepository.list();
     const validities = await this.validityRepository.list();
     return records
-      .filter(it => it.value > 0)
+      .filter(it => IRule.use()
+        .and(new ValueGreaterThenZero())
+        .applyAllValidations(it)
+      )
       .map(r => {
         const v = validities.find(v => v.id === r.validityId);
         return mapToDomain(r, v);
