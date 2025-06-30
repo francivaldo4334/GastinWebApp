@@ -1,12 +1,13 @@
 import { ValidityRepositoryData } from "@/data/repositories/ValidityRepositoryData";
-import { mapToDomain, mapToRecordData, mapToValidityData, RecordDomainModel } from "../models/RecordDomainModel";
+import { mapToDomain, mapToRecordData, RecordDomainModel } from "../models/RecordDomainModel";
 import { IRepositoryDomain } from "./IRepositoryDomain";
 import { RecordRepositoryData } from "@/data/repositories/RecordRepositoryData";
 import { ValidRecurrent } from "../rules/ValidRecurrent";
 import { IRule } from "../rules/IRule";
 import { createValidity } from "../services/createValidity";
-import { ValueLowerThanZero } from "../rules/ValueLowerThanZero";
+import { ValueGreaterThenZero } from "../rules/ValueGreaterThenZero";
 import { createOrUpdateValidity } from "../services/createOrUpdateValidity";
+import { ValueLowerThanZero } from "../rules/ValueLowerThanZero";
 
 export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDomainModel> {
   validityRepository: ValidityRepositoryData;
@@ -46,7 +47,7 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
 
   async set(m: RecordDomainModel): Promise<RecordDomainModel> {
     const valid = IRule.use()
-      .and(new ValueLowerThanZero())
+      .and(new ValueGreaterThenZero())
       .and(new ValidRecurrent())
       .applyAllValidations(m)
 
@@ -64,7 +65,7 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
       throw new Error("Id não definido")
     }
     const valid = IRule.use()
-      .and(new ValueLowerThanZero())
+      .and(new ValueGreaterThenZero())
       .and(new ValidRecurrent())
       .applyAllValidations(newModel)
 

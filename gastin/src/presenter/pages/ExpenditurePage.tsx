@@ -14,7 +14,13 @@ export const ExpenditurePage: Component = () => {
 
   const repo = FactoryRepositoryDomain.getRepository("expenditure")
 
-  const { openNewExpenditure, openEditExpenditure, expenditureDetailId, } = useStore()
+  const {
+    openNewExpenditure,
+    openEditExpenditure,
+    expenditureDetailId,
+    isOpenNewExpenditure,
+    isOpenEditExpenditure
+  } = useStore()
 
   const [expendituresSelected, setexpendituresSelected] = createSignal<number[]>([])
   const [expenditures, setExpenditures] = createSignal<RecordDomainModel[]>([])
@@ -35,6 +41,17 @@ export const ExpenditurePage: Component = () => {
 
   onMount(() => {
     loadList()
+  })
+
+  createEffect(() => {
+    if (!isOpenNewExpenditure()) {
+      loadList()
+    }
+  })
+  createEffect(() => {
+    if (!isOpenEditExpenditure()) {
+      loadList()
+    }
   })
 
   return <Scaffold>

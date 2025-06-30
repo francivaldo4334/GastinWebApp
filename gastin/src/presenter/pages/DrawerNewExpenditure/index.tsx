@@ -13,7 +13,7 @@ import {
   Spacer,
   VStack
 } from "@hope-ui/solid"
-import { Component } from "solid-js"
+import { Component, createEffect, createSignal } from "solid-js"
 import { SchemaNewExpenditure } from "./schema"
 import { FormMonetaryValueField } from "@/presenter/ui/FormMonetaryValueField"
 import { FormOptionalTextField } from "@/presenter/ui/FormOptionalTextField"
@@ -21,21 +21,29 @@ import { FormSwitchField } from "@/presenter/ui/FormSwithField"
 import { FormDateField } from "@/presenter/ui/FormDateField"
 import { createMemo } from "solid-js"
 import { FormSelectField } from "@/presenter/ui/FormSelectField"
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain"
+import { RecordDomainModel } from "@/domain/models/RecordDomainModel"
 
 export const DrawerNewExpenditure: Component = () => {
 
-  const { isOpenNewExpenditure, closeNewExpenditure } = useStore()
+  const categoryRepo = FactoryRepositoryDomain.getRepository("category")
+  const repo = FactoryRepositoryDomain.getRepository("expenditure")
 
-  const categories = [
-    {
-      value: 1,
-      label: "Categoria 1"
-    },
-    {
-      value: 2,
-      label: "Categoria 2"
-    },
-  ]//TODO: realizar chamado para listar categorias
+  const {
+    isOpenNewExpenditure,
+    closeNewExpenditure,
+  } = useStore()
+
+  const [categories, setCategories] = createSignal<{ value: number; label: string; }[]>([])
+
+  createEffect(async () => {
+    if (!isOpenNewExpenditure()) return
+    const list = await categoryRepo.list()
+    setCategories(list.map(it => ({
+      value: it.id,
+      label: it.title,
+    })))
+  })
 
   return <Drawer
     opened={isOpenNewExpenditure()}
@@ -51,7 +59,17 @@ export const DrawerNewExpenditure: Component = () => {
         }}
         schema={SchemaNewExpenditure}
         onSubmit={(data) => {
-          //TODO:implementar criação de despesa 
+          repo.set(new RecordDomainModel({
+            value: data.value,
+            description: data.description,
+            categoryId: data.category,
+            isRecurrent: data.isRecurrent,
+            isEveryDays: data.isEveryDays,
+            initValidity: data.initValidity,
+            endValidity: data.endValidity,
+          })).then(it => {
+            closeNewExpenditure()
+          })
         }}
         render={({ control, onSubmit }) => {
           const [fields,] = control.store
@@ -86,7 +104,7 @@ export const DrawerNewExpenditure: Component = () => {
                     render={props => (
                       <FormSelectField
                         {...props}
-                        items={categories}
+                        items={categories()}
                         placeholder="Selecione uma categoria"
                       />
                     )}

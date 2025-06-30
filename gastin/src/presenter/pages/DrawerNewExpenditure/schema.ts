@@ -14,7 +14,8 @@ export const SchemaNewExpenditure = z.object({
       code: "too_small",
       minimum: 0,
       inclusive: true,
-      type: "number"
+      type: "number",
+      path: ["value"]
     })
   }
 
