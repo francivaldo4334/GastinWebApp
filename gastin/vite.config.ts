@@ -3,15 +3,15 @@ import solidPlugin from 'vite-plugin-solid';
 import path from "path"
 //@ts-ignore
 import tailwindcss from '@tailwindcss/vite'
-import checker from "vite-plugin-checker"
+// import checker from "vite-plugin-checker"
 
 export default defineConfig({
   plugins: [
     solidPlugin(),
     tailwindcss(),
-    checker({
-      typescript: true
-    })
+    // checker({
+    //   typescript: true
+    // })
   ],
   server: {
     port: 3000,
