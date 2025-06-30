@@ -31,7 +31,9 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
   async get(id: number): Promise<RecordDomainModel> {
     const record = await this.recordRepository.get(id);
 
-    const validity = await this.validityRepository.get(record.validityId!)
+    const validity = record.validityId
+      ? await this.validityRepository.get(record.validityId)
+      : undefined;
 
     return mapToDomain(record, validity);
   }
@@ -52,6 +54,9 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
   }
 
   async edit(id: number, newModel: RecordDomainModel): Promise<RecordDomainModel> {
+    if (!id){
+      throw new Error("Id não definido")
+    }
     const valid = IRule.use()
       .and(new ValueGreaterThenZero())
       .and(new ValidRecurrent())
@@ -59,7 +64,6 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
 
     if (!valid)
       throw new Error("Lançamento invalido")
-
     const oldModel = await this.get(id)
 
     const validity = await createOrUpdateValidity(oldModel, newModel, this.validityRepository)

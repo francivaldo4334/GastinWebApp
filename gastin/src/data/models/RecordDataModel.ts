@@ -22,15 +22,15 @@ export class RecordDataModel implements IDataModel {
 }
 
 
-export const mapToRecordDataModel = (data: any): RecordDataModel =>
-  new RecordDataModel({
+export const mapToRecordDataModel = (data: any): RecordDataModel => {
+  return new RecordDataModel({
     id: data.id,
     value: data.value,
     description: data.description,
     categoryId: data.categoryId,
     validityId: data.validityId,
   });
-
+}
 export const mapFromRecordDataModel = (m: RecordDataModel): any => ({
   id: m.id,
   value: m.value,

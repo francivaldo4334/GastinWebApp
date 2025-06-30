@@ -20,9 +20,9 @@ export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
   }
 
   async edit(id: number, m: RecordDataModel): Promise<RecordDataModel> {
-    await Database.instance.records.update(id, mapFromRecordDataModel(m));
-    const it = await Database.instance.records.get(id);
-    return mapToRecordDataModel(it);
+    const data = await Database.instance.records.update(id, mapFromRecordDataModel(m));
+    // const it = await Database.instance.records.get(id);
+    return mapToRecordDataModel(data);
   }
 
   async delete(id: number): Promise<boolean> {
