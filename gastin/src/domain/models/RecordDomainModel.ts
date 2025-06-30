@@ -43,7 +43,7 @@ export const mapToDomain = (
     value: record.value,
     description: record.description,
     categoryId: record.categoryId,
-    isRecurrent: Boolean(record.validityId),
+    isRecurrent: !!record.validityId,
     isEveryDays: validity?.isEveryDays ?? false,
     initValidity: validity?.initValidity,
     endValidity: validity?.endValidity,

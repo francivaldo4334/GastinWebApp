@@ -2,6 +2,10 @@ import { ValidityRepositoryData } from "@/data/repositories/ValidityRepositoryDa
 import { mapToDomain, mapToRecordData, mapToValidityData, RecordDomainModel } from "../models/RecordDomainModel";
 import { IRepositoryDomain } from "./IRepositoryDomain";
 import { RecordRepositoryData } from "@/data/repositories/RecordRepositoryData";
+import { IRule } from "../rules/IRule";
+import { ValueGreaterThenZero } from "../rules/ValueGreaterThenZero";
+import { ValidRecurrent } from "../rules/ValidRecurrent";
+import { createValidity } from "../services/createValidity";
 
 export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainModel> {
   validityRepository: ValidityRepositoryData;
@@ -17,7 +21,6 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
     const records = await this.recordRepository.list();
     const validities = await this.validityRepository.list();
     return records
-      .filter(r => r.value > 0)
       .map(r => {
         const v = validities.find(v => v.id === r.validityId);
         return mapToDomain(r, v);
@@ -35,14 +38,16 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
   }
 
   async set(m: RecordDomainModel): Promise<RecordDomainModel> {
-    if (m.isRecurrent) {
-      const validity = mapToValidityData(m);
-      const created = await this.validityRepository.set(validity);
-      m.validityId = created.id;
-    }
+    const valid = IRule.use()
+      .and(new ValueGreaterThenZero())
+      .and(new ValidRecurrent())
+      .applyAllValidations(m)
 
+    if (!valid)
+      throw new Error("Lançamento invalido")
+
+    const validity = await createValidity(m, this.validityRepository)
     const record = await this.recordRepository.set(mapToRecordData(m));
-    const validity = record.validityId ? await this.validityRepository.get(record.validityId) : undefined;
 
     return mapToDomain(record, validity);
   }

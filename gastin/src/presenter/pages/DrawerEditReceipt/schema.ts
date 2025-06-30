@@ -10,6 +10,16 @@ export const SchemaEditReceipt = z.object({
   endValidity: z.string().date().optional()
 }).superRefine((attrs, ctx) => {
 
+  if (attrs.value <= 0){
+    ctx.addIssue({
+      code: "too_small",
+      type: "number",
+      inclusive: false,
+      minimum: 0,
+      path:["value"],
+    })
+  }
+
   if (
     attrs.isRecurrent &&
     !attrs.isEveryDays

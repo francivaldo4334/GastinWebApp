@@ -2,6 +2,10 @@ import { ValidityRepositoryData } from "@/data/repositories/ValidityRepositoryDa
 import { mapToDomain, mapToRecordData, mapToValidityData, RecordDomainModel } from "../models/RecordDomainModel";
 import { IRepositoryDomain } from "./IRepositoryDomain";
 import { RecordRepositoryData } from "@/data/repositories/RecordRepositoryData";
+import { ValidRecurrent } from "../rules/ValidRecurrent";
+import { IRule } from "../rules/IRule";
+import { createValidity } from "../services/createValidity";
+import { ValueLowerThanZero } from "../rules/ValueLowerThanZero";
 
 export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDomainModel> {
   validityRepository: ValidityRepositoryData;
@@ -17,7 +21,6 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     const records = await this.recordRepository.list();
     const validities = await this.validityRepository.list();
     return records
-      .filter(r => r.value < 0)
       .map(r => {
         const v = validities.find(v => v.id === r.validityId);
         return mapToDomain(r, v);
@@ -36,18 +39,16 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
   }
 
   async set(m: RecordDomainModel): Promise<RecordDomainModel> {
-    if (m.value >= 0) throw new Error("Value must be negative");
+    const valid = IRule.use()
+      .and(new ValueLowerThanZero())
+      .and(new ValidRecurrent())
+      .applyAllValidations(m)
 
-    let validityId: number | undefined;
+    if (!valid)
+      throw new Error("Lançamento invalido")
 
-    if (m.isRecurrent) {
-      const validity = mapToValidityData(m);
-      const created = await this.validityRepository.set(validity);
-      validityId = created.id;
-    }
-
+    const validity = await createValidity(m, this.validityRepository)
     const record = await this.recordRepository.set(mapToRecordData(m));
-    const validity = validityId ? await this.validityRepository.get(validityId) : undefined;
 
     return mapToDomain(record, validity);
   }
