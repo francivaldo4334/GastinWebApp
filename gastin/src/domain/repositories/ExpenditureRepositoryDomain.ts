@@ -41,12 +41,12 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     let validityId: number | undefined;
 
     if (m.isRecurrent) {
-      const validity = mapToValidityData(m, 0);
+      const validity = mapToValidityData(m);
       const created = await this.validityRepository.set(validity);
       validityId = created.id;
     }
 
-    const record = await this.recordRepository.set(mapToRecordData(m, validityId));
+    const record = await this.recordRepository.set(mapToRecordData(m));
     const validity = validityId ? await this.validityRepository.get(validityId) : undefined;
 
     return mapToDomain(record, validity);
@@ -58,12 +58,12 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     let validityId: number | undefined;
 
     if (m.isRecurrent) {
-      const validity = mapToValidityData(m, m.id);
+      const validity = mapToValidityData(m);
       const updated = await this.validityRepository.edit(m.id, validity);
       validityId = updated.id;
     }
 
-    const record = await this.recordRepository.edit(id, mapToRecordData(m, validityId));
+    const record = await this.recordRepository.edit(id, mapToRecordData(m));
     const validity = validityId ? await this.validityRepository.get(validityId) : undefined;
 
     return mapToDomain(record, validity);
