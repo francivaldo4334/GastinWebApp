@@ -22,6 +22,7 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
     const records = await this.recordRepository.list();
     const validities = await this.validityRepository.list();
     return records
+      .filter(IRule.use().and(new ValueGreaterThenZero()).applyAllValidations)
       .map(r => {
         const v = validities.find(v => v.id === r.validityId);
         return mapToDomain(r, v);
@@ -54,7 +55,7 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
   }
 
   async edit(id: number, newModel: RecordDomainModel): Promise<RecordDomainModel> {
-    if (!id){
+    if (!id) {
       throw new Error("Id não definido")
     }
     const valid = IRule.use()
@@ -67,7 +68,6 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
     const oldModel = await this.get(id)
 
     const validity = await createOrUpdateValidity(oldModel, newModel, this.validityRepository)
-
     const record = await this.recordRepository.edit(id, mapToRecordData(newModel));
 
     return mapToDomain(record, validity);

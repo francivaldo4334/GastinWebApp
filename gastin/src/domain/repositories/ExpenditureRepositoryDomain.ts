@@ -6,6 +6,7 @@ import { ValidRecurrent } from "../rules/ValidRecurrent";
 import { IRule } from "../rules/IRule";
 import { createValidity } from "../services/createValidity";
 import { ValueLowerThanZero } from "../rules/ValueLowerThanZero";
+import { createOrUpdateValidity } from "../services/createOrUpdateValidity";
 
 export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDomainModel> {
   validityRepository: ValidityRepositoryData;
@@ -53,19 +54,21 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     return mapToDomain(record, validity);
   }
 
-  async edit(id: number, m: RecordDomainModel): Promise<RecordDomainModel> {
-    if (m.value >= 0) throw new Error("Value must be negative");
-
-    let validityId: number | undefined;
-
-    if (m.isRecurrent) {
-      const validity = mapToValidityData(m);
-      const updated = await this.validityRepository.edit(m.id, validity);
-      validityId = updated.id;
+  async edit(id: number, newModel: RecordDomainModel): Promise<RecordDomainModel> {
+    if (!id) {
+      throw new Error("Id não definido")
     }
+    const valid = IRule.use()
+      .and(new ValueLowerThanZero())
+      .and(new ValidRecurrent())
+      .applyAllValidations(newModel)
 
-    const record = await this.recordRepository.edit(id, mapToRecordData(m));
-    const validity = validityId ? await this.validityRepository.get(validityId) : undefined;
+    if (!valid)
+      throw new Error("Lançamento invalido")
+    const oldModel = await this.get(id)
+
+    const validity = await createOrUpdateValidity(oldModel, newModel, this.validityRepository)
+    const record = await this.recordRepository.edit(id, mapToRecordData(newModel));
 
     return mapToDomain(record, validity);
   }
