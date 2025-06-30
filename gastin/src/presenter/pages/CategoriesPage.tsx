@@ -31,27 +31,29 @@ export const CategoriesPage: Component = () => {
     isOpenEditCategory,
   } = useStore()
 
-  const handlerExclude = async () => {
-    await Promise.all(categoriesSelected().map(it => repo.delete(it)))
+  const loadList = async () => {
     const list = await repo.list()
     setCategories(list)
+    setCategoriesSelected([])
+  }
+
+  const handlerExclude = async () => {
+    await Promise.all(categoriesSelected().map(it => repo.delete(it)))
+    await loadList()
   }
 
   onMount(async () => {
-    const list = await repo.list()
-    setCategories(list)
+    await loadList()
   })
 
   createEffect(async () => {
     if (!isOpenNewCategory()) {
-      const list = await repo.list()
-      setCategories(list)
+      await loadList()
     }
   })
   createEffect(async () => {
     if (!isOpenEditCategory()) {
-      const list = await repo.list()
-      setCategories(list)
+      await loadList()
     }
   })
 

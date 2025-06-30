@@ -27,6 +27,7 @@ export const ReceiptsPage: Component = () => {
   const loadList = async () => {
     const list = await repo.list()
     setRecipts(list)
+    setReciptsSelected([])
   }
 
   const handlerExclude = async () => {
