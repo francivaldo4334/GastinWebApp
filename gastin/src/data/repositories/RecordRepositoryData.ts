@@ -10,6 +10,7 @@ export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
 
   async get(id: number): Promise<RecordDataModel> {
     const it = await Database.instance.records.get(id);
+    if (!it) throw new Error(`item de id: "${id}" não encontrado`)
     return mapToRecordDataModel(it);
   }
 
@@ -20,9 +21,11 @@ export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
   }
 
   async edit(id: number, m: RecordDataModel): Promise<RecordDataModel> {
-    const data = await Database.instance.records.update(id, mapFromRecordDataModel(m));
-    // const it = await Database.instance.records.get(id);
-    return mapToRecordDataModel(data);
+    const model = mapFromRecordDataModel(m)
+    model.id = id
+    await Database.instance.records.update(id, model);
+    const it = await Database.instance.records.get(id);
+    return mapToRecordDataModel(it);
   }
 
   async delete(id: number): Promise<boolean> {

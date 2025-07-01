@@ -16,7 +16,9 @@ export class CategoryRepositoryData implements IRepositoryData<CategoryDataModel
     return mapToCategoryDataModel(it)
   }
   async edit(id: number, m: CategoryDataModel): Promise<CategoryDataModel> {
-    await Database.instance.categories.update(id, mapFromCategoryDataModel(m))
+    const model = mapFromCategoryDataModel(m)
+    model.id = id
+    await Database.instance.categories.update(id, model)
     const it = await Database.instance.categories.get(id)
     return mapToCategoryDataModel(it)
   }

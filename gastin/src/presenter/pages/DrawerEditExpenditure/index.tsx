@@ -37,9 +37,6 @@ export const DrawerEditExpenditure: Component = () => {
     expenditureDetailId,
   } = useStore()
 
-
-  const [categories, setCategories] = createSignal<{ value: number; label: string; }[]>([])
-
   const [details, setDetails] = createStore<{
     success: boolean;
     model?: RecordDomainModel
@@ -47,10 +44,7 @@ export const DrawerEditExpenditure: Component = () => {
     success: false,
   })
 
-  const handlerClose = () => {
-    closeEditExpenditure()
-    setDetails("success", false)
-  }
+  const [categories, setCategories] = createSignal<{ value: number; label: string; }[]>([])
 
   createEffect(async () => {
     if (!isOpenEditExpenditure()) {
@@ -62,6 +56,12 @@ export const DrawerEditExpenditure: Component = () => {
       model: it
     })
   })
+
+
+  const handlerClose = () => {
+    closeEditExpenditure()
+    setDetails("success", false)
+  }
 
   createEffect(async () => {
     if (!isOpenEditExpenditure()) return

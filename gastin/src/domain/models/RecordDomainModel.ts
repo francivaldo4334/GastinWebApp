@@ -56,7 +56,7 @@ export const mapToRecordData = (
 ): RecordDataModel => {
   return new RecordDataModel({
     id: domain.id,
-    value: -Math.abs(domain.value),
+    value: domain.value,
     description: domain.description,
     categoryId: domain.categoryId,
     validityId: domain.validityId,

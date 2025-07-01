@@ -30,6 +30,7 @@ export const ExpenditurePage: Component = () => {
   const loadList = async () => {
     const list = await repo.list()
     setExpenditures(list)
+    setexpendituresSelected([])
   }
 
   const handlerExclude = async () => {
@@ -37,6 +38,7 @@ export const ExpenditurePage: Component = () => {
       repo.delete(expenditureDetailId()),
       loadList()
     ])
+    setexpendituresSelected([])
   }
 
   onMount(() => {

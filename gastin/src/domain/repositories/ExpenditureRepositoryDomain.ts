@@ -22,7 +22,7 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
   async list(): Promise<RecordDomainModel[]> {
     const records = await this.recordRepository.list();
     const validities = await this.validityRepository.list();
-    return records
+    const result = records
       .filter(it =>
         IRule.use()
           .and(new ValueLowerThanZero())
@@ -32,12 +32,11 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
         const v = validities.find(v => v.id === r.validityId);
         return mapToDomain(r, v);
       });
+    return result
   }
 
   async get(id: number): Promise<RecordDomainModel> {
     const record = await this.recordRepository.get(id);
-    if (record.value >= 0) throw new Error("Not an expenditure");
-
     const validity = record.validityId
       ? await this.validityRepository.get(record.validityId)
       : undefined;
@@ -55,7 +54,9 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
       throw new Error("Lançamento invalido")
 
     const validity = await createValidity(m, this.validityRepository)
-    const record = await this.recordRepository.set(mapToRecordData(m));
+    const model = mapToRecordData(m)
+    model.value = -Math.abs(model.value)
+    const record = await this.recordRepository.set(model);
 
     return mapToDomain(record, validity);
   }
@@ -74,7 +75,9 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     const oldModel = await this.get(id)
 
     const validity = await createOrUpdateValidity(oldModel, newModel, this.validityRepository)
-    const record = await this.recordRepository.edit(id, mapToRecordData(newModel));
+    const model = mapToRecordData(newModel)
+    model.value = -Math.abs(model.value)
+    const record = await this.recordRepository.edit(id, model);
 
     return mapToDomain(record, validity);
   }
