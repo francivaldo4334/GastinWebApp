@@ -15,7 +15,13 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/vue";
-import { pricetagOutline, addOutline, removeOutline, helpCircleOutline } from "ionicons/icons"
+import {
+  pricetagOutline,
+  addOutline,
+  removeOutline,
+  helpCircleOutline,
+  listOutline,
+} from "ionicons/icons"
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
@@ -74,6 +80,27 @@ export default defineComponent({
                 />
                 <IonLabel>
                   Adicionar Receita
+                </IonLabel>
+              </IonItem>
+
+              <IonItem >
+                <IonIcon
+                  icon={listOutline}
+                  slot="start"
+                  aria-hidden
+                />
+                <IonLabel>
+                  Lista de Despesas
+                </IonLabel>
+              </IonItem>
+              <IonItem >
+                <IonIcon
+                  icon={listOutline}
+                  slot="start"
+                  aria-hidden
+                />
+                <IonLabel>
+                  Lista de Receitas
                 </IonLabel>
               </IonItem>
               <IonItem
