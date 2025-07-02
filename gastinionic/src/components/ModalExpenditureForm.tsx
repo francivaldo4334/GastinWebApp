@@ -8,6 +8,7 @@ import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { FormSelectField } from "./FormSelectField";
 import { FormCheckboxField } from "./FormCheckboxField";
+import { FieldValidRangeField } from "./FieldValidRangeField";
 
 export const ModalExpenditureForm = defineComponent({
   props: {
@@ -24,6 +25,8 @@ export const ModalExpenditureForm = defineComponent({
       category: z.coerce.number(),
       isRecurrent: z.boolean(),
       isEveryday: z.boolean(),
+      initValidity: z.string().date(),
+      endValidity: z.string().date(),
     })
 
     const formControl = useForm({ schema })
@@ -107,6 +110,34 @@ export const ModalExpenditureForm = defineComponent({
                   {...props}
                   label="Diariamente:"
                   disabled={!formControl.fields.isRecurrent}
+                />
+              )}
+            />
+            <FormField
+              control={formControl}
+              name="initValidity"
+              render={(props: FormFieldProps<string>) => (
+                <FieldValidRangeField
+                  {...props}
+                  label="Início da Vigência:"
+                  disabled={!(
+                    formControl.fields.isRecurrent &&
+                    formControl.fields.isEveryday
+                  )}
+                />
+              )}
+            />
+            <FormField
+              control={formControl}
+              name="endValidity"
+              render={(props: FormFieldProps<string>) => (
+                <FieldValidRangeField
+                  {...props}
+                  label="Fim da Vigência:"
+                  disabled={!(
+                    formControl.fields.isRecurrent &&
+                    formControl.fields.isEveryday
+                  )}
                 />
               )}
             />
