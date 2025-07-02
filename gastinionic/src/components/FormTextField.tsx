@@ -1,6 +1,6 @@
 import { defineComponent } from "vue";
 import { FormFieldProps } from "./Form";
-import { IonInput } from "@ionic/vue";
+import { IonInput, IonItem } from "@ionic/vue";
 
 export const FormTextField = defineComponent({
   props: {
@@ -19,26 +19,34 @@ export const FormTextField = defineComponent({
     label: {
       type: String,
       required: false,
-    }
+    },
+    placeholder:{
+      type: String,
+      required: false
+    } 
   },
   setup(props: {
     label?: string;
+    placeholder: string;
   } & FormFieldProps<string>) {
 
     return () => (
-      <IonInput
-        label={props.label}
-        value={props.value}
-        onIonInput={(e) => {
-          const value = e.detail?.value
-          if (typeof value != "string")
-            return
-          props.setValue(value)
-        }}
-        class={props.errorMessage ? "ion-touched ion-invalid" : "ion-valid"}
-        errorText={props.errorMessage}
-        labelPlacement="fixed"
-      />
+      <IonItem>
+        <IonInput
+          placeholder={props.placeholder}
+          label={props.label}
+          value={props.value}
+          onIonInput={(e) => {
+            const value = e.detail?.value
+            if (typeof value != "string")
+              return
+            props.setValue(value)
+          }}
+          class={props.errorMessage ? "ion-touched ion-invalid" : "ion-valid"}
+          errorText={props.errorMessage}
+          labelPlacement="fixed"
+        />
+      </IonItem>
     )
   }
 })

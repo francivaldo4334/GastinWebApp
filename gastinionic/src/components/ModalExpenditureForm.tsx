@@ -1,9 +1,13 @@
 import { IonButton, IonButtons, IonContent, IonHeader, IonList, IonToolbar } from "@ionic/vue";
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
 import { FormTextField } from "./FormTextField";
 import { FormMoneyField } from "./FormMoneyField";
+import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+import { FormSelectField } from "./FormSelectField";
+import { FormCheckboxField } from "./FormCheckboxField";
 
 export const ModalExpenditureForm = defineComponent({
   props: {
@@ -13,11 +17,26 @@ export const ModalExpenditureForm = defineComponent({
     }
   },
   setup(props: any) {
-    const formControl = useForm({
-      schema: z.object({
-        text: z.string()
-      }),
+
+    const schema = z.object({
+      value: z.coerce.number(),
+      description: z.string(),
+      category: z.coerce.number(),
+      isRecurrent: z.boolean(),
+      isEveryday: z.boolean(),
     })
+
+    const formControl = useForm({ schema })
+
+    const repo = FactoryRepositoryDomain.getRepository("category")
+
+    const categories = ref<CategoryDomainModel[]>([])
+
+    onMounted(async () => {
+      const list = await repo.list()
+      categories.value = list
+    })
+
     return () => (
       <IonContent>
         <Form
@@ -38,21 +57,56 @@ export const ModalExpenditureForm = defineComponent({
           <div class="ion-padding">
             <FormField
               control={formControl}
-              name="text"
+              name="value"
               render={(props: FormFieldProps<string>) => (
                 <FormMoneyField
                   {...props}
                   label="Valor R$:"
+                  placeholder="Valor em centavos"
                 />
               )}
             />
             <FormField
               control={formControl}
-              name="text"
+              name="description"
               render={(props: FormFieldProps<string>) => (
                 <FormTextField
                   {...props}
-                  label="Nome:"
+                  label="Descrição:"
+                  placeholder="Descrição"
+                />
+              )}
+            />
+            <FormField
+              control={formControl}
+              name="category"
+              render={(props: FormFieldProps<string>) => (
+                <FormSelectField
+                  {...props}
+                  label="Categoria:"
+                  items={categories.value}
+                  placeholder="Selecione uma categoria"
+                />
+              )}
+            />
+            <FormField
+              control={formControl}
+              name="isRecurrent"
+              render={(props: FormFieldProps<boolean>) => (
+                <FormCheckboxField
+                  {...props}
+                  label="Recorrência:"
+                />
+              )}
+            />
+            <FormField
+              control={formControl}
+              name="isEveryday"
+              render={(props: FormFieldProps<boolean>) => (
+                <FormCheckboxField
+                  {...props}
+                  label="Diariamente:"
+                  disabled={!formControl.fields.isRecurrent}
                 />
               )}
             />

@@ -1,6 +1,7 @@
-import { IonInput } from "@ionic/vue";
+import { IonInput, IonItem } from "@ionic/vue";
 import { defineComponent } from "vue";
 import { FormFieldProps } from "./Form";
+import { formatMoney } from "@/utils/formatMoney";
 
 export const FormMoneyField = defineComponent({
   props: {
@@ -19,23 +20,34 @@ export const FormMoneyField = defineComponent({
     label: {
       type: String,
       required: false,
-    }
+    },
+    placeholder:{
+      type: String,
+      required: false
+    } 
   },
-  setup(props: { label?: string } & FormFieldProps<string>) {
+  setup(props: { 
+    label?: string;
+    placeholder: string;
+  } & FormFieldProps<string>) {
     return () => (
-      <IonInput
-        label={props.label}
-        value={props.value}
-        onIonInput={event => {
-          const value = event.detail?.value
-          if (typeof value != "string")
-            return
-          props.setValue(value)
-        }}
-        class={props.errorMessage ? "ion-touched ion-invalid" : "ion-valid"}
-        errorText={props.errorMessage}
-        labelPlacement="fixed"
-      />
+      <IonItem>
+        <IonInput
+          placeholder={props.placeholder}
+          label={props.label}
+          value={props.value}
+          onIonInput={event => {
+            const value = event.detail?.value
+            if (typeof value != "string")
+              return
+            props.setValue(formatMoney(value))
+          }}
+          class={props.errorMessage ? "ion-touched ion-invalid" : "ion-valid"}
+          errorText={props.errorMessage}
+          labelPlacement="fixed"
+          inputmode="numeric"
+        />
+      </IonItem>
     )
   }
 })
