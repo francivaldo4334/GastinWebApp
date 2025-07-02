@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import App from './App.tsx'
+import App from './App'
 import router from './router';
 
 import { IonicVue } from '@ionic/vue';
