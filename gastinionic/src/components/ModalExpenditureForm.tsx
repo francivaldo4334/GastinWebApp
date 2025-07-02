@@ -3,6 +3,7 @@ import { defineComponent, PropType, render } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
 import { FormTextField } from "./FormTextField";
+import { FormMoneyField } from "./FormMoneyField";
 
 export const ModalExpenditureForm = defineComponent({
   props: {
@@ -26,7 +27,7 @@ export const ModalExpenditureForm = defineComponent({
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-        <IonContent>
+        <IonContent class="ion-padding">
           <Form
             control={formControl}
             onSubmit={() => {
@@ -36,9 +37,19 @@ export const ModalExpenditureForm = defineComponent({
               control={formControl}
               name="text"
               render={(props: FormFieldProps<string>) => (
+                  <FormMoneyField
+                    {...props}
+                    label="Valor R$:"
+                  />
+              )}
+            />
+            <FormField
+              control={formControl}
+              name="text"
+              render={(props: FormFieldProps<string>) => (
                   <FormTextField
                     {...props}
-                    label="Nome"
+                    label="Nome:"
                   />
               )}
             />

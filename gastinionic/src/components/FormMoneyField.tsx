@@ -1,8 +1,8 @@
+import { IonInput } from "@ionic/vue";
 import { defineComponent } from "vue";
 import { FormFieldProps } from "./Form";
-import { IonInput } from "@ionic/vue";
 
-export const FormTextField = defineComponent({
+export const FormMoneyField = defineComponent({
   props: {
     value: {
       type: String,
@@ -21,16 +21,13 @@ export const FormTextField = defineComponent({
       required: false,
     }
   },
-  setup(props: {
-    label?: string;
-  } & FormFieldProps<string>) {
-
+  setup(props: { label?: string } & FormFieldProps<string>) {
     return () => (
       <IonInput
         label={props.label}
         value={props.value}
-        onIonInput={(e) => {
-          const value = e.detail?.value
+        onIonInput={event => {
+          const value = event.detail?.value
           if (typeof value != "string")
             return
           props.setValue(value)
