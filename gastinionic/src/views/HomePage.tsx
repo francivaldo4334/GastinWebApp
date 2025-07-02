@@ -31,7 +31,7 @@ export default defineComponent({
       modalReceipt.value.$el.dismiss(null, "cancel")
     }
     return () => (
-      <>
+      <IonPage>
         <IonMenu contentId="home-page" side="end">
           <IonHeader>
             <IonToolbar>
@@ -126,7 +126,7 @@ export default defineComponent({
             />
           </IonContent>
         </IonModal>
-      </>
+      </IonPage>
     )
   }
 })
