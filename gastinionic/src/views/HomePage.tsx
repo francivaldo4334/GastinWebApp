@@ -9,6 +9,7 @@ import {
   IonLabel,
   IonMenu,
   IonMenuButton,
+  IonMenuToggle,
   IonModal,
   IonPage,
   IonTitle,
@@ -32,46 +33,48 @@ export default defineComponent({
             </IonToolbar>
           </IonHeader>
           <IonContent>
-            <IonItem>
-              <IonIcon
-                icon={pricetagOutline}
-                slot="start"
-                aria-hidden
-              />
-              <IonLabel>
-                Adicionar Categoria
-              </IonLabel>
-            </IonItem>
-            <IonItem button id="btn-open-modal-expenditure" expand="block">
-              <IonIcon
-                icon={removeOutline}
-                slot="start"
-                aria-hidden
-              />
-              <IonLabel>
-                Adicionar Despesa
-              </IonLabel>
-            </IonItem>
-            <IonItem>
-              <IonIcon
-                icon={addOutline}
-                slot="start"
-                aria-hidden
-              />
-              <IonLabel>
-                Adicionar Receita
-              </IonLabel>
-            </IonItem>
-            <IonItem>
-              <IonIcon
-                icon={helpCircleOutline}
-                slot="start"
-                aria-hidden
-              />
-              <IonLabel>
-                Como funciona?
-              </IonLabel>
-            </IonItem>
+            <IonMenuToggle>
+              <IonItem>
+                <IonIcon
+                  icon={pricetagOutline}
+                  slot="start"
+                  aria-hidden
+                />
+                <IonLabel>
+                  Adicionar Categoria
+                </IonLabel>
+              </IonItem>
+              <IonItem button id="btn-open-modal-expenditure" expand="block">
+                <IonIcon
+                  icon={removeOutline}
+                  slot="start"
+                  aria-hidden
+                />
+                <IonLabel>
+                  Adicionar Despesa
+                </IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonIcon
+                  icon={addOutline}
+                  slot="start"
+                  aria-hidden
+                />
+                <IonLabel>
+                  Adicionar Receita
+                </IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonIcon
+                  icon={helpCircleOutline}
+                  slot="start"
+                  aria-hidden
+                />
+                <IonLabel>
+                  Como funciona?
+                </IonLabel>
+              </IonItem>
+            </IonMenuToggle>
           </IonContent>
         </IonMenu>
         <IonPage id="home-page">
@@ -85,9 +88,11 @@ export default defineComponent({
           </IonContent>
         </IonPage>
         <IonModal ref={modal} trigger="btn-open-modal-expenditure">
-          <ModalExpenditureForm
-            onClose={onCloseModal}
-          />
+          <IonContent>
+            <ModalExpenditureForm
+              onClose={onCloseModal}
+            />
+          </IonContent>
         </IonModal>
       </>
     )
