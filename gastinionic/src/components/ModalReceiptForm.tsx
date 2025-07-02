@@ -1,16 +1,16 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonToolbar } from "@ionic/vue";
 import { defineComponent, onMounted, ref } from "vue";
-import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
-import { FormTextField } from "./FormTextField";
-import { FormMoneyField } from "./FormMoneyField";
-import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
+import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
+import { IonButton, IonButtons, IonContent, IonHeader, IonToolbar } from "@ionic/vue";
+import { FormMoneyField } from "./FormMoneyField";
+import { FormTextField } from "./FormTextField";
 import { FormSelectField } from "./FormSelectField";
 import { FormCheckboxField } from "./FormCheckboxField";
 import { FieldValidRangeField } from "./FieldValidRangeField";
 
-export const ModalExpenditureForm = defineComponent({
+export const ModalReceiptForm = defineComponent({
   props: {
     onClose: {
       type: Function,

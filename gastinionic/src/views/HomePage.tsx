@@ -1,4 +1,5 @@
 import { ModalExpenditureForm } from "@/components/ModalExpenditureForm";
+import { ModalReceiptForm } from "@/components/ModalReceiptForm";
 import {
   IonButton,
   IonButtons,
@@ -20,9 +21,13 @@ import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   setup() {
-    const modal = ref()
-    const onCloseModal = () => {
-      modal.value.$el.dismiss(null, "cancel")
+    const modalExpenditure = ref()
+    const modalReceipt = ref()
+    const onCloseModalExpenditure = () => {
+      modalExpenditure.value.$el.dismiss(null, "cancel")
+    }
+    const onCloseModalReceipt = () => {
+      modalReceipt.value.$el.dismiss(null, "cancel")
     }
     return () => (
       <>
@@ -44,7 +49,11 @@ export default defineComponent({
                   Adicionar Categoria
                 </IonLabel>
               </IonItem>
-              <IonItem button id="btn-open-modal-expenditure" expand="block">
+              <IonItem 
+                button 
+                id="btn-open-modal-expenditure" 
+                expand="block"
+              >
                 <IonIcon
                   icon={removeOutline}
                   slot="start"
@@ -54,7 +63,11 @@ export default defineComponent({
                   Adicionar Despesa
                 </IonLabel>
               </IonItem>
-              <IonItem>
+              <IonItem
+                button 
+                id="btn-open-modal-receipt" 
+                expand="block"
+              >
                 <IonIcon
                   icon={addOutline}
                   slot="start"
@@ -87,10 +100,23 @@ export default defineComponent({
           <IonContent>
           </IonContent>
         </IonPage>
-        <IonModal ref={modal} trigger="btn-open-modal-expenditure">
+        <IonModal 
+          ref={modalExpenditure} 
+          trigger="btn-open-modal-expenditure"
+        >
           <IonContent>
             <ModalExpenditureForm
-              onClose={onCloseModal}
+              onClose={onCloseModalExpenditure}
+            />
+          </IonContent>
+        </IonModal>
+        <IonModal
+          ref={modalReceipt} 
+          trigger="btn-open-modal-receipt"
+        >
+          <IonContent>
+            <ModalReceiptForm
+              onClose={onCloseModalReceipt}
             />
           </IonContent>
         </IonModal>
