@@ -14,14 +14,12 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonRouter,
 } from "@ionic/vue";
 import { pricetagOutline, addOutline, removeOutline, helpCircleOutline } from "ionicons/icons"
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   setup() {
-    const router = useIonRouter()
     const modalExpenditure = ref()
     const modalReceipt = ref()
     const onCloseModalExpenditure = () => {
@@ -79,10 +77,7 @@ export default defineComponent({
                 </IonLabel>
               </IonItem>
               <IonItem
-                button
-                onClick={() => {
-                  router.push("/help")
-                }}
+                router-link="/help"
               >
                 <IonIcon
                   icon={helpCircleOutline}
