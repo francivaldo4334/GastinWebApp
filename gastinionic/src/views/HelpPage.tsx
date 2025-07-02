@@ -1,4 +1,4 @@
-import { IonButtons, IonContent, IonHeader, IonPage, IonToolbar } from "@ionic/vue";
+import { IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonToolbar } from "@ionic/vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -8,6 +8,7 @@ export default defineComponent({
         <IonHeader>
           <IonToolbar>
             <IonButtons slots="start">
+              <IonBackButton />
             </IonButtons>
           </IonToolbar>
         </IonHeader>

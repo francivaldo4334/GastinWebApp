@@ -1,7 +1,6 @@
 import { ModalExpenditureForm } from "@/components/ModalExpenditureForm";
 import { ModalReceiptForm } from "@/components/ModalReceiptForm";
 import {
-  IonButton,
   IonButtons,
   IonContent,
   IonHeader,
@@ -12,18 +11,17 @@ import {
   IonMenuButton,
   IonMenuToggle,
   IonModal,
-  IonNavLink,
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/vue";
 import { pricetagOutline, addOutline, removeOutline, helpCircleOutline } from "ionicons/icons"
 import { defineComponent, ref } from "vue";
-import { RouterLink, useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
-    const router = useRouter()
+    const router = useIonRouter()
     const modalExpenditure = ref()
     const modalReceipt = ref()
     const onCloseModalExpenditure = () => {
