@@ -1,3 +1,4 @@
+import { ModalCategoryForm } from "@/components/ModalCategoryForm";
 import { ModalExpenditureForm } from "@/components/ModalExpenditureForm";
 import { ModalReceiptForm } from "@/components/ModalReceiptForm";
 import {
@@ -28,11 +29,15 @@ export default defineComponent({
   setup() {
     const modalExpenditure = ref()
     const modalReceipt = ref()
+    const modalCategory = ref()
     const onCloseModalExpenditure = () => {
       modalExpenditure.value.$el.dismiss(null, "cancel")
     }
     const onCloseModalReceipt = () => {
       modalReceipt.value.$el.dismiss(null, "cancel")
+    }
+    const onCloseModalCategory = () => {
+      modalCategory.value.$el.dismiss(null, "cancel")
     }
     return () => (
       <IonPage>
@@ -44,7 +49,11 @@ export default defineComponent({
           </IonHeader>
           <IonContent>
             <IonMenuToggle>
-              <IonItem>
+              <IonItem
+                button
+                id="btn-open-modal-category"
+                expand="block"
+              >
                 <IonIcon
                   icon={pricetagOutline}
                   slot="start"
@@ -145,6 +154,16 @@ export default defineComponent({
           <IonContent>
             <ModalReceiptForm
               onClose={onCloseModalReceipt}
+            />
+          </IonContent>
+        </IonModal>
+        <IonModal
+          ref={modalCategory}
+          trigger="btn-open-modal-category"
+        >
+          <IonContent>
+            <ModalCategoryForm
+              onClose={onCloseModalCategory}
             />
           </IonContent>
         </IonModal>
