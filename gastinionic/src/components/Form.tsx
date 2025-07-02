@@ -86,11 +86,17 @@ export const useForm = (params: ControllerProps): ControllerResult => {
     errors,
     fields,
     trigger() {
+        Object.keys(errors).forEach(key => {
+          //@ts-ignore
+          errors[key] = "";
+        })
       const { error, data } = params.schema.safeParse(fields)
       if (error) {
         const zodErrors = error.formErrors.fieldErrors
         Object.keys(zodErrors).forEach(key => {
-          (errors as any)[key] = zodErrors[key]
+          const errorMessage = zodErrors[key]?.join(",");
+          //@ts-ignore
+          errors[key] = errorMessage;
         })
         return false
       }

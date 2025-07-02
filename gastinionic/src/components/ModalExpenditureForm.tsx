@@ -1,7 +1,8 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonInput, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonToolbar } from "@ionic/vue";
 import { defineComponent, PropType, render } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
+import { FormTextField } from "./FormTextField";
 
 export const ModalExpenditureForm = defineComponent({
   props: {
@@ -35,10 +36,10 @@ export const ModalExpenditureForm = defineComponent({
               control={formControl}
               name="text"
               render={(props: FormFieldProps<string>) => (
-                <>
-                  <IonInput />
-                  {props.errorMessage}
-                </>
+                  <FormTextField
+                    {...props}
+                    label="Nome"
+                  />
               )}
             />
             <IonButton
