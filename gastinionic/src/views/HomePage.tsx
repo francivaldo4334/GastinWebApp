@@ -12,15 +12,18 @@ import {
   IonMenuButton,
   IonMenuToggle,
   IonModal,
+  IonNavLink,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/vue";
 import { pricetagOutline, addOutline, removeOutline, helpCircleOutline } from "ionicons/icons"
 import { defineComponent, ref } from "vue";
+import { RouterLink, useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
+    const router = useRouter()
     const modalExpenditure = ref()
     const modalReceipt = ref()
     const onCloseModalExpenditure = () => {
@@ -49,9 +52,9 @@ export default defineComponent({
                   Adicionar Categoria
                 </IonLabel>
               </IonItem>
-              <IonItem 
-                button 
-                id="btn-open-modal-expenditure" 
+              <IonItem
+                button
+                id="btn-open-modal-expenditure"
                 expand="block"
               >
                 <IonIcon
@@ -64,8 +67,8 @@ export default defineComponent({
                 </IonLabel>
               </IonItem>
               <IonItem
-                button 
-                id="btn-open-modal-receipt" 
+                button
+                id="btn-open-modal-receipt"
                 expand="block"
               >
                 <IonIcon
@@ -77,7 +80,12 @@ export default defineComponent({
                   Adicionar Receita
                 </IonLabel>
               </IonItem>
-              <IonItem>
+              <IonItem
+                button
+                onClick={() => {
+                  router.push("/help")
+                }}
+              >
                 <IonIcon
                   icon={helpCircleOutline}
                   slot="start"
@@ -100,8 +108,8 @@ export default defineComponent({
           <IonContent>
           </IonContent>
         </IonPage>
-        <IonModal 
-          ref={modalExpenditure} 
+        <IonModal
+          ref={modalExpenditure}
           trigger="btn-open-modal-expenditure"
         >
           <IonContent>
@@ -111,7 +119,7 @@ export default defineComponent({
           </IonContent>
         </IonModal>
         <IonModal
-          ref={modalReceipt} 
+          ref={modalReceipt}
           trigger="btn-open-modal-receipt"
         >
           <IonContent>
