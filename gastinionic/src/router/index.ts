@@ -7,11 +7,11 @@ import ExpenditurePage from '../views/ExpenditurePage'
 import ReceiptsPage from '../views/ReceiptsPage'
 
 const routes: Array<RouteRecordRaw> = [
-  { path: '/', component: HomePage },
-  { path: '/help', component: HelpPage },
-  { path: "/categories", component: CategoriesPage },
-  { path: "/expenditures", component: ExpenditurePage },
-  { path: "/receipts", component: ReceiptsPage }
+  { path: '/', component: HomePage, name: "home" },
+  { path: '/help', component: HelpPage, name: "help" },
+  { path: "/categories", component: CategoriesPage, name: "categories" },
+  { path: "/expenditures", component: ExpenditurePage, name: "expenditures" },
+  { path: "/receipts", component: ReceiptsPage, name: "receipts" }
 ]
 
 const router = createRouter({
