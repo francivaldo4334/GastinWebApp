@@ -92,17 +92,21 @@ export default defineComponent({
                 </IonLabel>
               </IonItem>
 
-              <IonItem >
+              <IonItem
+                routerLink="/categories"
+              >
                 <IonIcon
                   icon={listOutline}
                   slot="start"
-                  aria-hidden
+                  ariaHidden
                 />
                 <IonLabel>
                   Lista de Despesas
                 </IonLabel>
               </IonItem>
-              <IonItem >
+              <IonItem
+                routerLink="/expenditures"
+              >
                 <IonIcon
                   icon={listOutline}
                   slot="start"
@@ -113,7 +117,7 @@ export default defineComponent({
                 </IonLabel>
               </IonItem>
               <IonItem
-                router-link="/help"
+                routerLink="/help"
               >
                 <IonIcon
                   icon={helpCircleOutline}
