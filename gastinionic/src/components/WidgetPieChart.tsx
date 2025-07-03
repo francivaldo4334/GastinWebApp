@@ -2,7 +2,6 @@ import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardT
 import { ellipsisVerticalOutline } from "ionicons/icons";
 import { defineComponent, ref } from "vue";
 import { ModalCategoryForm } from "./ModalCategoryForm";
-import { isParameter } from "typescript";
 
 export const WidgetPieChart = defineComponent({
   setup() {
