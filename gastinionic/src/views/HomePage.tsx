@@ -4,6 +4,9 @@ import { ModalReceiptForm } from "@/components/ModalReceiptForm";
 import {
   IonButtons,
   IonContent,
+  IonFab,
+  IonFabButton,
+  IonFabList,
   IonHeader,
   IonIcon,
   IonItem,
@@ -22,6 +25,9 @@ import {
   removeOutline,
   helpCircleOutline,
   listOutline,
+  chevronUpCircle,
+  addCircleOutline,
+  removeCircleOutline,
 } from "ionicons/icons"
 import { defineComponent, ref } from "vue";
 
@@ -151,6 +157,24 @@ export default defineComponent({
             </IonToolbar>
           </IonHeader>
           <IonContent>
+            <IonFab slot="fixed" horizontal="end" vertical="bottom">
+              <IonFabButton>
+                <IonIcon
+                  icon={chevronUpCircle}
+                />
+              </IonFabButton>
+              <IonFabList side="top">
+                <IonFabButton>
+                  <IonIcon icon={removeCircleOutline} />
+                </IonFabButton>
+                <IonFabButton>
+                  <IonIcon icon={addCircleOutline} />
+                </IonFabButton>
+                <IonFabButton>
+                  <IonIcon icon={pricetagOutline} />
+                </IonFabButton>
+              </IonFabList>
+            </IonFab>
           </IonContent>
         </IonPage>
         <IonModal
