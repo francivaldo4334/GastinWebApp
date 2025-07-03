@@ -42,12 +42,24 @@ export const WidgetAccountBalance = defineComponent({
               <IonCard
                 style="height: 100%;"
               >
-                <IonCardHeader>
-                  <IonCardSubtitle> Recebido </IonCardSubtitle>
-                  <IonCardSubtitle color="dark"> R$ {formatMoney(String(receivedValue.value))} </IonCardSubtitle>
-                  <IonCardSubtitle> Gasto </IonCardSubtitle>
-                  <IonCardSubtitle color="dark"> R$ {formatMoney(String(spendValue.value))} </IonCardSubtitle>
-                </IonCardHeader>
+                <IonItem
+                  button
+                  routerLink="/receipts"
+                >
+                  <IonLabel>
+                    <IonCardSubtitle> Recebido </IonCardSubtitle>
+                    <IonCardSubtitle color="dark"> R$ {formatMoney(String(receivedValue.value))} </IonCardSubtitle>
+                  </IonLabel>
+                </IonItem>
+                <IonItem
+                  button
+                  routerLink="/expenditures"
+                >
+                  <IonLabel>
+                    <IonCardSubtitle> Gasto </IonCardSubtitle>
+                    <IonCardSubtitle color="dark"> R$ {formatMoney(String(spendValue.value))} </IonCardSubtitle>
+                  </IonLabel>
+                </IonItem>
               </IonCard>
             </IonCol>
             <IonCol>
