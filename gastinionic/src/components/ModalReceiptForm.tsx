@@ -27,7 +27,11 @@ export const ModalReceiptForm = defineComponent({
     details?: RecordDomainModel
   }) {
 
-    const formControl = useForm({ schema: schemaRecord, default: props.details })
+    const details = props.details || {
+      date: new Date().toISOString()
+    }
+
+    const formControl = useForm({ schema: schemaRecord, default: details })
 
     const repoCategory = FactoryRepositoryDomain.getRepository("category")
     const repo = FactoryRepositoryDomain.getRepository("receipt")
@@ -43,6 +47,7 @@ export const ModalReceiptForm = defineComponent({
         isEveryDays: data.isEveryday,
         initValidity: data.initValidity,
         endValidity: data.endValidity,
+        date: data.date,
       })
       if (props.details)
         await repo.edit(props.details.id, model)
@@ -107,6 +112,17 @@ export const ModalReceiptForm = defineComponent({
                   label="Categoria:"
                   items={categories.value}
                   placeholder="Selecione uma categoria"
+                />
+              )}
+            />
+            <FormField
+              control={formControl}
+              name="date"
+              render={(props: FormFieldProps<string>) => (
+                <FieldValidRangeField
+                  {...props}
+                  label="Data do lançamento:"
+                  disabled={formControl.fields.isRecurrent}
                 />
               )}
             />

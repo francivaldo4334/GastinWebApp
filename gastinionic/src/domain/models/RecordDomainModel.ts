@@ -11,7 +11,7 @@ export class RecordDomainModel implements IDomainModel {
   validityId?: number;
   initValidity?: string;
   endValidity?: string;
-  createdAt: string;
+  createdAt?: string;
   date?: string;
 
   constructor(data: {
@@ -21,7 +21,7 @@ export class RecordDomainModel implements IDomainModel {
     categoryId: number;
     isRecurrent: boolean;
     isEveryDays: boolean;
-    createdAt: string;
+    createdAt?: string;
     initValidity?: string;
     endValidity?: string;
     date?: string;

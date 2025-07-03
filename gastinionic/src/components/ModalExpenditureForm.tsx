@@ -4,7 +4,6 @@ import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
 import { FormTextField } from "./FormTextField";
 import { FormMoneyField } from "./FormMoneyField";
-import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { FormSelectField } from "./FormSelectField";
 import { FormCheckboxField } from "./FormCheckboxField";
@@ -27,12 +26,26 @@ export const ModalExpenditureForm = defineComponent({
     onClose: () => void;
     details?: RecordDomainModel
   }) {
-    const formControl = useForm({ schema: schemaRecord })
+
+    const details = props.details || {
+      date: new Date().toISOString()
+    }
+
+    const formControl = useForm({ schema: schemaRecord, default: details })
 
     const repoCategory = FactoryRepositoryDomain.getRepository("category")
     const repo = FactoryRepositoryDomain.getRepository("expenditure")
 
     const categories = ref<{ value: number; label: string; }[]>([])
+
+    onMounted(async () => {
+      const list = await repoCategory.list()
+      categories.value = list.map(it => ({
+        value: it.id,
+        label: it.title
+      }))
+    })
+
 
     const onAddExpenditure = async (data: z.output<typeof schemaRecord>) => {
       const model = new RecordDomainModel({
@@ -43,6 +56,7 @@ export const ModalExpenditureForm = defineComponent({
         isEveryDays: data.isEveryday,
         initValidity: data.initValidity,
         endValidity: data.endValidity,
+        date: data.date,
       })
       if (props.details)
         await repo.edit(props.details.id, model)
@@ -107,6 +121,17 @@ export const ModalExpenditureForm = defineComponent({
                   label="Categoria:"
                   items={categories.value}
                   placeholder="Selecione uma categoria"
+                />
+              )}
+            />
+            <FormField
+              control={formControl}
+              name="date"
+              render={(props: FormFieldProps<string>) => (
+                <FieldValidRangeField
+                  {...props}
+                  label="Data do lançamento:"
+                  disabled={formControl.fields.isRecurrent}
                 />
               )}
             />
