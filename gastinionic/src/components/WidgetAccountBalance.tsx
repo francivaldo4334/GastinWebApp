@@ -1,4 +1,4 @@
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonItem, IonItemOption, IonLabel, IonRow, IonText, IonTitle } from "@ionic/vue";
+import { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonItem, IonLabel, IonRow } from "@ionic/vue";
 import { defineComponent, onMounted, ref } from "vue";
 import { WidgetValidityRange } from "./WidgetValidityRange";
 import { formatMoney } from "@/utils/formatMoney";
