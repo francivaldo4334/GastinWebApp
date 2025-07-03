@@ -31,7 +31,8 @@ export class FactoryRepositoryDomain {
       category: () => new CategoryRepositoryDomain(new CategoryRepositoryData()),
       metrics: () => new MetricsRepositoryDomain({
         receiptRepository: this.getRepository("receipt"),
-        expenditureRepository: this.getRepository("expenditure")
+        expenditureRepository: this.getRepository("expenditure"),
+        categoryRepository: this.getRepository("category"),
       })
     };
 

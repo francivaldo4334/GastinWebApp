@@ -1,3 +1,4 @@
+import { CategoryRepositoryDomain } from "./CategoryRepositoryDomain";
 import { ExpenditureRepositoryDomain } from "./ExpenditureRepositoryDomain";
 import { IRepositoryDomain } from "./IRepositoryDomain";
 import { ReceiptRepositoryDomain } from "./ReceiptRepositoryDomain";
@@ -5,12 +6,16 @@ import { ReceiptRepositoryDomain } from "./ReceiptRepositoryDomain";
 export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
   receiptRepository: ReceiptRepositoryDomain;
   expenditureRepository: ExpenditureRepositoryDomain;
+  categoryRepository: CategoryRepositoryDomain;
+
   constructor(data: {
     receiptRepository: ReceiptRepositoryDomain;
     expenditureRepository: ExpenditureRepositoryDomain;
+    categoryRepository: CategoryRepositoryDomain;
   }) {
     this.receiptRepository = data.receiptRepository;
     this.expenditureRepository = data.expenditureRepository;
+    this.categoryRepository = data.categoryRepository;
   }
   list(): Promise<any[]> {
     throw new Error("Method not implemented.");
