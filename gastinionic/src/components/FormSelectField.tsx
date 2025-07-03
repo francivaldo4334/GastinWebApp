@@ -43,6 +43,11 @@ export const FormSelectField = defineComponent({
           interface="popover"
           class={props.errorMessage ? "ion-touched ion-invalid" : "ion-valid"}
           errorText={props.errorMessage}
+          value={props.value}
+          onIonChange={e => {
+            const value = e.detail.value
+            props.setValue(value)
+          }}
         >
           {
             !props.items.length && (

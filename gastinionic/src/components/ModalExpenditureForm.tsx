@@ -9,6 +9,7 @@ import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { FormSelectField } from "./FormSelectField";
 import { FormCheckboxField } from "./FormCheckboxField";
 import { FieldValidRangeField } from "./FieldValidRangeField";
+import { schemaRecord } from "./commons";
 
 export const ModalExpenditureForm = defineComponent({
   props: {
@@ -19,17 +20,7 @@ export const ModalExpenditureForm = defineComponent({
   },
   setup(props: any) {
 
-    const schema = z.object({
-      value: z.coerce.number(),
-      description: z.string(),
-      category: z.coerce.number(),
-      isRecurrent: z.boolean(),
-      isEveryday: z.boolean(),
-      initValidity: z.string().date(),
-      endValidity: z.string().date(),
-    })
-
-    const formControl = useForm({ schema })
+    const formControl = useForm({ schema: schemaRecord })
 
     const repo = FactoryRepositoryDomain.getRepository("category")
 

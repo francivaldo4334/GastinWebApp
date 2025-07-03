@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { z } from "zod";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
@@ -9,6 +9,8 @@ import { FormTextField } from "./FormTextField";
 import { FormSelectField } from "./FormSelectField";
 import { FormCheckboxField } from "./FormCheckboxField";
 import { FieldValidRangeField } from "./FieldValidRangeField";
+import { schemaRecord } from "./commons";
+import { RecordDomainModel } from "@/domain/models/RecordDomainModel";
 
 export const ModalReceiptForm = defineComponent({
   props: {
@@ -19,33 +21,39 @@ export const ModalReceiptForm = defineComponent({
   },
   setup(props: any) {
 
-    const schema = z.object({
-      value: z.coerce.number(),
-      description: z.string(),
-      category: z.coerce.number(),
-      isRecurrent: z.boolean(),
-      isEveryday: z.boolean(),
-      initValidity: z.string().date(),
-      endValidity: z.string().date(),
-    })
+    const formControl = useForm({ schema: schemaRecord })
 
-    const formControl = useForm({ schema })
+    const repoCategory = FactoryRepositoryDomain.getRepository("category")
+    const repo = FactoryRepositoryDomain.getRepository("receipt")
 
-    const repo = FactoryRepositoryDomain.getRepository("category")
+    const categories = ref<{value: number; label: string;}[]>([])
 
-    const categories = ref<CategoryDomainModel[]>([])
+    const onAddReceipt = async (data: z.output<typeof schemaRecord>) => {
+      await repo.set(new RecordDomainModel({
+        value: data.value,
+        description: data.description,
+        categoryId: data.category,
+        isRecurrent: data.isRecurrent,
+        isEveryDays: data.isEveryday,
+        initValidity: data.initValidity,
+        endValidity: data.endValidity,
+      }))
+      props.onClose()
+    }
 
     onMounted(async () => {
-      const list = await repo.list()
-      categories.value = list
+      const list = await repoCategory.list()
+      categories.value = list.map(it => ({
+        value: it.id,
+        label: it.title
+      }))
     })
 
     return () => (
       <IonContent>
         <Form
           control={formControl}
-          onSubmit={() => {
-          }}
+          onSubmit={onAddReceipt}
         >
           <IonHeader>
             <IonToolbar>
