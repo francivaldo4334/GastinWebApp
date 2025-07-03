@@ -52,12 +52,31 @@ export const WidgetBarChart = defineComponent({
           </IonButtons>
         </IonToolbar>
         <IonDatetimeButton
-          datetime="widget-bar-chart-calendar-select"
+          datetime="widget-bar-chart-calendar-select-month"
+          style={selectedFormat.value === "month" ?
+            "display: flex;"
+            :
+            "display: none;"
+          }
+        />
+        <IonDatetimeButton
+          datetime="widget-bar-chart-calendar-select-year"
+          style={selectedFormat.value === "year" ?
+            "display: flex;"
+            :
+            "display: none;"
+          }
         />
         <IonModal keepContentsMounted>
           <IonDatetime
-            id="widget-bar-chart-calendar-select"
-            presentation={selectedFormat.value}
+            id="widget-bar-chart-calendar-select-month"
+            presentation="month"
+          />
+        </IonModal>
+        <IonModal keepContentsMounted>
+          <IonDatetime
+            id="widget-bar-chart-calendar-select-year"
+            presentation="year"
           />
         </IonModal>
       </IonCard>
