@@ -1,8 +1,8 @@
 import { ModalCategoryForm } from "@/components/ModalCategoryForm";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
-import { IonBackButton, IonBadge, IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonModal, IonNote, IonPage, IonText, IonTitle, IonToolbar } from "@ionic/vue";
-import { addOutline } from "ionicons/icons";
+import { IonBackButton, IonBadge, IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonModal, IonNote, IonPage, IonText, IonTitle, IonToolbar } from "@ionic/vue";
+import { addOutline, chevronBackOutline, trashOutline } from "ionicons/icons";
 import { defineComponent, onMounted, ref, watch } from "vue";
 
 export default defineComponent({
@@ -31,13 +31,18 @@ export default defineComponent({
       categories.value = list
     }
 
+    const onRemoveCategory = async (id:number) => {
+      await repo.delete(id)
+      await loadList()
+    }
+
     watch(isOpenModalCategory, (isOpen) => {
       if (!isOpen) {
         loadList()
       }
     })
     watch(categoryDetails, (it) => {
-      if (!it){
+      if (!it) {
         loadList()
       }
     })
@@ -71,25 +76,40 @@ export default defineComponent({
           <IonList>
             {
               categories.value.map(it => (
-                <IonItem
-                  button
-                  onClick={() => {
-                    onOpenModalCategoryDetails(it)
-                  }}
-                >
-                  <IonBadge
-                    slot="start"
-                    style={`background-color: ${it.color}; height: 2rem; width: 2rem`}
-                  > </IonBadge>
-                  <IonLabel>
-                    <IonText>
-                      {it.title}
-                    </IonText>
-                    <p>
-                      {it.description}
-                    </p>
-                  </IonLabel>
-                </IonItem>
+                <IonItemSliding>
+                  <IonItem
+                    button
+                    onClick={() => {
+                      onOpenModalCategoryDetails(it)
+                    }}
+                  >
+                    <IonBadge
+                      slot="start"
+                      style={`background-color: ${it.color}; height: 2rem; width: 2rem`}
+                    > </IonBadge>
+                    <IonLabel>
+                      <IonText>
+                        {it.title}
+                      </IonText>
+                      <p>
+                        {it.description}
+                      </p>
+                    </IonLabel>
+                    <IonIcon
+                      icon={chevronBackOutline}
+                    />
+                  </IonItem>
+                  <IonItemOptions slot="end">
+                    <IonItemOption
+                      color="danger"
+                      onClick={()=>onRemoveCategory(it.id)}
+                    >
+                      <IonIcon
+                        icon={trashOutline}
+                      />
+                    </IonItemOption>
+                  </IonItemOptions>
+                </IonItemSliding>
               ))
             }
           </IonList>
