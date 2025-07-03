@@ -1,7 +1,7 @@
 import { ModalCategoryForm } from "@/components/ModalCategoryForm";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
-import { IonBackButton, IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonModal, IonNote, IonPage, IonTitle, IonToolbar } from "@ionic/vue";
+import { IonBackButton, IonBadge, IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonModal, IonNote, IonPage, IonText, IonTitle, IonToolbar } from "@ionic/vue";
 import { addOutline } from "ionicons/icons";
 import { defineComponent, onMounted, ref, watch } from "vue";
 
@@ -59,12 +59,18 @@ export default defineComponent({
             {
               categories.value.map(it => (
                 <IonItem>
+                  <IonBadge
+                    slot="start"
+                    style={`background-color: ${it.color}; height: 2rem; width: 2rem`}
+                  > </IonBadge>
                   <IonLabel>
+                    <IonText>
                     {it.title}
-                  </IonLabel>
-                  <IonNote>
+                    </IonText>
+                    <p>
                     {it.description}
-                  </IonNote>
+                    </p>
+                  </IonLabel>
                 </IonItem>
               ))
             }
