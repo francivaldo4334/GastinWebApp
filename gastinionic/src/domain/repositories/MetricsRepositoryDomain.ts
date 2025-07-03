@@ -58,7 +58,7 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
   }
   async barChartData(params: {
     type: "month" | "year";
-    periodValue: any;
+    periodValue: Date;
   }): Promise<{ value: number; label: string; }[]> {
 
     const metrics = [

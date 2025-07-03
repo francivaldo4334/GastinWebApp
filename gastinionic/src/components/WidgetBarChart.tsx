@@ -20,8 +20,10 @@ export const WidgetBarChart = defineComponent({
 
     const selectedFormat = ref<"month" | "year">("month")
 
-    const selectedMonth = ref()
-    const selectedYear = ref()
+    const datenow = new Date().toISOString()
+
+    const selectedMonth = ref<string>(datenow)
+    const selectedYear = ref<string>(datenow)
     const metrics = ref<{ value: number; label: string; }[]>([])
 
     const mapPeriod = {
@@ -29,15 +31,16 @@ export const WidgetBarChart = defineComponent({
       "year": "Ano"
     }
 
-    const periodValue = computed(() => {
-      if (selectedMonth.value === "month")
-        return selectedMonth.value
-      else return selectedYear.value
-    })
     const loadData = async () => {
-
+      const periodValue = (() => {
+        if (selectedMonth.value === "month")
+          return selectedMonth.value
+        else return selectedYear.value
+      })()
+      if (!periodValue)
+        return
       const data = await repo.barChartData({
-        periodValue,
+        periodValue: new Date(periodValue),
         type: selectedFormat.value
       })
       metrics.value = data
@@ -121,7 +124,10 @@ export const WidgetBarChart = defineComponent({
               value={selectedMonth.value}
               onIonChange={e => {
                 const value = e.detail.value
+                if (typeof value != "string")
+                  return
                 selectedMonth.value = value
+                loadData()
               }}
             />
           </IonModal>
@@ -132,7 +138,10 @@ export const WidgetBarChart = defineComponent({
               value={selectedYear.value}
               onIonChange={e => {
                 const value = e.detail.value
+                if (typeof value != "string")
+                  return
                 selectedYear.value = value
+                loadData()
               }}
             />
           </IonModal>
