@@ -4,6 +4,8 @@ import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
 import { FormTextField } from "./FormTextField";
 import { FormColorField } from "./FormColorField";
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
 
 export const ModalCategoryForm = defineComponent({
   props: {
@@ -12,22 +14,32 @@ export const ModalCategoryForm = defineComponent({
       required: true
     }
   },
-  setup() {
+  setup(props: {
+    onClose: () => void;
+  }) {
+    const repo = FactoryRepositoryDomain.getRepository("category")
     const schema = z.object({
       title: z.string(),
       description: z.string(),
       color: z.string(),
     })
     const formControl = useForm({ schema })
-    return (props: {
-      onClose: () => void;
-    }) => (
+
+    const onAddCategory = async (
+      data: z.output<typeof schema>
+    ) => {
+      await repo.set(new CategoryDomainModel({
+        title: data.title,
+        description: data.description,
+        color: data.color,
+      }))
+      props.onClose()
+    }
+    return () => (
       <IonContent>
         <Form
           control={formControl}
-          onSubmit={() => {
-
-          }}
+          onSubmit={onAddCategory}
         >
           <IonHeader>
             <IonToolbar>

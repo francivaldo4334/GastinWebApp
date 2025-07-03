@@ -192,6 +192,7 @@ export default defineComponent({
         </IonPage>
         <IonModal
           isOpen={isOpenModalExpenditure.value}
+          backdropDismiss={false}
         >
           <IonContent>
             <ModalExpenditureForm
@@ -201,6 +202,7 @@ export default defineComponent({
         </IonModal>
         <IonModal
           isOpen={isOpenModalReceipt.value}
+          backdropDismiss={false}
         >
           <IonContent>
             <ModalReceiptForm
@@ -210,6 +212,7 @@ export default defineComponent({
         </IonModal>
         <IonModal
           isOpen={isOpenModalCategory.value}
+          backdropDismiss={false}
         >
           <IonContent>
             <ModalCategoryForm

@@ -3,7 +3,7 @@ import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
 import { IonBackButton, IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonModal, IonNote, IonPage, IonTitle, IonToolbar } from "@ionic/vue";
 import { addOutline } from "ionicons/icons";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 
 export default defineComponent({
   setup() {
@@ -18,9 +18,19 @@ export default defineComponent({
       isOpenModalCategory.value = true
     }
 
-    onMounted(async () => {
+    const loadList = async () => {
       const list = await repo.list()
       categories.value = list
+    }
+
+    watch(isOpenModalCategory, (isOpen) => {
+      if (!isOpen) {
+        loadList()
+      }
+    })
+
+    onMounted(async () => {
+      loadList()
     })
 
     return () => (
@@ -62,6 +72,7 @@ export default defineComponent({
         </IonContent>
         <IonModal
           isOpen={isOpenModalCategory.value}
+          backdropDismiss={false}
         >
           <IonContent>
             <ModalCategoryForm

@@ -1,12 +1,15 @@
 import { IonApp, IonRouterOutlet } from "@ionic/vue";
 import { defineComponent } from "vue";
+import { Providers } from "./providers";
 
 export default defineComponent({
   setup() {
     return () => (
-      <IonApp>
-        <IonRouterOutlet />
-      </IonApp>
+      <Providers>
+        <IonApp>
+          <IonRouterOutlet />
+        </IonApp>
+      </Providers>
     )
   }
 })
