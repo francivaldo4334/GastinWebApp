@@ -1,3 +1,0 @@
-interface IDomainModel {
-  id: number;
-}

@@ -1,3 +1,0 @@
-interface IDataModel {
-  id: number;
-}
