@@ -88,11 +88,17 @@ export const WidgetBarChart = defineComponent({
               >
                 <IonItem
                   button
-                  onClick={() => (selectedFormat.value = "month")}
+                  onClick={() => {
+                    selectedFormat.value = "month"
+                    loadData()
+                  }}
                 >Mostar por mês</IonItem>
                 <IonItem
                   button
-                  onClick={() => (selectedFormat.value = "year")}
+                  onClick={() => {
+                    selectedFormat.value = "year"
+                    loadData()
+                  }}
                 >Mostar por ano</IonItem>
               </IonContent>
             </IonPopover>
