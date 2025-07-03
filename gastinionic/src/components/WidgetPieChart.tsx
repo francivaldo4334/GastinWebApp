@@ -1,15 +1,36 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonItem, IonModal, IonPopover, IonTitle, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonModal, IonPopover, IonRow, IonText, IonTitle, IonToolbar } from "@ionic/vue";
 import { ellipsisVerticalOutline } from "ionicons/icons";
 import { defineComponent, ref } from "vue";
 import { ModalCategoryForm } from "./ModalCategoryForm";
 import { WidgetValidityRange } from "./WidgetValidityRange";
 
+import { Pie } from "vue-chartjs";
+import {
+  Chart as ChartJS, Title, Tooltip, ArcElement,
+} from "chart.js";
+
+ChartJS.register(Title, Tooltip, ArcElement);
 export const WidgetPieChart = defineComponent({
   setup() {
     const isOpenMoreOptions = ref(false)
     const isOpenModalCategory = ref(false)
     const initValidity = ref()
     const endValidity = ref()
+
+
+    const pieItems = [
+      { label: "Gastos", value: 45, color: "#f87171", percentage: 45 },
+      { label: "Ganhos", value: 30, color: "#34d399", percentage: 30 },
+      { label: "Poupança", value: 25, color: "#60a5fa", percentage: 25 },
+    ]
+
+    const chartData = () => ({
+      labels: pieItems.map(it => it.label),
+      datasets: [{
+        data: pieItems.map(it => it.value),
+        backgroundColor: pieItems.map(it => it.color),
+      }]
+    })
 
     return () => (<IonCard>
       <IonToolbar>
@@ -57,7 +78,39 @@ export const WidgetPieChart = defineComponent({
         setEndValidity={(it: string) => (endValidity.value = it)}
       />
       <IonCardContent>
-
+        <IonGrid>
+          <IonRow>
+            <IonCol>
+              <Pie
+                data={chartData()}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: { legend: { position: 'bottom' } }
+                }}
+              />
+            </IonCol>
+            <IonCol>
+              {pieItems.map(item => (
+                <IonItem
+                  key={item.label}
+                >
+                  <div
+                    style={{
+                      width: '12px',
+                      height: '12px',
+                      backgroundColor: item.color,
+                      borderRadius: '50%',
+                      marginRight: '8px'
+                    }}
+                  />
+                  <IonText style="flex:1">{item.label}</IonText>
+                  <IonText>{item.percentage} %</IonText>
+                </IonItem>
+              ))}
+            </IonCol>
+          </IonRow>
+        </IonGrid>
       </IonCardContent>
       <IonModal
         isOpen={isOpenModalCategory.value}
@@ -75,12 +128,6 @@ export const WidgetPieChart = defineComponent({
 })
 
 //   return <Card>
-//     <ValidityRange
-//       initValidity={initValidity}
-//       setInitValidity={setInitValidity}
-//       endValidity={endValidity}
-//       setEndValidity={setEndValidity}
-//     />
 //     <Grid
 //       templateColumns="repeat(2,1fr)"
 //       gap="$4"
