@@ -21,8 +21,6 @@ import {
 } from "@ionic/vue";
 import {
   pricetagOutline,
-  addOutline,
-  removeOutline,
   helpCircleOutline,
   listOutline,
   chevronUpCircle,
@@ -36,6 +34,7 @@ export default defineComponent({
     const modalExpenditure = ref()
     const modalReceipt = ref()
     const modalCategory = ref()
+
     const onCloseModalExpenditure = () => {
       modalExpenditure.value.$el.dismiss(null, "cancel")
     }
@@ -45,6 +44,7 @@ export default defineComponent({
     const onCloseModalCategory = () => {
       modalCategory.value.$el.dismiss(null, "cancel")
     }
+
     return () => (
       <IonPage>
         <IonMenu contentId="home-page" side="end">
@@ -75,7 +75,7 @@ export default defineComponent({
                 expand="block"
               >
                 <IonIcon
-                  icon={removeOutline}
+                  icon={removeCircleOutline}
                   slot="start"
                   aria-hidden
                 />
@@ -89,7 +89,7 @@ export default defineComponent({
                 expand="block"
               >
                 <IonIcon
-                  icon={addOutline}
+                  icon={addCircleOutline}
                   slot="start"
                   aria-hidden
                 />
