@@ -21,7 +21,7 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
   }
 
   async range(init: Date, end: Date): Promise<RecordDomainModel[]> {
-    return (await this.list())//TODO: implementar filtragem por periodo
+    return await this.list()//TODO: implementar filtragem por periodo
   }
   async list(): Promise<RecordDomainModel[]> {
     const records = await this.recordRepository.list();

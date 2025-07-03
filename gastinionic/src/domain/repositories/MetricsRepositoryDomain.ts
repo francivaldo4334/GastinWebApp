@@ -33,6 +33,7 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     spend: number;
     currentBalance: number;
   }> {
+    console.log(init,end)
     const totalReceipt = (await this.receiptRepository.range(init, end)).map(it => it.value).reduce((a, b) => a + b, 0)
     const totalSpend = (await this.expenditureRepository.range(init, end)).map(it => it.value).reduce((a, b) => a + b, 0)
     const totalBalance = totalReceipt - totalSpend
