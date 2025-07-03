@@ -1,10 +1,13 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonItem, IonPopover, IonTitle, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonItem, IonModal, IonPopover, IonTitle, IonToolbar } from "@ionic/vue";
 import { ellipsisVerticalOutline } from "ionicons/icons";
 import { defineComponent, ref } from "vue";
+import { ModalCategoryForm } from "./ModalCategoryForm";
+import { isParameter } from "typescript";
 
 export const WidgetPieChart = defineComponent({
   setup() {
     const isOpenMoreOptions = ref(false)
+    const isOpenModalCategory = ref(false)
     return () => (<IonCard>
       <IonToolbar>
         <IonCardHeader>
@@ -29,7 +32,17 @@ export const WidgetPieChart = defineComponent({
               <IonItem
                 button
                 routerLink="/categories"
-              >Ver Categorias</IonItem>
+              >
+                Ver Categorias
+              </IonItem>
+              <IonItem
+                button
+                onClick={() => {
+                  isOpenModalCategory.value = true
+                }}
+              >
+                Adicionar categoria
+              </IonItem>
             </IonContent>
           </IonPopover>
         </IonButtons>
@@ -37,6 +50,17 @@ export const WidgetPieChart = defineComponent({
       <IonCardContent>
 
       </IonCardContent>
+      <IonModal
+        isOpen={isOpenModalCategory.value}
+      >
+        <IonContent>
+          <ModalCategoryForm
+            onClose={() => {
+              isOpenModalCategory.value = false
+            }}
+          />
+        </IonContent>
+      </IonModal>
     </IonCard>)
   }
 })
