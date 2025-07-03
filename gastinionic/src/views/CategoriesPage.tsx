@@ -8,14 +8,22 @@ import { defineComponent, onMounted, ref, watch } from "vue";
 export default defineComponent({
   setup() {
     const isOpenModalCategory = ref(false)
+    const categoryDetails = ref()
+
     const repo = FactoryRepositoryDomain.getRepository("category")
     const categories = ref<CategoryDomainModel[]>([])
 
     const onCloseModalCategory = () => {
       isOpenModalCategory.value = false
     }
+    const onCloseModalCategoryDetails = () => {
+      categoryDetails.value = undefined
+    }
     const onOpenModalCategory = () => {
       isOpenModalCategory.value = true
+    }
+    const onOpenModalCategoryDetails = (data: any) => {
+      categoryDetails.value = data
     }
 
     const loadList = async () => {
@@ -25,6 +33,11 @@ export default defineComponent({
 
     watch(isOpenModalCategory, (isOpen) => {
       if (!isOpen) {
+        loadList()
+      }
+    })
+    watch(categoryDetails, (it) => {
+      if (!it){
         loadList()
       }
     })
@@ -58,17 +71,22 @@ export default defineComponent({
           <IonList>
             {
               categories.value.map(it => (
-                <IonItem>
+                <IonItem
+                  button
+                  onClick={() => {
+                    onOpenModalCategoryDetails(it)
+                  }}
+                >
                   <IonBadge
                     slot="start"
                     style={`background-color: ${it.color}; height: 2rem; width: 2rem`}
                   > </IonBadge>
                   <IonLabel>
                     <IonText>
-                    {it.title}
+                      {it.title}
                     </IonText>
                     <p>
-                    {it.description}
+                      {it.description}
                     </p>
                   </IonLabel>
                 </IonItem>
@@ -83,6 +101,16 @@ export default defineComponent({
           <IonContent>
             <ModalCategoryForm
               onClose={onCloseModalCategory}
+            />
+          </IonContent>
+        </IonModal>
+        <IonModal
+          isOpen={!!categoryDetails.value}
+        >
+          <IonContent>
+            <ModalCategoryForm
+              onClose={onCloseModalCategoryDetails}
+              details={categoryDetails.value}
             />
           </IonContent>
         </IonModal>

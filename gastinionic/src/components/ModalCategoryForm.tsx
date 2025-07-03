@@ -12,10 +12,15 @@ export const ModalCategoryForm = defineComponent({
     onClose: {
       type: Function,
       required: true
+    },
+    details: {
+      type: Object,
+      required: false,
     }
   },
   setup(props: {
     onClose: () => void;
+    details?: CategoryDomainModel
   }) {
     const repo = FactoryRepositoryDomain.getRepository("category")
     const schema = z.object({
@@ -23,16 +28,26 @@ export const ModalCategoryForm = defineComponent({
       description: z.string(),
       color: z.string(),
     })
-    const formControl = useForm({ schema })
+    const formControl = useForm({
+      schema, default: {
+        title: props.details?.title,
+        description: props.details?.description,
+        color: props.details?.color,
+      }
+    })
 
     const onAddCategory = async (
       data: z.output<typeof schema>
     ) => {
-      await repo.set(new CategoryDomainModel({
+      const model = new CategoryDomainModel({
         title: data.title,
         description: data.description,
         color: data.color,
-      }))
+      })
+      if (props.details)
+        await repo.edit(props.details.id, model)
+      else
+        await repo.set(model)
       props.onClose()
     }
     return () => (
