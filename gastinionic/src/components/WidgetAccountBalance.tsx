@@ -1,12 +1,28 @@
 import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonItem, IonItemOption, IonLabel, IonRow, IonText, IonTitle } from "@ionic/vue";
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { WidgetValidityRange } from "./WidgetValidityRange";
 import { formatMoney } from "@/utils/formatMoney";
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 
 export const WidgetAccountBalance = defineComponent({
   setup() {
+    const repo = FactoryRepositoryDomain.getRepository("metrics")
     const initValidity = ref()
     const endValidity = ref()
+    const receivedValue = ref(0)
+    const spendValue = ref(0)
+    const currentBalace = ref(0)
+    onMounted(async () => {
+      const initDatestring = initValidity.value
+      const endDatestring = endValidity.value
+      const balance = await repo.accountBalance(
+        new Date(initDatestring),
+        new Date(endDatestring)
+      )
+      receivedValue.value = balance.received
+      spendValue.value = balance.spend
+      currentBalace.value = balance.currentBalance
+    })
     return () => (
       <IonCard>
         <IonCardHeader>
@@ -23,25 +39,27 @@ export const WidgetAccountBalance = defineComponent({
         <IonGrid>
           <IonRow>
             <IonCol>
-              <IonCard>
+              <IonCard
+                style="height: 100%;"
+              >
                 <IonCardHeader>
-                  <IonCardSubtitle>
-                    Recebido
-                  </IonCardSubtitle>
-                  <IonCardTitle>
-                    R$ {formatMoney("000")}
-                  </IonCardTitle>
+                  <IonCardSubtitle> Recebido </IonCardSubtitle>
+                  <IonCardSubtitle color="dark"> R$ {formatMoney(String(receivedValue))} </IonCardSubtitle>
+                  <IonCardSubtitle> Gasto </IonCardSubtitle>
+                  <IonCardSubtitle color="dark"> R$ {formatMoney(String(spendValue))} </IonCardSubtitle>
                 </IonCardHeader>
               </IonCard>
             </IonCol>
             <IonCol>
-              <IonCard>
+              <IonCard
+                style="height: 100%;"
+              >
                 <IonCardHeader>
                   <IonCardSubtitle>
                     Recebido
                   </IonCardSubtitle>
                   <IonCardTitle>
-                    R$ {formatMoney("000")}
+                    R$ {formatMoney(String(currentBalace))}
                   </IonCardTitle>
                 </IonCardHeader>
               </IonCard>
