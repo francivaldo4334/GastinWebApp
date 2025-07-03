@@ -18,7 +18,7 @@ export const schemaRecord = z.object({
       path: ["date"]
     })
   }
-  if (attrs.isRecurrent && attrs.isEveryday) {
+  if (attrs.isRecurrent && !attrs.isEveryday) {
     if (!attrs.initValidity) {
       ctx.addIssue({
         code: "invalid_type",
