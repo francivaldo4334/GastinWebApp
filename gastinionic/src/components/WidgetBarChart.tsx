@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonItem, IonPopover, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonContent, IonDatetime, IonDatetimeButton, IonIcon, IonItem, IonModal, IonPopover, IonToolbar } from "@ionic/vue";
 import { ellipsisVertical } from "ionicons/icons";
 import { defineComponent, ref } from "vue";
 
@@ -41,16 +41,25 @@ export const WidgetBarChart = defineComponent({
               >
                 <IonItem
                   button
-                  onClick={()=>(selectedFormat.value = "month")}
+                  onClick={() => (selectedFormat.value = "month")}
                 >Mostar por mês</IonItem>
                 <IonItem
                   button
-                  onClick={()=>(selectedFormat.value = "year")}
+                  onClick={() => (selectedFormat.value = "year")}
                 >Mostar por ano</IonItem>
               </IonContent>
             </IonPopover>
           </IonButtons>
         </IonToolbar>
+        <IonDatetimeButton
+          datetime="widget-bar-chart-calendar-select"
+        />
+        <IonModal keepContentsMounted>
+          <IonDatetime
+            id="widget-bar-chart-calendar-select"
+            presentation={selectedFormat.value}
+          />
+        </IonModal>
       </IonCard>
     )
   }
@@ -58,44 +67,6 @@ export const WidgetBarChart = defineComponent({
 
 
 //   return <Card>
-//     <Card.Header>
-//       <Text>Evolução</Text>
-//       <Spacer />
-//       <Menu>
-//         <MenuTrigger
-//           as={IconButton}
-//           aria-label="More options of bar chart"
-//           variant="ghost"
-//           size="sm"
-//           colorScheme="neutral"
-//           icon={<MoreVertical />}
-//         />
-//         <MenuContent>
-//
-//           <MenuItem
-//             onSelect={() => {
-//               setTypeRange("week")
-//             }}
-//           >
-//             Por semana
-//           </MenuItem>
-//           <MenuItem
-//             onSelect={() => {
-//               setTypeRange("month")
-//             }}
-//           >
-//             Por mês
-//           </MenuItem>
-//           <MenuItem
-//             onSelect={() => {
-//               setTypeRange("year")
-//             }}
-//           >
-//             Por ano
-//           </MenuItem>
-//         </MenuContent>
-//       </Menu>
-//     </Card.Header>
 //     <Flex
 //       direction="column"
 //       gap="$2"
