@@ -1,13 +1,23 @@
-import { IonCard, IonCardHeader, IonCardTitle } from "@ionic/vue";
+import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonIcon, IonToolbar } from "@ionic/vue";
+import { ellipsisVertical } from "ionicons/icons";
 import { defineComponent } from "vue";
 
 export const WidgetBarChart = defineComponent({
   setup() {
     return () => (
       <IonCard>
+        <IonToolbar>
         <IonCardHeader>
           <IonCardTitle>Evolução</IonCardTitle>
         </IonCardHeader>
+          <IonButtons slot="end">
+            <IonButton>
+              <IonIcon
+                icon={ellipsisVertical}
+              />
+            </IonButton>
+          </IonButtons>
+        </IonToolbar>
       </IonCard>
     )
   }

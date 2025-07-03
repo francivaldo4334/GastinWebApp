@@ -1,5 +1,5 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonModal, IonPopover, IonRow, IonText, IonTitle, IonToolbar } from "@ionic/vue";
-import { ellipsisVerticalOutline } from "ionicons/icons";
+import { ellipsisVertical } from "ionicons/icons";
 import { defineComponent, onMounted, ref } from "vue";
 import { ModalCategoryForm } from "./ModalCategoryForm";
 import { WidgetValidityRange } from "./WidgetValidityRange";
@@ -55,7 +55,7 @@ export const WidgetPieChart = defineComponent({
             id="widget-pie-chart-more-options"
             onClick={() => { isOpenMoreOptions.value = true }}
           >
-            <IonIcon icon={ellipsisVerticalOutline} />
+            <IonIcon icon={ellipsisVertical} />
           </IonButton>
           <IonPopover
             isOpen={isOpenMoreOptions.value}
