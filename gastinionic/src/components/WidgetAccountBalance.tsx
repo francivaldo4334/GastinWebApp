@@ -56,7 +56,7 @@ export const WidgetAccountBalance = defineComponent({
               >
                 <IonCardHeader>
                   <IonCardSubtitle>
-                    Recebido
+                    Saldo 
                   </IonCardSubtitle>
                   <IonCardTitle>
                     R$ {formatMoney(String(currentBalace))}
