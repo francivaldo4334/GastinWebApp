@@ -44,9 +44,9 @@ export const WidgetAccountBalance = defineComponent({
               >
                 <IonCardHeader>
                   <IonCardSubtitle> Recebido </IonCardSubtitle>
-                  <IonCardSubtitle color="dark"> R$ {formatMoney(String(receivedValue))} </IonCardSubtitle>
+                  <IonCardSubtitle color="dark"> R$ {formatMoney(String(receivedValue.value))} </IonCardSubtitle>
                   <IonCardSubtitle> Gasto </IonCardSubtitle>
-                  <IonCardSubtitle color="dark"> R$ {formatMoney(String(spendValue))} </IonCardSubtitle>
+                  <IonCardSubtitle color="dark"> R$ {formatMoney(String(spendValue.value))} </IonCardSubtitle>
                 </IonCardHeader>
               </IonCard>
             </IonCol>
@@ -56,10 +56,16 @@ export const WidgetAccountBalance = defineComponent({
               >
                 <IonCardHeader>
                   <IonCardSubtitle>
-                    Saldo 
+                    Saldo
                   </IonCardSubtitle>
-                  <IonCardTitle>
-                    R$ {formatMoney(String(currentBalace))}
+                  <IonCardTitle
+                    color={currentBalace.value === 0 ? "dark" : currentBalace.value > 0 ? "success" : "danger"}
+                  >
+                    R$ {
+                      currentBalace.value >= 0 ?
+                        formatMoney(String(currentBalace))
+                        : `- ${formatMoney(String(currentBalace))}`
+                    }
                   </IonCardTitle>
                 </IonCardHeader>
               </IonCard>
