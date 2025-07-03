@@ -11,6 +11,8 @@ export class RecordDomainModel implements IDomainModel {
   validityId?: number;
   initValidity?: string;
   endValidity?: string;
+  createdAt: string;
+  date?: string;
 
   constructor(data: {
     id?: number;
@@ -19,10 +21,11 @@ export class RecordDomainModel implements IDomainModel {
     categoryId: number;
     isRecurrent: boolean;
     isEveryDays: boolean;
+    createdAt: string;
     initValidity?: string;
     endValidity?: string;
+    date?: string;
   }) {
-
     this.id = data.id!;
     this.value = data.value;
     this.description = data.description;
@@ -31,6 +34,8 @@ export class RecordDomainModel implements IDomainModel {
     this.isEveryDays = data.isEveryDays;
     this.initValidity = data.initValidity;
     this.endValidity = data.endValidity;
+    this.createdAt = data.createdAt;
+    this.date = data.date
   }
 }
 
@@ -47,6 +52,8 @@ export const mapToDomain = (
     isEveryDays: validity?.isEveryDays ?? false,
     initValidity: validity?.initValidity,
     endValidity: validity?.endValidity,
+    createdAt: record.createdAt,
+    date: record.date,
   });
 };
 
@@ -60,6 +67,8 @@ export const mapToRecordData = (
     description: domain.description,
     categoryId: domain.categoryId,
     validityId: domain.validityId,
+    createdAt: domain.createdAt,
+    date: domain.date,
   });
 };
 

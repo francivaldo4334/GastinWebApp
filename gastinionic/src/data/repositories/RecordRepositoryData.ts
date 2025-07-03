@@ -15,6 +15,13 @@ export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
   }
 
   async set(m: RecordDataModel): Promise<RecordDataModel> {
+    m.createdAt = new Date().toISOString()
+    if (m.uniqueId) {
+      const exists = (await this.list()).find(it => it.uniqueId === m.uniqueId)
+      if (exists) {
+        throw new Error("o id de uniqueId deve ser unico")
+      }
+    }
     const id = await Database.instance.records.add(mapFromRecordDataModel(m));
     const it = await Database.instance.records.get(id);
     return mapToRecordDataModel(it);

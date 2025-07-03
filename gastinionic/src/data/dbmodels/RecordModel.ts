@@ -8,4 +8,7 @@ export interface RecordModel {
   description: string;
   categoryId: number | CategoryModel;
   validityId: number | ValidityModel;
+  createdAt: string;
+  date?: string;
+  uniqueId?: number;
 }

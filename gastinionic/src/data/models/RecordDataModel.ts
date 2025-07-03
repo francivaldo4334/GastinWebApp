@@ -4,6 +4,9 @@ export class RecordDataModel implements IDataModel {
   description: string;
   categoryId: number;
   validityId?: number;
+  createdAt: string;
+  date?: string;
+  uniqueId?: number
 
   constructor(data: {
     id: number;
@@ -11,6 +14,9 @@ export class RecordDataModel implements IDataModel {
     description: string;
     categoryId: number;
     validityId?: number;
+    createdAt?: string;
+    date?: string;
+    uniqueId?: number
   }) {
 
     this.id = data.id;
@@ -18,6 +24,9 @@ export class RecordDataModel implements IDataModel {
     this.description = data.description;
     this.categoryId = data.categoryId;
     this.validityId = data.validityId;
+    this.createdAt = data.createdAt || new Date().toISOString()
+    this.date = data.date
+    this.uniqueId = data.uniqueId
   }
 }
 
@@ -29,6 +38,9 @@ export const mapToRecordDataModel = (data: any): RecordDataModel => {
     description: data.description,
     categoryId: data.categoryId,
     validityId: data.validityId,
+    date: data.date,
+    createdAt: data.createdAt,
+    uniqueId: data.uniqueId,
   });
 }
 export const mapFromRecordDataModel = (m: RecordDataModel): any => ({
@@ -37,4 +49,7 @@ export const mapFromRecordDataModel = (m: RecordDataModel): any => ({
   description: m.description,
   categoryId: m.categoryId,
   validityId: m.validityId,
+  date: m.date,
+  createdAt: m.createdAt,
+  uniqueId: m.uniqueId,
 });

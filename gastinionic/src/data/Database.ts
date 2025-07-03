@@ -15,7 +15,7 @@ export class Database extends Dexie {
     super("gastindatabase")
     this.version(1).stores({
       categories: "++id,title,description,color",
-      records: "++id,title,description,value,categoryId,validityId",
+      records: "++id,title,description,value,categoryId,validityId,createdAt,date",
       validities: "++id,isEveryDays,initValidity,endValidity",
     })
   }
