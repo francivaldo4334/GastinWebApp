@@ -1,10 +1,12 @@
 import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonItem, IonItemOption, IonLabel, IonRow, IonText, IonTitle } from "@ionic/vue";
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { WidgetValidityRange } from "./WidgetValidityRange";
 import { formatMoney } from "@/utils/formatMoney";
 
 export const WidgetAccountBalance = defineComponent({
   setup() {
+    const initValidity = ref()
+    const endValidity = ref()
     return () => (
       <IonCard>
         <IonCardHeader>
@@ -12,7 +14,12 @@ export const WidgetAccountBalance = defineComponent({
             Saldo em conta
           </IonCardTitle>
         </IonCardHeader>
-        <WidgetValidityRange />
+        <WidgetValidityRange
+          initValidity={initValidity.value}
+          setInitValidity={(it: string) => (initValidity.value = it)}
+          endValidity={endValidity.value}
+          setEndValidity={(it: string) => (endValidity.value = it)}
+        />
         <IonGrid>
           <IonRow>
             <IonCol>
