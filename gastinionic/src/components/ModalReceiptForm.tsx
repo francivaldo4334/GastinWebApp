@@ -17,11 +17,18 @@ export const ModalReceiptForm = defineComponent({
     onClose: {
       type: Function,
       required: true
+    },
+    details: {
+      type: Object,
+      required: false,
     }
   },
-  setup(props: any) {
+  setup(props: {
+    onClose: () => void;
+    details?: RecordDomainModel
+  }) {
 
-    const formControl = useForm({ schema: schemaRecord })
+    const formControl = useForm({ schema: schemaRecord, default: props.details })
 
     const repoCategory = FactoryRepositoryDomain.getRepository("category")
     const repo = FactoryRepositoryDomain.getRepository("receipt")
@@ -29,7 +36,7 @@ export const ModalReceiptForm = defineComponent({
     const categories = ref<{value: number; label: string;}[]>([])
 
     const onAddReceipt = async (data: z.output<typeof schemaRecord>) => {
-      await repo.set(new RecordDomainModel({
+      const model = new RecordDomainModel({
         value: data.value,
         description: data.description,
         categoryId: data.category,
@@ -37,7 +44,11 @@ export const ModalReceiptForm = defineComponent({
         isEveryDays: data.isEveryday,
         initValidity: data.initValidity,
         endValidity: data.endValidity,
-      }))
+      })
+      if (props.details)
+        await repo.edit(props.details.id, model)
+      else
+        await repo.set(model)
       props.onClose()
     }
 

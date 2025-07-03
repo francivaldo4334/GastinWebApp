@@ -35,7 +35,7 @@ export const FormMoneyField = defineComponent({
         <IonInput
           placeholder={props.placeholder}
           label={props.label}
-          value={props.value}
+          value={formatMoney(props.value)}
           onIonInput={event => {
             const value = event.detail?.value
             if (typeof value != "string")
