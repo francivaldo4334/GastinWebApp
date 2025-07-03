@@ -31,18 +31,28 @@ import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   setup() {
-    const modalExpenditure = ref()
-    const modalReceipt = ref()
-    const modalCategory = ref()
+    const isOpenModalExpenditure = ref()
+    const isOpenModalReceipt = ref(false)
+    const isOpenModalCategory = ref(false)
+
+    const onOpenModalReceipt = () => {
+      isOpenModalReceipt.value = true
+    }
+    const onOpenModalCategory = () => {
+      isOpenModalCategory.value = true
+    }
+    const onOpenModalExpenditure = () => {
+      isOpenModalExpenditure.value = true
+    }
 
     const onCloseModalExpenditure = () => {
-      modalExpenditure.value.$el.dismiss(null, "cancel")
+      isOpenModalExpenditure.value = false
     }
     const onCloseModalReceipt = () => {
-      modalReceipt.value.$el.dismiss(null, "cancel")
+      isOpenModalReceipt.value = false
     }
     const onCloseModalCategory = () => {
-      modalCategory.value.$el.dismiss(null, "cancel")
+      isOpenModalCategory.value = false
     }
 
     return () => (
@@ -57,8 +67,7 @@ export default defineComponent({
             <IonMenuToggle>
               <IonItem
                 button
-                id="btn-open-modal-category"
-                expand="block"
+                onClick={onOpenModalCategory}
               >
                 <IonIcon
                   icon={pricetagOutline}
@@ -71,8 +80,7 @@ export default defineComponent({
               </IonItem>
               <IonItem
                 button
-                id="btn-open-modal-expenditure"
-                expand="block"
+                onClick={onOpenModalExpenditure}
               >
                 <IonIcon
                   icon={removeCircleOutline}
@@ -85,8 +93,7 @@ export default defineComponent({
               </IonItem>
               <IonItem
                 button
-                id="btn-open-modal-receipt"
-                expand="block"
+                onClick={onOpenModalReceipt}
               >
                 <IonIcon
                   icon={addCircleOutline}
@@ -164,13 +171,19 @@ export default defineComponent({
                 />
               </IonFabButton>
               <IonFabList side="top">
-                <IonFabButton>
+                <IonFabButton
+                  onClick={onOpenModalExpenditure}
+                >
                   <IonIcon icon={removeCircleOutline} />
                 </IonFabButton>
-                <IonFabButton>
+                <IonFabButton
+                  onClick={onOpenModalReceipt}
+                >
                   <IonIcon icon={addCircleOutline} />
                 </IonFabButton>
-                <IonFabButton>
+                <IonFabButton
+                  onClick={onOpenModalCategory}
+                >
                   <IonIcon icon={pricetagOutline} />
                 </IonFabButton>
               </IonFabList>
@@ -178,8 +191,7 @@ export default defineComponent({
           </IonContent>
         </IonPage>
         <IonModal
-          ref={modalExpenditure}
-          trigger="btn-open-modal-expenditure"
+          isOpen={isOpenModalExpenditure.value}
         >
           <IonContent>
             <ModalExpenditureForm
@@ -188,8 +200,7 @@ export default defineComponent({
           </IonContent>
         </IonModal>
         <IonModal
-          ref={modalReceipt}
-          trigger="btn-open-modal-receipt"
+          isOpen={isOpenModalReceipt.value}
         >
           <IonContent>
             <ModalReceiptForm
@@ -198,8 +209,7 @@ export default defineComponent({
           </IonContent>
         </IonModal>
         <IonModal
-          ref={modalCategory}
-          trigger="btn-open-modal-category"
+          isOpen={isOpenModalCategory.value}
         >
           <IonContent>
             <ModalCategoryForm
