@@ -2,11 +2,15 @@ import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardT
 import { ellipsisVerticalOutline } from "ionicons/icons";
 import { defineComponent, ref } from "vue";
 import { ModalCategoryForm } from "./ModalCategoryForm";
+import { WidgetValidityRange } from "./WidgetValidityRange";
 
 export const WidgetPieChart = defineComponent({
   setup() {
     const isOpenMoreOptions = ref(false)
     const isOpenModalCategory = ref(false)
+    const initValidity = ref()
+    const endValidity = ref()
+
     return () => (<IonCard>
       <IonToolbar>
         <IonCardHeader>
@@ -46,6 +50,12 @@ export const WidgetPieChart = defineComponent({
           </IonPopover>
         </IonButtons>
       </IonToolbar>
+      <WidgetValidityRange
+        initValidity={initValidity.value}
+        setInitValidity={(it: string) => (initValidity.value = it)}
+        endValidity={endValidity.value}
+        setEndValidity={(it: string) => (endValidity.value = it)}
+      />
       <IonCardContent>
 
       </IonCardContent>
@@ -65,36 +75,6 @@ export const WidgetPieChart = defineComponent({
 })
 
 //   return <Card>
-//     <Card.Header>
-//       <Text></Text>
-//       <Spacer />
-//       <Menu>
-//         <MenuTrigger
-//           as={IconButton}
-//           variant="ghost"
-//           colorScheme="neutral"
-//           aria-label="More options of pie chart"
-//           icon={<MoreVertical size={20} />}
-//           size="sm"
-//         />
-//         <MenuContent>
-//           <MenuItem
-//             icon={<ListIcon />}
-//             onSelect={() => {
-//               navigate("/categories")
-//             }}
-//           >
-//             Ver categorias
-//           </MenuItem>
-//           <MenuItem
-//             icon={<Tag />}
-//             onSelect={openNewCategory}
-//           >
-//             Adicionar categoria
-//           </MenuItem>
-//         </MenuContent>
-//       </Menu>
-//     </Card.Header>
 //     <ValidityRange
 //       initValidity={initValidity}
 //       setInitValidity={setInitValidity}
