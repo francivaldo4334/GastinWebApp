@@ -19,6 +19,10 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     this.validityRepository = data.validityRepository;
     this.recordRepository = data.recordRepository;
   }
+
+  async range(init: Date, end: Date): Promise<RecordDomainModel[]> {
+    return (await this.list())//TODO: implementar filtragem por periodo
+  }
   async list(): Promise<RecordDomainModel[]> {
     const records = await this.recordRepository.list();
     const validities = await this.validityRepository.list();

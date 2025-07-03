@@ -33,14 +33,26 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     spend: number;
     currentBalance: number;
   }> {
-    const totalReceipt = (await this.receiptRepository.list()).map(it => it.value).reduce((a,b) => a + b, 0)
-    const totalSpend = (await this.expenditureRepository.list()).map(it => it.value).reduce((a,b) => a + b, 0)
+    const totalReceipt = (await this.receiptRepository.range(init, end)).map(it => it.value).reduce((a, b) => a + b, 0)
+    const totalSpend = (await this.expenditureRepository.range(init, end)).map(it => it.value).reduce((a, b) => a + b, 0)
     const totalBalance = totalReceipt - totalSpend
-    console.log(totalSpend, totalReceipt, totalBalance)
     return {
       received: totalReceipt,
       spend: totalSpend,
       currentBalance: totalBalance,
     }
+  }
+
+  async pieChartData(init: Date, end: Date): Promise<{
+    label: string;
+    value: number;
+    color: string;
+    percentage: number;
+  }[]> {
+    return [
+      { label: "Gastos", value: 45, color: "#f87171", percentage: 45 },
+      { label: "Ganhos", value: 30, color: "#34d399", percentage: 30 },
+      { label: "Poupança", value: 25, color: "#60a5fa", percentage: 25 },
+    ]//TODO: implementar dados de grafico de pizza
   }
 }

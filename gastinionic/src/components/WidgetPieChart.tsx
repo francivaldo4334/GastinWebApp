@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonModal, IonPopover, IonRow, IonText, IonTitle, IonToolbar } from "@ionic/vue";
 import { ellipsisVerticalOutline } from "ionicons/icons";
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { ModalCategoryForm } from "./ModalCategoryForm";
 import { WidgetValidityRange } from "./WidgetValidityRange";
 
@@ -8,27 +8,38 @@ import { Pie } from "vue-chartjs";
 import {
   Chart as ChartJS, Title, Tooltip, ArcElement,
 } from "chart.js";
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 
 ChartJS.register(Title, Tooltip, ArcElement);
 export const WidgetPieChart = defineComponent({
   setup() {
+    const repo = FactoryRepositoryDomain.getRepository("metrics")
     const isOpenMoreOptions = ref(false)
     const isOpenModalCategory = ref(false)
     const initValidity = ref()
     const endValidity = ref()
 
 
-    const pieItems = [
-      { label: "Gastos", value: 45, color: "#f87171", percentage: 45 },
-      { label: "Ganhos", value: 30, color: "#34d399", percentage: 30 },
-      { label: "Poupança", value: 25, color: "#60a5fa", percentage: 25 },
-    ]
+    const pieItems = ref<{
+      label: string;
+      value: number;
+      color: string;
+      percentage: number;
+    }[]>([])
+
+    onMounted(async () => {
+      const pieData = await repo.pieChartData(
+        new Date(initValidity.value),
+        new Date(endValidity.value),
+      )
+      pieItems.value = pieData
+    })
 
     const chartData = () => ({
-      labels: pieItems.map(it => it.label),
+      labels: pieItems.value.map(it => it.label),
       datasets: [{
-        data: pieItems.map(it => it.value),
-        backgroundColor: pieItems.map(it => it.color),
+        data: pieItems.value.map(it => it.value),
+        backgroundColor: pieItems.value.map(it => it.color),
       }]
     })
 
@@ -91,7 +102,7 @@ export const WidgetPieChart = defineComponent({
               />
             </IonCol>
             <IonCol>
-              {pieItems.map(item => (
+              {pieItems.value.map(item => (
                 <IonItem
                   key={item.label}
                 >
@@ -126,94 +137,3 @@ export const WidgetPieChart = defineComponent({
     </IonCard>)
   }
 })
-
-//   return <Card>
-//     <Grid
-//       templateColumns="repeat(2,1fr)"
-//       gap="$4"
-//       width="$full"
-//       marginTop="$4"
-//     >
-//       <GridItem>
-//         <DefaultChart
-//           type="pie"
-//           data={chartData()}
-//           options={{
-//             responsive: true,
-//             maintainAspectRatio: false,
-//           }}
-//         />
-//       </GridItem>
-//       <GridItem>
-//         <List>
-//           <For
-//             each={pieItems}
-//           >
-//             {item => (
-//               <ListItem
-//                 class="flex w-full justify-between h-10"
-//               >
-//                 <Badge bgColor={item.color} boxSize="$6" />
-//                 <Text>{item.label}</Text>
-//                 <Text>{item.percentage} %</Text>
-//               </ListItem>
-//             )}
-//           </For>
-//         </List>
-//       </GridItem>
-//     </Grid>
-//   </Card>
-// }
-
-
-// import { Component, createMemo, createSignal, For } from "solid-js"
-// import { DefaultChart } from 'solid-chartjs'
-// import { Card } from "@/presenter/ui/Card"
-// import { Badge, Grid, GridItem, IconButton, List, ListItem, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid"
-// import { MoreVertical, List as ListIcon, Tag } from "lucide-solid"
-// import { ValidityRange } from "@/presenter/ui/ValidityRange"
-// import { useStore } from "@/presenter/stores/Store"
-// import { useNavigate } from "@solidjs/router"
-//
-// export const PieChart: Component = () => {
-//
-//   const [initValidity, setInitValidity] = createSignal<string>()
-//   const [endValidity, setEndValidity] = createSignal<string>()
-//
-//   const navigate = useNavigate()
-//
-//   const { openNewCategory } = useStore()
-//
-//   const pieItems = [
-//     {
-//       label: "Gastos",
-//       value: 45,
-//       color: "#f87171",
-//       percentage: 45,
-//     },
-//     {
-//       label: "Ganhos",
-//       value: 30,
-//       color: "#34d399",
-//       percentage: 30,
-//     },
-//     {
-//       label: "Poupança",
-//       value: 25,
-//       color: "#60a5fa",
-//       percentage: 25,
-//     },
-//   ]
-//
-//   const chartData = createMemo(() => {
-//     return {
-//       labels: pieItems.map(it => it.label),
-//       datasets: [
-//         {
-//           data: pieItems.map(it => it.value),
-//           backgroundColor: pieItems.map(it => it.color),
-//         }
-//       ]
-//     }
-//   })
-//
