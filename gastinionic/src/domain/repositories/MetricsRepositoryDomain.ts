@@ -33,7 +33,7 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     spend: number;
     currentBalance: number;
   }> {
-    console.log(init,end)
+    console.log(init, end)
     const totalReceipt = (await this.receiptRepository.range(init, end)).map(it => it.value).reduce((a, b) => a + b, 0)
     const totalSpend = (await this.expenditureRepository.range(init, end)).map(it => it.value).reduce((a, b) => a + b, 0)
     const totalBalance = totalReceipt - totalSpend
@@ -55,5 +55,21 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
       { label: "Ganhos", value: 30, color: "#34d399", percentage: 30 },
       { label: "Poupança", value: 25, color: "#60a5fa", percentage: 25 },
     ]//TODO: implementar dados de grafico de pizza
+  }
+  async barChartData(params: {
+    type: "month" | "year";
+    periodValue: any;
+  }): Promise<{ value: number; label: string; }[]> {
+
+    const metrics = [
+      { label: "Segunda", value: 150 },
+      { label: "Terça", value: 200 },
+      { label: "Quarta", value: 180 },
+      { label: "Quinta", value: 220 },
+      { label: "Sexta", value: 304 },
+      { label: "Sábado", value: 30 },
+      { label: "Domingo", value: 60 },
+    ];
+    return metrics
   }
 }

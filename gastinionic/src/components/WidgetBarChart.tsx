@@ -1,18 +1,62 @@
-import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonContent, IonDatetime, IonDatetimeButton, IonIcon, IonItem, IonModal, IonPopover, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonIcon, IonItem, IonModal, IonPopover, IonRow, IonToolbar } from "@ionic/vue";
 import { ellipsisVertical } from "ionicons/icons";
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
+
+import {
+  Chart as ChartJS,
+  Title, Tooltip, BarElement, CategoryScale, LinearScale
+} from "chart.js";
+import { Bar } from "vue-chartjs";
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+
+ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale);
 
 export const WidgetBarChart = defineComponent({
   setup() {
+
+    const repo = FactoryRepositoryDomain.getRepository("metrics")
 
     const isOpenMoreOptions = ref(false)
 
     const selectedFormat = ref<"month" | "year">("month")
 
+    const selectedMonth = ref()
+    const selectedYear = ref()
+    const metrics = ref<{ value: number; label: string; }[]>([])
+
     const mapPeriod = {
       "month": "Mês",
       "year": "Ano"
     }
+
+    const periodValue = computed(() => {
+      if (selectedMonth.value === "month")
+        return selectedMonth.value
+      else return selectedYear.value
+    })
+    const loadData = async () => {
+
+      const data = await repo.barChartData({
+        periodValue,
+        type: selectedFormat.value
+      })
+      metrics.value = data
+    }
+
+    onMounted(() => {
+      loadData()
+    })
+
+
+    const chartData = computed(() => ({
+      labels: metrics.value.map(it => it.label),
+      datasets: [
+        {
+          data: metrics.value.map(it => it.value),
+          backgroundColor: "#60a5fa",
+        },
+      ],
+    }));
     return () => (
       <IonCard>
         <IonToolbar>
@@ -51,130 +95,69 @@ export const WidgetBarChart = defineComponent({
             </IonPopover>
           </IonButtons>
         </IonToolbar>
-        <IonDatetimeButton
-          datetime="widget-bar-chart-calendar-select-month"
-          style={selectedFormat.value === "month" ?
-            "display: flex;"
-            :
-            "display: none;"
-          }
-        />
-        <IonDatetimeButton
-          datetime="widget-bar-chart-calendar-select-year"
-          style={selectedFormat.value === "year" ?
-            "display: flex;"
-            :
-            "display: none;"
-          }
-        />
-        <IonModal keepContentsMounted>
-          <IonDatetime
-            id="widget-bar-chart-calendar-select-month"
-            presentation="month"
+        <IonItem>
+          <IonDatetimeButton
+            slot="end"
+            datetime="widget-bar-chart-calendar-select-month"
+            style={selectedFormat.value === "month" ?
+              "display: flex;"
+              :
+              "display: none;"
+            }
           />
-        </IonModal>
-        <IonModal keepContentsMounted>
-          <IonDatetime
-            id="widget-bar-chart-calendar-select-year"
-            presentation="year"
+          <IonDatetimeButton
+            slot="end"
+            datetime="widget-bar-chart-calendar-select-year"
+            style={selectedFormat.value === "year" ?
+              "display: flex;"
+              :
+              "display: none;"
+            }
           />
-        </IonModal>
+          <IonModal keepContentsMounted>
+            <IonDatetime
+              id="widget-bar-chart-calendar-select-month"
+              presentation="month"
+              value={selectedMonth.value}
+              onIonChange={e => {
+                const value = e.detail.value
+                selectedMonth.value = value
+              }}
+            />
+          </IonModal>
+          <IonModal keepContentsMounted>
+            <IonDatetime
+              id="widget-bar-chart-calendar-select-year"
+              presentation="year"
+              value={selectedYear.value}
+              onIonChange={e => {
+                const value = e.detail.value
+                selectedYear.value = value
+              }}
+            />
+          </IonModal>
+        </IonItem>
+
+        <IonGrid>
+          <IonRow>
+            <IonCol>
+              <Bar
+                data={chartData.value}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: { display: false },
+                  },
+                  scales: {
+                    y: { beginAtZero: true },
+                  },
+                }}
+                height={150}
+              />
+            </IonCol>
+          </IonRow>
+        </IonGrid>
       </IonCard>
     )
   }
 })
-
-
-//   return <Card>
-//     <Flex
-//       direction="column"
-//       gap="$2"
-//       alignItems="end"
-//       paddingTop="$2"
-//     >
-//       <Divider />
-//       <Flex
-//         width="$sm"
-//       >
-//         <Switch>
-//           <Match when={typeRangeSelected("week")}>
-//             <FormWeekField
-//               value={week}
-//               setValue={setWeek}
-//             />
-//           </Match>
-//           <Match when={typeRangeSelected("month")}>
-//             <FormMonthField
-//               value={month}
-//               setValue={setMonth}
-//             />
-//           </Match>
-//           <Match when={typeRangeSelected("year")}>
-//             <FormSelectField
-//               items={years}
-//               value={year}
-//               setValue={setYear}
-//             />
-//           </Match>
-//         </Switch>
-//       </Flex>
-//       <Divider />
-//     </Flex>
-//     <DefaultChart type="bar" data={data()} options={options} height={300} />
-//   </Card>
-// import { Card } from "@/presenter/ui/Card";
-// import { Component, createMemo, createSelector, createSignal, Match, Switch } from "solid-js";
-// import { DefaultChart } from 'solid-chartjs'
-// import {
-//   type ChartOptions,
-// } from "chart.js";
-// import { FormWeekField } from "@/presenter/ui/FormWeekField";
-// import { Divider, Flex, IconButton, Menu, MenuContent, MenuItem, MenuTrigger, Spacer, Text } from "@hope-ui/solid";
-// import { MoreVertical } from "lucide-solid";
-// import { FormMonthField } from "@/presenter/ui/FormMonthField";
-// import { FormSelectField } from "@/presenter/ui/FormSelectField";
-//
-// export const BarChart: Component = () => {
-//
-//   const [week, setWeek] = createSignal<string>()
-//   const [month, setMonth] = createSignal<string>()
-//   const [year, setYear] = createSignal<number>(0)
-//
-//   const [typeRange, setTypeRange] = createSignal<"week" | "month" | "year">("week")
-//   const typeRangeSelected = createSelector(typeRange)
-//
-//   const years = [
-//     { label: "2025", value: 2025 },
-//     { label: "2024", value: 2024 },
-//   ]//TODO: obter lista de anos no banco de dados
-//
-//   const metrics = [
-//     { label: "Segunda", value: 150 },
-//     { label: "Terça", value: 200 },
-//     { label: "Quarta", value: 180 },
-//     { label: "Quinta", value: 220 },
-//     { label: "Sexta", value: 304 },
-//     { label: "Sabado", value: 30 },
-//     { label: "Domingo", value: 60 },
-//   ]//TODO: implementar lista de metricas de periodo
-//
-//
-//   const data = createMemo(() => {
-//     return {
-//       labels: metrics.map(it => it.label),
-//       datasets: [
-//         {
-//           data: metrics.map(it => it.value),
-//           backgroundColor: "#60a5fa",
-//         }
-//       ]
-//     }
-//   })
-//   const options: ChartOptions<"bar"> = {
-//     responsive: true,
-//     plugins: {
-//       legend: { position: "top" },
-//     },
-//   };
-//
-// }
