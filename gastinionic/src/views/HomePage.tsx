@@ -93,7 +93,7 @@ export default defineComponent({
               </IonItem>
 
               <IonItem
-                routerLink="/categories"
+                routerLink="/expenditures"
               >
                 <IonIcon
                   icon={listOutline}
@@ -105,7 +105,7 @@ export default defineComponent({
                 </IonLabel>
               </IonItem>
               <IonItem
-                routerLink="/expenditures"
+                routerLink="/receipts"
               >
                 <IonIcon
                   icon={listOutline}
@@ -114,6 +114,18 @@ export default defineComponent({
                 />
                 <IonLabel>
                   Lista de Receitas
+                </IonLabel>
+              </IonItem>
+              <IonItem
+                routerLink="/categories"
+              >
+                <IonIcon
+                  icon={listOutline}
+                  slot="start"
+                  ariaHidden
+                />
+                <IonLabel>
+                  Lista de Categorias
                 </IonLabel>
               </IonItem>
               <IonItem
