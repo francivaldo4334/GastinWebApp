@@ -1,6 +1,7 @@
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle } from "@ionic/vue";
+import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonItem, IonItemOption, IonLabel, IonRow, IonText, IonTitle } from "@ionic/vue";
 import { defineComponent } from "vue";
 import { WidgetValidityRange } from "./WidgetValidityRange";
+import { formatMoney } from "@/utils/formatMoney";
 
 export const WidgetAccountBalance = defineComponent({
   setup() {
@@ -12,8 +13,34 @@ export const WidgetAccountBalance = defineComponent({
           </IonCardTitle>
         </IonCardHeader>
         <WidgetValidityRange />
-        <IonCardContent>
-        </IonCardContent>
+        <IonGrid>
+          <IonRow>
+            <IonCol>
+              <IonCard>
+                <IonCardHeader>
+                  <IonCardSubtitle>
+                    Recebido
+                  </IonCardSubtitle>
+                  <IonCardTitle>
+                    R$ {formatMoney("000")}
+                  </IonCardTitle>
+                </IonCardHeader>
+              </IonCard>
+            </IonCol>
+            <IonCol>
+              <IonCard>
+                <IonCardHeader>
+                  <IonCardSubtitle>
+                    Recebido
+                  </IonCardSubtitle>
+                  <IonCardTitle>
+                    R$ {formatMoney("000")}
+                  </IonCardTitle>
+                </IonCardHeader>
+              </IonCard>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
       </IonCard>
     )
   }
