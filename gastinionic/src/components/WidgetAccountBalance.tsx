@@ -63,8 +63,8 @@ export const WidgetAccountBalance = defineComponent({
                   >
                     R$ {
                       currentBalace.value >= 0 ?
-                        formatMoney(String(currentBalace))
-                        : `- ${formatMoney(String(currentBalace))}`
+                        formatMoney(String(currentBalace.value))
+                        : `- ${formatMoney(String(currentBalace.value))}`
                     }
                   </IonCardTitle>
                 </IonCardHeader>

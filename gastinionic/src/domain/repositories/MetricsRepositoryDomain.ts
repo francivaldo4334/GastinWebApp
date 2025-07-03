@@ -28,11 +28,19 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     throw new Error("Method not implemented.");
   }
 
-  accountBalance(init: Date, end: Date): Promise<{
+  async accountBalance(init: Date, end: Date): Promise<{
     received: number;
     spend: number;
     currentBalance: number;
   }> {
-    throw new Error("Method not implemented.");
+    const totalReceipt = (await this.receiptRepository.list()).map(it => it.value).reduce((a,b) => a + b, 0)
+    const totalSpend = (await this.expenditureRepository.list()).map(it => it.value).reduce((a,b) => a + b, 0)
+    const totalBalance = totalReceipt - totalSpend
+    console.log(totalSpend, totalReceipt, totalBalance)
+    return {
+      received: totalReceipt,
+      spend: totalSpend,
+      currentBalance: totalBalance,
+    }
   }
 }
