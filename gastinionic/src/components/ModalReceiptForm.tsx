@@ -2,7 +2,6 @@ import { defineComponent, onMounted, ref, watch } from "vue";
 import { z } from "zod";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
-import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
 import { IonButton, IonButtons, IonContent, IonHeader, IonToolbar } from "@ionic/vue";
 import { FormMoneyField } from "./FormMoneyField";
 import { FormTextField } from "./FormTextField";

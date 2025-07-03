@@ -12,7 +12,7 @@ export default defineComponent({
     const receiptDetails = ref()
 
     const repo = FactoryRepositoryDomain.getRepository("receipt")
-    const categories = ref<RecordDomainModel[]>([])
+    const receipts = ref<RecordDomainModel[]>([])
 
     const onCloseModalReceipt = () => {
       isOpenModalReceipt.value = false
@@ -29,7 +29,7 @@ export default defineComponent({
 
     const loadList = async () => {
       const list = await repo.list()
-      categories.value = list
+      receipts.value = list
     }
 
     const onRemoveReceipt = async (id: number) => {
@@ -76,7 +76,7 @@ export default defineComponent({
           </IonFab>
           <IonList>
             {
-              categories.value.map(it => (
+              receipts.value.map(it => (
                 <IonItemSliding>
                   <IonItem
                     button

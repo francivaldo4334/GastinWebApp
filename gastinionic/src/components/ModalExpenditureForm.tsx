@@ -10,33 +10,60 @@ import { FormSelectField } from "./FormSelectField";
 import { FormCheckboxField } from "./FormCheckboxField";
 import { FieldValidRangeField } from "./FieldValidRangeField";
 import { schemaRecord } from "./commons";
+import { RecordDomainModel } from "@/domain/models/RecordDomainModel";
 
 export const ModalExpenditureForm = defineComponent({
   props: {
     onClose: {
       type: Function,
       required: true
+    },
+    details: {
+      type: Object,
+      required: false,
     }
   },
-  setup(props: any) {
-
+  setup(props: {
+    onClose: () => void;
+    details?: RecordDomainModel
+  }) {
     const formControl = useForm({ schema: schemaRecord })
 
-    const repo = FactoryRepositoryDomain.getRepository("category")
+    const repoCategory = FactoryRepositoryDomain.getRepository("category")
+    const repo = FactoryRepositoryDomain.getRepository("expenditure")
 
-    const categories = ref<CategoryDomainModel[]>([])
+    const categories = ref<{ value: number; label: string; }[]>([])
+
+    const onAddExpenditure = async (data: z.output<typeof schemaRecord>) => {
+      const model = new RecordDomainModel({
+        value: data.value,
+        description: data.description,
+        categoryId: data.category,
+        isRecurrent: data.isRecurrent,
+        isEveryDays: data.isEveryday,
+        initValidity: data.initValidity,
+        endValidity: data.endValidity,
+      })
+      if (props.details)
+        await repo.edit(props.details.id, model)
+      else
+        await repo.set(model)
+      props.onClose()
+    }
 
     onMounted(async () => {
-      const list = await repo.list()
-      categories.value = list
+      const list = await repoCategory.list()
+      categories.value = list.map(it => ({
+        value: it.id,
+        label: it.title
+      }))
     })
 
     return () => (
       <IonContent>
         <Form
           control={formControl}
-          onSubmit={() => {
-          }}
+          onSubmit={onAddExpenditure}
         >
           <IonHeader>
             <IonToolbar>
