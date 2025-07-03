@@ -1,3 +1,4 @@
+import { ChartWidgets } from "@/components/ChartWidgets";
 import { ModalCategoryForm } from "@/components/ModalCategoryForm";
 import { ModalExpenditureForm } from "@/components/ModalExpenditureForm";
 import { ModalReceiptForm } from "@/components/ModalReceiptForm";
@@ -188,6 +189,7 @@ export default defineComponent({
                 </IonFabButton>
               </IonFabList>
             </IonFab>
+            <ChartWidgets/>
           </IonContent>
         </IonPage>
         <IonModal
