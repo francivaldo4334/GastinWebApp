@@ -1,21 +1,54 @@
-import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonIcon, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonItem, IonPopover, IonToolbar } from "@ionic/vue";
 import { ellipsisVertical } from "ionicons/icons";
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 
 export const WidgetBarChart = defineComponent({
   setup() {
+
+    const isOpenMoreOptions = ref(false)
+
+    const selectedFormat = ref<"month" | "year">("month")
+
+    const mapPeriod = {
+      "month": "Mês",
+      "year": "Ano"
+    }
     return () => (
       <IonCard>
         <IonToolbar>
-        <IonCardHeader>
-          <IonCardTitle>Evolução</IonCardTitle>
-        </IonCardHeader>
+          <IonCardHeader>
+            <IonCardTitle>Evolução / {mapPeriod[selectedFormat.value]}</IonCardTitle>
+          </IonCardHeader>
           <IonButtons slot="end">
-            <IonButton>
+            <IonButton
+              id="widget-bar-chart-more-options"
+              onClick={() => {
+                isOpenMoreOptions.value = true
+              }}
+            >
               <IonIcon
                 icon={ellipsisVertical}
               />
             </IonButton>
+            <IonPopover
+              trigger="widget-bar-chart-more-options"
+              isOpen={isOpenMoreOptions.value}
+            >
+              <IonContent
+                onClick={() => {
+                  isOpenMoreOptions.value = false
+                }}
+              >
+                <IonItem
+                  button
+                  onClick={()=>(selectedFormat.value = "month")}
+                >Mostar por mês</IonItem>
+                <IonItem
+                  button
+                  onClick={()=>(selectedFormat.value = "year")}
+                >Mostar por ano</IonItem>
+              </IonContent>
+            </IonPopover>
           </IonButtons>
         </IonToolbar>
       </IonCard>
