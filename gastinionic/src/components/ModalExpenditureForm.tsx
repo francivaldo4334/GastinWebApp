@@ -140,7 +140,7 @@ export const ModalExpenditureForm = defineComponent({
                   label="Início da Vigência:"
                   disabled={!(
                     formControl.fields.isRecurrent &&
-                    formControl.fields.isEveryday
+                    !formControl.fields.isEveryday
                   )}
                 />
               )}
@@ -154,7 +154,7 @@ export const ModalExpenditureForm = defineComponent({
                   label="Fim da Vigência:"
                   disabled={!(
                     formControl.fields.isRecurrent &&
-                    formControl.fields.isEveryday
+                    !formControl.fields.isEveryday
                   )}
                 />
               )}

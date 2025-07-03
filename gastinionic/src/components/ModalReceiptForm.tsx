@@ -32,7 +32,7 @@ export const ModalReceiptForm = defineComponent({
     const repoCategory = FactoryRepositoryDomain.getRepository("category")
     const repo = FactoryRepositoryDomain.getRepository("receipt")
 
-    const categories = ref<{value: number; label: string;}[]>([])
+    const categories = ref<{ value: number; label: string; }[]>([])
 
     const onAddReceipt = async (data: z.output<typeof schemaRecord>) => {
       const model = new RecordDomainModel({
@@ -140,7 +140,7 @@ export const ModalReceiptForm = defineComponent({
                   label="Início da Vigência:"
                   disabled={!(
                     formControl.fields.isRecurrent &&
-                    formControl.fields.isEveryday
+                    !formControl.fields.isEveryday
                   )}
                 />
               )}
@@ -154,7 +154,7 @@ export const ModalReceiptForm = defineComponent({
                   label="Fim da Vigência:"
                   disabled={!(
                     formControl.fields.isRecurrent &&
-                    formControl.fields.isEveryday
+                    !formControl.fields.isEveryday
                   )}
                 />
               )}
