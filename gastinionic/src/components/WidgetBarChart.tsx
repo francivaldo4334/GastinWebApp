@@ -31,18 +31,27 @@ export const WidgetBarChart = defineComponent({
       "year": "Ano"
     }
 
-    const loadData = async () => {
-      const periodValue = (() => {
-        if (selectedMonth.value === "month")
-          return selectedMonth.value
-        else return selectedYear.value
-      })()
+    const loadData = async (params?: {
+      month: string;
+      year: string;
+      mode: "month" | "year";
+    }) => {
+      const {
+        month = selectedMonth.value,
+        year = selectedYear.value,
+        mode = selectedFormat.value
+      } = params || {}
+
+      const periodValue = mode === "month" ? month : year
+
       if (!periodValue)
         return
+
       const data = await repo.barChartData({
         periodValue: new Date(periodValue),
-        type: selectedFormat.value
+        type: mode
       })
+
       metrics.value = data
     }
 
@@ -50,8 +59,8 @@ export const WidgetBarChart = defineComponent({
       loadData()
     })
 
-    watch([selectedYear, selectedMonth, selectedFormat], () => {
-      loadData()
+    watch([selectedYear, selectedMonth, selectedFormat], ([year, month, mode]) => {
+      loadData({ month,year,mode })
     })
 
 
