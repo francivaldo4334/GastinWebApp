@@ -20,9 +20,15 @@ export class Database extends Dexie {
     })
   }
 
-  static instance: Database
+  private static _instance: Database
+  static get instance(): Database {
+    if (!this._instance) {
+      this._instance = new Database()
+    }
+    return this._instance
+  }
 
   static async init() {
-    this.instance = new Database()
+    this._instance = new Database()
   }
 }
