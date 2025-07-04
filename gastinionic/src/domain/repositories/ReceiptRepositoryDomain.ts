@@ -7,6 +7,7 @@ import { ValueGreaterThenZero } from "../rules/ValueGreaterThenZero";
 import { ValidRecurrent } from "../rules/ValidRecurrent";
 import { createValidity } from "../services/createValidity";
 import { createOrUpdateValidity } from "../services/createOrUpdateValidity";
+import { recordInValidity } from "../services/recordInValidity";
 
 export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainModel> {
   validityRepository: ValidityRepositoryData;
@@ -19,7 +20,9 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
     this.recordRepository = data.recordRepository;
   }
   async range(init: Date, end: Date): Promise<RecordDomainModel[]> {
-    return await this.list()//TODO: implementar filtragem por periodo
+    const list = await this.list()
+
+    return list.filter(it => recordInValidity(it, init, end))
   }
   async list(): Promise<RecordDomainModel[]> {
     const records = await this.recordRepository.list();

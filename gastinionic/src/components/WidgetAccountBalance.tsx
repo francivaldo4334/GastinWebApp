@@ -9,8 +9,9 @@ import { storeToRefs } from "pinia";
 export const WidgetAccountBalance = defineComponent({
   setup() {
     const repo = FactoryRepositoryDomain.getRepository("metrics")
-    const initValidity = ref()
-    const endValidity = ref()
+    const dateNow = new Date().toISOString()
+    const initValidity = ref(dateNow)
+    const endValidity = ref(dateNow)
     const receivedValue = ref(0)
     const spendValue = ref(0)
     const currentBalace = ref(0)
@@ -25,6 +26,7 @@ export const WidgetAccountBalance = defineComponent({
     const loadData = async () => {
       const initDatestring = initValidity.value
       const endDatestring = endValidity.value
+
       const balance = await repo.accountBalance(
         new Date(initDatestring),
         new Date(endDatestring)
