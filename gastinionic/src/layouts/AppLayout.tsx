@@ -1,5 +1,4 @@
 import { defineComponent } from "vue";
-import { RouterView } from "vue-router";
 import { ModalCategoryForm } from "@/components/ModalCategoryForm";
 import { ModalExpenditureForm } from "@/components/ModalExpenditureForm";
 import { ModalReceiptForm } from "@/components/ModalReceiptForm";
@@ -8,7 +7,7 @@ import { useModalStore } from "@/stores/useModalStore";
 import { storeToRefs } from "pinia";
 
 export default defineComponent({
-  setup() {
+  setup(_, { slots }) {
 
     const modalStore = useModalStore()
     const {
@@ -30,7 +29,7 @@ export default defineComponent({
     } = modalStore
     return () => (
       <>
-        <RouterView />
+        {slots.default?.()}
         <IonModal
           isOpen={isOpenExpenditure.value}
           backdropDismiss={false}
