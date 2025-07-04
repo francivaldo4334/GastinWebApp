@@ -1,3 +1,4 @@
+import { endOfMonth, endOfYear, format, getDay, getMonth, startOfMonth, startOfYear } from "date-fns";
 import { CategoryRepositoryDomain } from "./CategoryRepositoryDomain";
 import { ExpenditureRepositoryDomain } from "./ExpenditureRepositoryDomain";
 import { IRepositoryDomain } from "./IRepositoryDomain";
@@ -60,11 +61,11 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
       this.categoryRepository.list(),
       this.expenditureRepository.range(init, end)
     ])
-    const total = spends.reduce((sum, {value}) =>sum + value, 0) || 1
+    const total = spends.reduce((sum, { value }) => sum + value, 0) || 1
     const dataChart = categories.map(it => {
       const value = spends
         .filter(i => i.categoryId === it.id)
-        .reduce((sum, {value}) => sum + value, 0)
+        .reduce((sum, { value }) => sum + value, 0)
       return {
         label: it.title,
         value: value,
@@ -79,15 +80,49 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     periodValue: Date;
   }): Promise<{ value: number; label: string; }[]> {
 
-    const metrics = [
-      { label: "Segunda", value: 150 },
-      { label: "Terça", value: 200 },
-      { label: "Quarta", value: 180 },
-      { label: "Quinta", value: 220 },
-      { label: "Sexta", value: 304 },
-      { label: "Sábado", value: 30 },
-      { label: "Domingo", value: 60 },
-    ];
-    return metrics
+    const { type, periodValue } = params
+    const init = type === "month"
+      ? startOfMonth(periodValue)
+      : startOfYear(periodValue)
+
+    const end = type === "month"
+      ? endOfMonth(periodValue)
+      : endOfYear(periodValue)
+
+    const spends = await this.expenditureRepository.range(init, end)
+
+    if (type === "month") {
+      const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+      const result = Array(7).fill(0)
+
+      for (const spend of spends) {
+        const dayIndex = getDay(new Date(spend.date!)) // 0=Domingo, ..., 6=Sábado
+        result[dayIndex] += spend.value
+      }
+
+      return result.map((value, index) => ({
+        label: days[index],
+        value,
+      }))
+    }
+
+    if (type === "year") {
+      const months = Array.from({ length: 12 }, (_, i) =>
+        format(new Date(2020, i), 'MMM', { locale: "pt-BR" }) // abreviação com pt-BR
+      )
+      const result = Array(12).fill(0)
+
+      for (const spend of spends) {
+        const monthIndex = getMonth(new Date(spend.date!)) // 0=Jan, ..., 11=Dez
+        result[monthIndex] += spend.value
+      }
+
+      return result.map((value, index) => ({
+        label: months[index],
+        value,
+      }))
+    }
+
+    return []
   }
 }
