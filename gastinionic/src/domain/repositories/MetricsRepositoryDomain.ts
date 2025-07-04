@@ -56,11 +56,23 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     color: string;
     percentage: number;
   }[]> {
-    return [
-      { label: "Gastos", value: 45, color: "#f87171", percentage: 45 },
-      { label: "Ganhos", value: 30, color: "#34d399", percentage: 30 },
-      { label: "Poupança", value: 25, color: "#60a5fa", percentage: 25 },
-    ]//TODO: implementar dados de grafico de pizza
+    const [categories, spends] = await Promise.all([
+      this.categoryRepository.list(),
+      this.expenditureRepository.range(init, end)
+    ])
+    const total = spends.reduce((sum, {value}) =>sum + value, 0) || 1
+    const dataChart = categories.map(it => {
+      const value = spends
+        .filter(i => i.categoryId === it.id)
+        .reduce((sum, {value}) => sum + value, 0)
+      return {
+        label: it.title,
+        value: value,
+        color: it.color,
+        percentage: (value / total) * 100
+      }
+    })
+    return dataChart
   }
   async barChartData(params: {
     type: "month" | "year";
