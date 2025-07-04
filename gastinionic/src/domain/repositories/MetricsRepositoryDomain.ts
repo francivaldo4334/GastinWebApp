@@ -1,4 +1,4 @@
-import { endOfMonth, endOfYear, format, getDay, getMonth, startOfMonth, startOfYear } from "date-fns";
+import { addDays, addMonths, endOfDay, endOfMonth, endOfYear, format, getDay, getMonth, startOfDay, startOfMonth, startOfYear } from "date-fns";
 import { CategoryRepositoryDomain } from "./CategoryRepositoryDomain";
 import { ExpenditureRepositoryDomain } from "./ExpenditureRepositoryDomain";
 import { IRepositoryDomain } from "./IRepositoryDomain";
@@ -79,8 +79,8 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     type: "month" | "year";
     periodValue: Date;
   }): Promise<{ value: number; label: string; }[]> {
-
     const { type, periodValue } = params
+
     const init = type === "month"
       ? startOfMonth(periodValue)
       : startOfYear(periodValue)
@@ -89,40 +89,33 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
       ? endOfMonth(periodValue)
       : endOfYear(periodValue)
 
-    const spends = await this.expenditureRepository.range(init, end)
+    const dataChart: { label: string; value: number; }[] = []
 
-    if (type === "month") {
-      const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
-      const result = Array(7).fill(0)
+    let currentDate = init
 
-      for (const spend of spends) {
-        const dayIndex = getDay(new Date(spend.date!)) // 0=Domingo, ..., 6=Sábado
-        result[dayIndex] += spend.value
+    while (currentDate <= end) {
+      let searchInit: Date
+      let searchEnd: Date
+      let label: string
+
+      if (type === "month") {
+        searchInit = startOfDay(currentDate)
+        searchEnd = endOfDay(currentDate)
+        label = currentDate.toLocaleDateString("pt-BR", { day: "2-digit" })
+        currentDate = addDays(currentDate, 1)
+      } else {
+        searchInit = startOfMonth(currentDate)
+        searchEnd = endOfMonth(currentDate)
+        label = currentDate.toLocaleDateString("pt-BR", { month: "short" })
+        currentDate = addMonths(currentDate, 1)
       }
 
-      return result.map((value, index) => ({
-        label: days[index],
-        value,
-      }))
+      const spends = await this.expenditureRepository.range(searchInit, searchEnd)
+      const total = spends.reduce((sum, { value }) => sum + value, 0)
+
+      dataChart.push({ label, value: total })
     }
 
-    if (type === "year") {
-      const months = Array.from({ length: 12 }, (_, i) =>
-        format(new Date(2020, i), 'MMM', { locale: "pt-BR" }) // abreviação com pt-BR
-      )
-      const result = Array(12).fill(0)
-
-      for (const spend of spends) {
-        const monthIndex = getMonth(new Date(spend.date!)) // 0=Jan, ..., 11=Dez
-        result[monthIndex] += spend.value
-      }
-
-      return result.map((value, index) => ({
-        label: months[index],
-        value,
-      }))
-    }
-
-    return []
+    return dataChart
   }
 }
