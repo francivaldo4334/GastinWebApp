@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonIcon, IonItem, IonModal, IonPopover, IonRow, IonToolbar } from "@ionic/vue";
 import { ellipsisVertical } from "ionicons/icons";
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 
 import {
   Chart as ChartJS,
@@ -47,6 +47,10 @@ export const WidgetBarChart = defineComponent({
     }
 
     onMounted(() => {
+      loadData()
+    })
+
+    watch([selectedYear, selectedMonth, selectedFormat], () => {
       loadData()
     })
 
