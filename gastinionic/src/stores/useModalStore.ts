@@ -21,7 +21,7 @@ export const useModalStore = defineStore("modals", () => {
 
   const onOpenCategory = () => isOpenCategory.value = true
   const onCloseCategory = () => isOpenCategory.value = false
-  const onOpenCategoryDetails = (data: any) => isOpenCategoryDetails.value = true
+  const onOpenCategoryDetails = (data: any) => isOpenCategoryDetails.value = data
   const onCloseCategoryDetails = () => isOpenCategoryDetails.value = false
 
   return {
