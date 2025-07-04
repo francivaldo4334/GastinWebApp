@@ -55,7 +55,9 @@ export const WidgetAccountBalance = defineComponent({
           endValidity={endValidity.value}
           setEndValidity={(it: string) => (endValidity.value = it)}
         />
-        <IonGrid>
+        <IonGrid
+          style="padding-bottom: 1.5rem;"
+        >
           <IonRow>
             <IonCol>
               <IonCard
