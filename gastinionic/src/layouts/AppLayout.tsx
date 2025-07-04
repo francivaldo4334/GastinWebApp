@@ -16,7 +16,8 @@ export default defineComponent({
       isOpenExpenditure,
       isOpenCategory,
       isOpenCategoryDetails,
-      isOpenExpenditureDetails
+      isOpenExpenditureDetails,
+      isOpenReceiptDetails,
     } = storeToRefs(modalStore)
 
     const {
@@ -24,7 +25,8 @@ export default defineComponent({
       onCloseExpenditure,
       onCloseCategory,
       onCloseCategoryDetails,
-      onCloseExpenditureDetails
+      onCloseExpenditureDetails,
+      onCloseReceiptDetails,
     } = modalStore
     return () => (
       <>
@@ -76,6 +78,18 @@ export default defineComponent({
             <ModalExpenditureForm
               onClose={onCloseExpenditureDetails}
               details={isOpenExpenditureDetails.value}
+            />
+          </IonContent>
+        </IonModal>
+
+
+        <IonModal
+          isOpen={!!isOpenReceiptDetails.value}
+        >
+          <IonContent>
+            <ModalReceiptForm
+              onClose={onCloseReceiptDetails}
+              details={isOpenReceiptDetails.value}
             />
           </IonContent>
         </IonModal>

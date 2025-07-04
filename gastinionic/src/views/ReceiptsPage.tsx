@@ -1,4 +1,3 @@
-import { ModalReceiptForm } from "@/components/ModalReceiptForm";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { RecordDomainModel } from "@/domain/models/RecordDomainModel";
 import { useModalStore } from "@/stores/useModalStore";
@@ -12,27 +11,20 @@ import { useRoute } from "vue-router";
 export default defineComponent({
   setup() {
     const route = useRoute()
-    const receiptDetails = ref()
 
     const modalStore = useModalStore()
     const {
-      isOpenReceipt: isOpenModalReceipt
+      isOpenReceipt: isOpenModalReceipt,
+      isOpenReceiptDetails: receiptDetails
     } = storeToRefs(modalStore)
 
     const {
       onOpenReceipt: onOpenModalReceipt,
-      onCloseReceipt: onCloseModalReceipt
+      onOpenReceiptDetails:onOpenModalReceiptDetails,
     } = modalStore
 
     const repo = FactoryRepositoryDomain.getRepository("receipt")
     const receipts = ref<RecordDomainModel[]>([])
-
-    const onCloseModalReceiptDetails = () => {
-      receiptDetails.value = undefined
-    }
-    const onOpenModalReceiptDetails = (data: any) => {
-      receiptDetails.value = data
-    }
 
     const loadList = async () => {
       const list = await repo.list()
@@ -121,26 +113,6 @@ export default defineComponent({
             }
           </IonList>
         </IonContent>
-        <IonModal
-          isOpen={isOpenModalReceipt.value}
-          backdropDismiss={false}
-        >
-          <IonContent>
-            <ModalReceiptForm
-              onClose={onCloseModalReceipt}
-            />
-          </IonContent>
-        </IonModal>
-        <IonModal
-          isOpen={!!receiptDetails.value}
-        >
-          <IonContent>
-            <ModalReceiptForm
-              onClose={onCloseModalReceiptDetails}
-              details={receiptDetails.value}
-            />
-          </IonContent>
-        </IonModal>
       </IonPage>
     )
   }
