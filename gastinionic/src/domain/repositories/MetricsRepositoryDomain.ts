@@ -69,7 +69,7 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
         label: it.title,
         value: value,
         color: it.color,
-        percentage: (value / total) * 100
+        percentage: Math.floor((value / total) * 100)
       }
     })
     return dataChart

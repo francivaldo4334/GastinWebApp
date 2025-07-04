@@ -15,8 +15,9 @@ export const WidgetPieChart = defineComponent({
   setup() {
     const repo = FactoryRepositoryDomain.getRepository("metrics")
     const isOpenMoreOptions = ref(false)
-    const initValidity = ref()
-    const endValidity = ref()
+    const datenow = new Date().toISOString()
+    const initValidity = ref(datenow)
+    const endValidity = ref(datenow)
 
     const {
       onOpenCategory
@@ -31,9 +32,21 @@ export const WidgetPieChart = defineComponent({
     }[]>([])
 
     onMounted(async () => {
+      const initDatestring = initValidity.value
+      const endDatestring = endValidity.value
+
+      if (!initDatestring || !endDatestring)
+        return
+
+      const initDate = new Date(initDatestring)
+      initDate.setHours(0, 0, 0, 0)
+
+      const endDate = new Date(endDatestring)
+      endDate.setHours(23, 59, 59, 0)
+
       const pieData = await repo.pieChartData(
-        new Date(initValidity.value),
-        new Date(endValidity.value),
+        initDate,
+        endDate,
       )
       pieItems.value = pieData
     })

@@ -34,7 +34,7 @@ export const WidgetAccountBalance = defineComponent({
       initDate.setHours(0, 0, 0, 0)
 
       const endDate = new Date(endDatestring)
-      endDate.setHours(23, 0, 0, 0)
+      endDate.setHours(23, 59, 59, 0)
 
       const balance = await repo.accountBalance(
         initDate,
