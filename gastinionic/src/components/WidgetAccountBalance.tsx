@@ -53,6 +53,9 @@ export const WidgetAccountBalance = defineComponent({
       if (!receipt || !expenditure)
         loadData()
     })
+    watch([initValidity, endValidity], () => {
+      loadData()
+    })
     return () => (
       <IonCard>
         <IonCardHeader>
