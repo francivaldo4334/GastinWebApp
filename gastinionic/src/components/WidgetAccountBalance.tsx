@@ -27,9 +27,18 @@ export const WidgetAccountBalance = defineComponent({
       const initDatestring = initValidity.value
       const endDatestring = endValidity.value
 
+      if (!initValidity || !endDatestring)
+        return
+
+      const initDate = new Date(initDatestring)
+      initDate.setHours(0, 0, 0, 0)
+
+      const endDate = new Date(endDatestring)
+      endDate.setHours(23, 0, 0, 0)
+
       const balance = await repo.accountBalance(
-        new Date(initDatestring),
-        new Date(endDatestring)
+        initDate,
+        endDate
       )
       receivedValue.value = balance.received
       spendValue.value = balance.spend
