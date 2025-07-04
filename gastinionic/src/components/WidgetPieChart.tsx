@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonPopover, IonRow, IonText, IonToolbar } from "@ionic/vue";
-import { ellipsisVertical } from "ionicons/icons";
-import { defineComponent, onMounted, ref } from "vue";
+import { ellipsisVertical, } from "ionicons/icons";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { WidgetValidityRange } from "./WidgetValidityRange";
 
 import { Pie } from "vue-chartjs";
@@ -31,12 +31,14 @@ export const WidgetPieChart = defineComponent({
       percentage: number;
     }[]>([])
 
-    onMounted(async () => {
+    const loadData = async (params?: {
+      init: string,
+      end: string,
+    }) => {
       const initDatestring = initValidity.value
       const endDatestring = endValidity.value
 
-      if (!initDatestring || !endDatestring)
-        return
+      if (!initDatestring || !endDatestring) return
 
       const initDate = new Date(initDatestring)
       initDate.setHours(0, 0, 0, 0)
@@ -48,7 +50,18 @@ export const WidgetPieChart = defineComponent({
         initDate,
         endDate,
       )
+
       pieItems.value = pieData
+    }
+
+    onMounted(() => {
+      loadData({
+        init: initValidity.value,
+        end: endValidity.value
+      })
+    })
+    watch([initValidity, endValidity], ([init, end]) => {
+      loadData({ init, end })
     })
 
     const chartData = () => ({
