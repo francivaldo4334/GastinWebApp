@@ -1,4 +1,4 @@
-import { IonDatetime, IonDatetimeButton, IonItem, IonModal } from "@ionic/vue";
+import { IonButtons, IonDatetime, IonDatetimeButton, IonItem, IonModal, IonText } from "@ionic/vue";
 import { defineComponent } from "vue";
 
 export const WidgetValidityRange = defineComponent({
@@ -31,12 +31,21 @@ export const WidgetValidityRange = defineComponent({
 
     return () => (
       <IonItem>
-        <IonDatetimeButton
-          datetime={initValidityId}
-        />
-        <IonDatetimeButton
-          datetime={endValidityId}
-        />
+        <IonButtons 
+          slot="end"
+          style={{
+            "gap": "0.5rem"
+          }}
+        >
+          <IonText>Período de</IonText>
+          <IonDatetimeButton
+            datetime={initValidityId}
+          />
+          <IonText>até</IonText>
+          <IonDatetimeButton
+            datetime={endValidityId}
+          />
+        </IonButtons>
         <IonModal keepContentsMounted >
           <IonDatetime
             id={initValidityId}
