@@ -2,6 +2,7 @@ import { ChartWidgets } from "@/components/ChartWidgets";
 import { ModalCategoryForm } from "@/components/ModalCategoryForm";
 import { ModalExpenditureForm } from "@/components/ModalExpenditureForm";
 import { ModalReceiptForm } from "@/components/ModalReceiptForm";
+import { useModalStore } from "@/stores/useModalStore";
 import {
   IonButtons,
   IonContent,
@@ -32,25 +33,18 @@ import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   setup() {
-    const isOpenModalExpenditure = ref()
-    const isOpenModalReceipt = ref(false)
     const isOpenModalCategory = ref(false)
+    const {
+      isOpenReceipt:isOpenModalReceipt,
+      isOpenExpenditure: isOpenModalExpenditure,
+      onCloseReceipt:onCloseModalReceipt,
+      onOpenReceipt:onOpenModalReceipt,
+      onCloseExpenditure:onCloseModalExpenditure,
+      onOpenExpenditure:onOpenModalExpenditure,
+    } = useModalStore()
 
-    const onOpenModalReceipt = () => {
-      isOpenModalReceipt.value = true
-    }
     const onOpenModalCategory = () => {
       isOpenModalCategory.value = true
-    }
-    const onOpenModalExpenditure = () => {
-      isOpenModalExpenditure.value = true
-    }
-
-    const onCloseModalExpenditure = () => {
-      isOpenModalExpenditure.value = false
-    }
-    const onCloseModalReceipt = () => {
-      isOpenModalReceipt.value = false
     }
     const onCloseModalCategory = () => {
       isOpenModalCategory.value = false
@@ -193,7 +187,7 @@ export default defineComponent({
           </IonContent>
         </IonPage>
         <IonModal
-          isOpen={isOpenModalExpenditure.value}
+          isOpen={isOpenModalExpenditure}
           backdropDismiss={false}
         >
           <IonContent>
@@ -203,7 +197,7 @@ export default defineComponent({
           </IonContent>
         </IonModal>
         <IonModal
-          isOpen={isOpenModalReceipt.value}
+          isOpen={isOpenModalReceipt}
           backdropDismiss={false}
         >
           <IonContent>

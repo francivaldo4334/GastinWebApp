@@ -1,8 +1,9 @@
 import { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonItem, IonLabel, IonRow } from "@ionic/vue";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { WidgetValidityRange } from "./WidgetValidityRange";
 import { formatMoney } from "@/utils/formatMoney";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+import { useModalStore } from "@/stores/useModalStore";
 
 export const WidgetAccountBalance = defineComponent({
   setup() {
@@ -12,7 +13,13 @@ export const WidgetAccountBalance = defineComponent({
     const receivedValue = ref(0)
     const spendValue = ref(0)
     const currentBalace = ref(0)
-    onMounted(async () => {
+
+    const {
+      isOpenReceipt,
+      isOpenExpenditure,
+    } = useModalStore()
+
+    const loadData = async () => {
       const initDatestring = initValidity.value
       const endDatestring = endValidity.value
       const balance = await repo.accountBalance(
@@ -22,6 +29,15 @@ export const WidgetAccountBalance = defineComponent({
       receivedValue.value = balance.received
       spendValue.value = balance.spend
       currentBalace.value = balance.currentBalance
+    }
+
+    onMounted(() => {
+      loadData()
+    })
+
+    watch([isOpenReceipt, isOpenExpenditure], ([receipt, expenditure]) => {
+      if (!receipt || !expenditure)
+        loadData()
     })
     return () => (
       <IonCard>
