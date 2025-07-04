@@ -29,15 +29,6 @@ export const WidgetValidityRange = defineComponent({
     const initValidityId = `${Math.random()}_modal_datetime`
     const endValidityId = `${Math.random()}_modal_datetime`
 
-    const isValidEndDate = (dateString: string) => {
-      const initValidity = props.initValidity
-      if (typeof initValidity != "string") 
-        return false
-      const init = new Date(initValidity)
-      const current = new Date(dateString)
-
-      return current >= init
-    }
     return () => (
       <IonItem>
         <IonDatetimeButton
@@ -62,6 +53,7 @@ export const WidgetValidityRange = defineComponent({
         <IonModal keepContentsMounted >
           <IonDatetime
             id={endValidityId}
+            min={props.initValidity}
             presentation="date"
             value={props.endValidity}
             onIonChange={e => {
@@ -70,7 +62,6 @@ export const WidgetValidityRange = defineComponent({
                 return
               props.setEndValidity(value)
             }}
-            isDateEnabled={isValidEndDate}
           />
         </IonModal>
       </IonItem>
