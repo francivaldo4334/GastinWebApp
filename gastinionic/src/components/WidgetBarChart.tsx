@@ -8,6 +8,8 @@ import {
 } from "chart.js";
 import { Bar } from "vue-chartjs";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+import { useModalStore } from "@/stores/useModalStore";
+import { storeToRefs } from "pinia";
 
 ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale);
 
@@ -17,14 +19,18 @@ export const WidgetBarChart = defineComponent({
     const repo = FactoryRepositoryDomain.getRepository("metrics")
 
     const isOpenMoreOptions = ref(false)
-
     const selectedFormat = ref<"month" | "year">("month")
-
     const datenow = new Date().toISOString()
 
     const selectedMonth = ref<string>(datenow)
     const selectedYear = ref<string>(datenow)
-    const metrics = ref<{ value: number; label: string; }[]>([])
+    const metrics = ref<{ value: string; label: string; }[]>([])
+
+    const modalStore = useModalStore()
+
+    const {
+      isOpenExpenditure,
+    } = storeToRefs(modalStore)
 
     const mapPeriod = {
       "month": "Mês",
@@ -59,7 +65,7 @@ export const WidgetBarChart = defineComponent({
       loadData()
     })
 
-    watch([selectedYear, selectedMonth, selectedFormat], ([year, month, mode]) => {
+    watch([selectedYear, selectedMonth, selectedFormat, isOpenExpenditure], ([year, month, mode]) => {
       loadData({ month,year,mode })
     })
 

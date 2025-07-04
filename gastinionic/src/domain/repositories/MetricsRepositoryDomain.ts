@@ -78,7 +78,7 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
   async barChartData(params: {
     type: "month" | "year";
     periodValue: Date;
-  }): Promise<{ value: number; label: string; }[]> {
+  }): Promise<{ value: string; label: string; }[]> {
     const { type, periodValue } = params
 
     const init = type === "month"
@@ -89,7 +89,7 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
       ? endOfMonth(periodValue)
       : endOfYear(periodValue)
 
-    const dataChart: { label: string; value: number; }[] = []
+    const dataChart: { label: string; value: string; }[] = []
 
     let currentDate = init
 
@@ -113,7 +113,7 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
       const spends = await this.expenditureRepository.range(searchInit, searchEnd)
       const total = spends.reduce((sum, { value }) => sum + value, 0)
 
-      dataChart.push({ label, value: total })
+      dataChart.push({ label, value: (total / 100).toFixed(2) })
     }
 
     return dataChart
