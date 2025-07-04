@@ -1,27 +1,34 @@
 import { ModalReceiptForm } from "@/components/ModalReceiptForm";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { RecordDomainModel } from "@/domain/models/RecordDomainModel";
+import { useModalStore } from "@/stores/useModalStore";
 import { formatMoney } from "@/utils/formatMoney";
-import { IonBackButton, IonBadge, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonModal, IonNote, IonPage, IonText, IonTitle, IonToolbar } from "@ionic/vue";
+import { IonBackButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonModal, IonNote, IonPage, IonText, IonTitle, IonToolbar } from "@ionic/vue";
 import { addOutline, chevronBackOutline, trashOutline } from "ionicons/icons";
+import { storeToRefs } from "pinia";
 import { defineComponent, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   setup() {
-    const isOpenModalReceipt = ref(false)
+    const route = useRoute()
     const receiptDetails = ref()
+
+    const modalStore = useModalStore()
+    const {
+      isOpenReceipt: isOpenModalReceipt
+    } = storeToRefs(modalStore)
+
+    const {
+      onOpenReceipt: onOpenModalReceipt,
+      onCloseReceipt: onCloseModalReceipt
+    } = modalStore
 
     const repo = FactoryRepositoryDomain.getRepository("receipt")
     const receipts = ref<RecordDomainModel[]>([])
 
-    const onCloseModalReceipt = () => {
-      isOpenModalReceipt.value = false
-    }
     const onCloseModalReceiptDetails = () => {
       receiptDetails.value = undefined
-    }
-    const onOpenModalReceipt = () => {
-      isOpenModalReceipt.value = true
     }
     const onOpenModalReceiptDetails = (data: any) => {
       receiptDetails.value = data
@@ -57,7 +64,10 @@ export default defineComponent({
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonBackButton />
+              {
+                route.path !== "/" &&
+                <IonBackButton defaultHref="/" />
+              }
             </IonButtons>
             <IonTitle>
               Receitas

@@ -1,7 +1,4 @@
 import { ChartWidgets } from "@/components/ChartWidgets";
-import { ModalCategoryForm } from "@/components/ModalCategoryForm";
-import { ModalExpenditureForm } from "@/components/ModalExpenditureForm";
-import { ModalReceiptForm } from "@/components/ModalReceiptForm";
 import { useModalStore } from "@/stores/useModalStore";
 import {
   IonButtons,
@@ -16,7 +13,6 @@ import {
   IonMenu,
   IonMenuButton,
   IonMenuToggle,
-  IonModal,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -29,31 +25,17 @@ import {
   addCircleOutline,
   removeCircleOutline,
 } from "ionicons/icons"
-import { storeToRefs } from "pinia";
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   setup() {
-    const isOpenModalCategory = ref(false)
     const modalStore = useModalStore()
-    const {
-      isOpenReceipt,
-      isOpenExpenditure,
-    } = storeToRefs(modalStore)
 
     const {
-      onCloseReceipt,
       onOpenReceipt,
-      onCloseExpenditure,
       onOpenExpenditure,
+      onOpenCategory,
     } = modalStore
-
-    const onOpenModalCategory = () => {
-      isOpenModalCategory.value = true
-    }
-    const onCloseModalCategory = () => {
-      isOpenModalCategory.value = false
-    }
 
     return () => (
       <IonPage>
@@ -67,7 +49,7 @@ export default defineComponent({
             <IonMenuToggle>
               <IonItem
                 button
-                onClick={onOpenModalCategory}
+                onClick={onOpenCategory}
               >
                 <IonIcon
                   icon={pricetagOutline}
@@ -182,7 +164,7 @@ export default defineComponent({
                   <IonIcon icon={addCircleOutline} />
                 </IonFabButton>
                 <IonFabButton
-                  onClick={onOpenModalCategory}
+                  onClick={onOpenCategory}
                 >
                   <IonIcon icon={pricetagOutline} />
                 </IonFabButton>
@@ -191,36 +173,6 @@ export default defineComponent({
             <ChartWidgets />
           </IonContent>
         </IonPage>
-        <IonModal
-          isOpen={isOpenExpenditure.value}
-          backdropDismiss={false}
-        >
-          <IonContent>
-            <ModalExpenditureForm
-              onClose={onCloseExpenditure}
-            />
-          </IonContent>
-        </IonModal>
-        <IonModal
-          isOpen={isOpenReceipt.value}
-          backdropDismiss={false}
-        >
-          <IonContent>
-            <ModalReceiptForm
-              onClose={onCloseReceipt}
-            />
-          </IonContent>
-        </IonModal>
-        <IonModal
-          isOpen={isOpenModalCategory.value}
-          backdropDismiss={false}
-        >
-          <IonContent>
-            <ModalCategoryForm
-              onClose={onCloseModalCategory}
-            />
-          </IonContent>
-        </IonModal>
       </IonPage>
     )
   }

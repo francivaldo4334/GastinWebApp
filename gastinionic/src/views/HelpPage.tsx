@@ -13,15 +13,20 @@ import {
   IonToolbar,
 } from "@ionic/vue";
 import { defineComponent } from "vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   setup() {
+    const route = useRoute()
     return () => (
       <IonPage>
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonBackButton />
+              {
+                route.path !== "/" &&
+                <IonBackButton defaultHref="/" />
+              }
             </IonButtons>
           </IonToolbar>
         </IonHeader>

@@ -1,7 +1,6 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonModal, IonPopover, IonRow, IonText, IonTitle, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonPopover, IonRow, IonText, IonToolbar } from "@ionic/vue";
 import { ellipsisVertical } from "ionicons/icons";
 import { defineComponent, onMounted, ref } from "vue";
-import { ModalCategoryForm } from "./ModalCategoryForm";
 import { WidgetValidityRange } from "./WidgetValidityRange";
 
 import { Pie } from "vue-chartjs";
@@ -9,15 +8,19 @@ import {
   Chart as ChartJS, Title, Tooltip, ArcElement,
 } from "chart.js";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+import { useModalStore } from "@/stores/useModalStore";
 
 ChartJS.register(Title, Tooltip, ArcElement);
 export const WidgetPieChart = defineComponent({
   setup() {
     const repo = FactoryRepositoryDomain.getRepository("metrics")
     const isOpenMoreOptions = ref(false)
-    const isOpenModalCategory = ref(false)
     const initValidity = ref()
     const endValidity = ref()
+
+    const {
+      onOpenCategory
+    } = useModalStore()
 
 
     const pieItems = ref<{
@@ -61,19 +64,19 @@ export const WidgetPieChart = defineComponent({
             isOpen={isOpenMoreOptions.value}
             trigger="widget-pie-chart-more-options"
           >
-            <IonContent
-              onClick={() => { isOpenMoreOptions.value = false }}
-            >
+            <IonContent >
               <IonItem
                 button
                 routerLink="/categories"
+                onClick={() => { isOpenMoreOptions.value = false }}
               >
                 Ver Categorias
               </IonItem>
               <IonItem
                 button
                 onClick={() => {
-                  isOpenModalCategory.value = true
+                  isOpenMoreOptions.value = false
+                  onOpenCategory()
                 }}
               >
                 Adicionar categoria
@@ -123,17 +126,6 @@ export const WidgetPieChart = defineComponent({
           </IonRow>
         </IonGrid>
       </IonCardContent>
-      <IonModal
-        isOpen={isOpenModalCategory.value}
-      >
-        <IonContent>
-          <ModalCategoryForm
-            onClose={() => {
-              isOpenModalCategory.value = false
-            }}
-          />
-        </IonContent>
-      </IonModal>
     </IonCard>)
   }
 })

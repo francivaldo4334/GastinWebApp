@@ -1,31 +1,29 @@
-import { ModalExpenditureForm } from "@/components/ModalExpenditureForm";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { RecordDomainModel } from "@/domain/models/RecordDomainModel";
+import { useModalStore } from "@/stores/useModalStore";
 import { formatMoney } from "@/utils/formatMoney";
 import { IonBackButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonModal, IonPage, IonText, IonTitle, IonToolbar } from "@ionic/vue";
 import { addOutline, chevronBackOutline, trashOutline } from "ionicons/icons";
+import { storeToRefs } from "pinia";
 import { defineComponent, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   setup() {
-    const isOpenModalExpenditure = ref(false)
+    const route = useRoute()
     const expenditureDetails = ref()
 
     const repo = FactoryRepositoryDomain.getRepository("expenditure")
     const expenditures = ref<RecordDomainModel[]>([])
+    const modalStore = useModalStore()
+    const {
+      isOpenExpenditure: isOpenModalExpenditure,
+    } = storeToRefs(modalStore)
 
-    const onCloseModalExpenditures = () => {
-      isOpenModalExpenditure.value = false
-    }
-    const onCloseModalExpenditureDetails = () => {
-      expenditureDetails.value = undefined
-    }
-    const onOpenModalExpenditure = () => {
-      isOpenModalExpenditure.value = true
-    }
-    const onOpenModalExpenditureDetails = (data: any) => {
-      expenditureDetails.value = data
-    }
+    const {
+      onOpenExpenditure:onOpenModalExpenditure,
+      onOpenExpenditureDetails,
+    } = modalStore
 
     const loadList = async () => {
       const list = await repo.list()
@@ -57,7 +55,10 @@ export default defineComponent({
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonBackButton />
+              {
+                route.path !== "/" &&
+                <IonBackButton defaultHref="/" />
+              }
             </IonButtons>
             <IonTitle>
               Despesas
@@ -81,7 +82,7 @@ export default defineComponent({
                   <IonItem
                     button
                     onClick={() => {
-                      onOpenModalExpenditureDetails(it)
+                      onOpenExpenditureDetails(it)
                     }}
                   >
                     <IonLabel>
@@ -111,26 +112,6 @@ export default defineComponent({
             }
           </IonList>
         </IonContent>
-        <IonModal
-          isOpen={isOpenModalExpenditure.value}
-          backdropDismiss={false}
-        >
-          <IonContent>
-            <ModalExpenditureForm
-              onClose={onCloseModalExpenditures}
-            />
-          </IonContent>
-        </IonModal>
-        <IonModal
-          isOpen={!!expenditureDetails.value}
-        >
-          <IonContent>
-            <ModalExpenditureForm
-              onClose={onCloseModalExpenditureDetails}
-              details={expenditureDetails.value}
-            />
-          </IonContent>
-        </IonModal>
       </IonPage>
     )
   }

@@ -3,13 +3,21 @@ import { RouteRecordRaw } from 'vue-router';
 import HelpPage from '../views/HelpPage'
 import ExpenditurePage from '../views/ExpenditurePage'
 import ReceiptsPage from '../views/ReceiptsPage'
+import AppLayout from '@/layouts/AppLayout';
+import HomePage from '@/views/HomePage';
 
 const routes: Array<RouteRecordRaw> = [
-  { path: '/', component: () => import("../views/HomePage"), name: "home" },
-  { path: '/help', component: HelpPage, name: "help" },
-  { path: "/categories", component: () => import("../views/CategoriesPage"), name: "categories" },
-  { path: "/expenditures", component: ExpenditurePage, name: "expenditures" },
-  { path: "/receipts", component: ReceiptsPage, name: "receipts" }
+  {
+    path: '/',
+    component: AppLayout,
+    children: [
+      { path: '', component: () => HomePage, name: "home" },
+      { path: 'help', component: HelpPage, name: "help" },
+      { path: 'categories', component: () => import("../views/CategoriesPage"), name: "categories" },
+      { path: 'expenditures', component: ExpenditurePage, name: "expenditures" },
+      { path: 'receipts', component: ReceiptsPage, name: "receipts" }
+    ]
+  }
 ]
 
 const router = createRouter({
