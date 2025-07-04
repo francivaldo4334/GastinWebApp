@@ -4,6 +4,7 @@ import { WidgetValidityRange } from "./WidgetValidityRange";
 import { formatMoney } from "@/utils/formatMoney";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { useModalStore } from "@/stores/useModalStore";
+import { storeToRefs } from "pinia";
 
 export const WidgetAccountBalance = defineComponent({
   setup() {
@@ -14,10 +15,12 @@ export const WidgetAccountBalance = defineComponent({
     const spendValue = ref(0)
     const currentBalace = ref(0)
 
+    const modalStore = useModalStore()
+
     const {
       isOpenReceipt,
       isOpenExpenditure,
-    } = useModalStore()
+    } = storeToRefs(modalStore)
 
     const loadData = async () => {
       const initDatestring = initValidity.value
