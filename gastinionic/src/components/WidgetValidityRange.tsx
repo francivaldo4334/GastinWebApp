@@ -31,11 +31,9 @@ export const WidgetValidityRange = defineComponent({
 
     return () => (
       <IonItem>
-        <IonButtons 
+        <IonButtons
           slot="end"
-          style={{
-            "gap": "0.5rem"
-          }}
+          style={{ "gap": "0.5rem" }}
         >
           <IonText>Período de</IonText>
           <IonDatetimeButton
@@ -57,6 +55,13 @@ export const WidgetValidityRange = defineComponent({
                 return
               props.setInitValidity(value)
             }}
+            formatOptions={{
+              date: {
+                month: "2-digit",
+                year: "numeric",
+                day: "2-digit",
+              }
+            }}
           />
         </IonModal>
         <IonModal keepContentsMounted >
@@ -70,6 +75,13 @@ export const WidgetValidityRange = defineComponent({
               if (typeof value != "string")
                 return
               props.setEndValidity(value)
+            }}
+            formatOptions={{
+              date: {
+                month: "2-digit",
+                year: "numeric",
+                day: "2-digit",
+              }
             }}
           />
         </IonModal>

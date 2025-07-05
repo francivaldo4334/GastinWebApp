@@ -33,7 +33,11 @@ import '@ionic/vue/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import { StatusBar, Style } from "@capacitor/status-bar"
+
 import { createPinia } from "pinia"
+
+StatusBar.setOverlaysWebView({ overlay: false })
 
 const pinia = createPinia()
 const app = createApp(App)
