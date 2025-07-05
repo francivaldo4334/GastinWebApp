@@ -5,6 +5,7 @@ import { ModalReceiptForm } from "@/components/ModalReceiptForm";
 import { IonContent, IonModal } from "@ionic/vue";
 import { useModalStore } from "@/stores/useModalStore";
 import { storeToRefs } from "pinia";
+import { ModalInportOfxForm } from "@/components/ModalInportOfxForm";
 
 export default defineComponent({
   setup(_, { slots }) {
@@ -17,6 +18,7 @@ export default defineComponent({
       isOpenCategoryDetails,
       isOpenExpenditureDetails,
       isOpenReceiptDetails,
+      isOpenImportOfx,
     } = storeToRefs(modalStore)
 
     const {
@@ -26,6 +28,7 @@ export default defineComponent({
       onCloseCategoryDetails,
       onCloseExpenditureDetails,
       onCloseReceiptDetails,
+      onCloseImportOfx,
     } = modalStore
     return () => (
       <>
@@ -62,6 +65,7 @@ export default defineComponent({
         </IonModal>
         <IonModal
           isOpen={!!isOpenCategoryDetails.value}
+          backdropDismiss={false}
         >
           <IonContent>
             <ModalCategoryForm
@@ -72,6 +76,7 @@ export default defineComponent({
         </IonModal>
         <IonModal
           isOpen={!!isOpenExpenditureDetails.value}
+          backdropDismiss={false}
         >
           <IonContent>
             <ModalExpenditureForm
@@ -84,11 +89,22 @@ export default defineComponent({
 
         <IonModal
           isOpen={!!isOpenReceiptDetails.value}
+          backdropDismiss={false}
         >
           <IonContent>
             <ModalReceiptForm
               onClose={onCloseReceiptDetails}
               details={isOpenReceiptDetails.value}
+            />
+          </IonContent>
+        </IonModal>
+        <IonModal
+          isOpen={isOpenImportOfx.value}
+          backdropDismiss={false}
+        >
+          <IonContent>
+            <ModalInportOfxForm
+              onClose={onCloseImportOfx}
             />
           </IonContent>
         </IonModal>

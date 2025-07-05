@@ -24,6 +24,7 @@ import {
   chevronUpCircle,
   addCircleOutline,
   removeCircleOutline,
+  fileTrayOutline,
 } from "ionicons/icons"
 import { defineComponent } from "vue";
 
@@ -35,6 +36,7 @@ export default defineComponent({
       onOpenReceipt,
       onOpenExpenditure,
       onOpenCategory,
+      onOpenImportOfx,
     } = modalStore
 
     return () => (
@@ -86,7 +88,19 @@ export default defineComponent({
                   Adicionar Receita
                 </IonLabel>
               </IonItem>
-
+              <IonItem
+                button
+                onClick={onOpenImportOfx}
+              >
+                <IonIcon
+                  icon={fileTrayOutline}
+                  slot="start"
+                  aria-hidden
+                />
+                <IonLabel>
+                  Importar Ofx
+                </IonLabel>
+              </IonItem>
               <IonItem
                 routerLink="/expenditures"
               >

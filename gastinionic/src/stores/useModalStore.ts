@@ -8,11 +8,14 @@ export const useModalStore = defineStore("modals", () => {
   const isOpenExpenditureDetails = ref(false)
   const isOpenCategory = ref(false)
   const isOpenCategoryDetails = ref(false)
+  const isOpenImportOfx = ref(false)
 
   const onOpenReceipt = () => isOpenReceipt.value = true
   const onCloseReceipt = () => isOpenReceipt.value = false
   const onOpenReceiptDetails = (data: any) => isOpenReceiptDetails.value = data
   const onCloseReceiptDetails = () => isOpenReceiptDetails.value = false
+  const onOpenImportOfx = () => isOpenImportOfx.value = true
+  const onCloseImportOfx = () => isOpenImportOfx.value = false
 
   const onOpenExpenditure = () => isOpenExpenditure.value = true
   const onCloseExpenditure = () => isOpenExpenditure.value = false
@@ -28,12 +31,15 @@ export const useModalStore = defineStore("modals", () => {
     isOpenReceipt,
     isOpenExpenditure,
     isOpenCategory,
+    isOpenImportOfx,
     onOpenReceipt,
     onCloseReceipt,
     onOpenExpenditure,
     onCloseExpenditure,
     onOpenCategory,
     onCloseCategory,
+    onOpenImportOfx,
+    onCloseImportOfx,
 
     isOpenReceiptDetails,
     isOpenExpenditureDetails,
