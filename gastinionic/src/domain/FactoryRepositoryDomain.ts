@@ -5,14 +5,16 @@ import { CategoryRepositoryData } from "@/data/repositories/CategoryRepositoryDa
 import { ExpenditureRepositoryDomain } from "./repositories/ExpenditureRepositoryDomain"
 import { CategoryRepositoryDomain } from "./repositories/CategoryRepositoryDomain"
 import { MetricsRepositoryDomain } from "./repositories/MetricsRepositoryDomain"
+import { ImportDataRepositoryDomain } from "./repositories/ImportDataRepositoryDomain"
 
-type TypeRepository = "receipt" | "expenditure" | "category" | "metrics";
+type TypeRepository = "receipt" | "expenditure" | "category" | "metrics" | "importdata";
 
 type RepositoryMap = {
   receipt: ReceiptRepositoryDomain;
   expenditure: ExpenditureRepositoryDomain;
   category: CategoryRepositoryDomain;
   metrics: MetricsRepositoryDomain;
+  importdata: ImportDataRepositoryDomain;
 };
 
 export class FactoryRepositoryDomain {
@@ -33,7 +35,8 @@ export class FactoryRepositoryDomain {
         receiptRepository: this.getRepository("receipt"),
         expenditureRepository: this.getRepository("expenditure"),
         categoryRepository: this.getRepository("category"),
-      })
+      }),
+      importdata: () => new ImportDataRepositoryDomain(),
     };
 
     const factory = factories[type];

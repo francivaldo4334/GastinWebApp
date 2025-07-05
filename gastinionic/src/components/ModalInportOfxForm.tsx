@@ -3,6 +3,7 @@ import { defineComponent } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
 import { FormFileOfxField } from "./FormFileOfxField";
+import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 
 export const ModalInportOfxForm = defineComponent({
   props: {
@@ -19,14 +20,20 @@ export const ModalInportOfxForm = defineComponent({
     onClose: () => void;
     details?: any
   }) {
-    const formControl = useForm({
-      schema: z.object({
-        file: z.custom<File>()
-      })
+    const repo = FactoryRepositoryDomain.getRepository("importdata")
+    const schema = z.object({
+      file: z.custom<File>()
     })
+    const formControl = useForm({ schema })
+    const onImportOfx = (data: z.output<typeof schema>) => {
+      repo.importOfx(data.file)
+    }
     return () => (
       <IonContent>
-        <Form>
+        <Form
+          control={formControl}
+          onSubmit={onImportOfx}
+        >
           <IonHeader>
             <IonToolbar>
               <IonButtons slot="start" >
