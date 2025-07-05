@@ -35,11 +35,9 @@ export const WidgetValidityRange = defineComponent({
           slot="end"
           style={{ "gap": "0.5rem" }}
         >
-          <IonText>Período de</IonText>
           <IonDatetimeButton
             datetime={initValidityId}
           />
-          <IonText>até</IonText>
           <IonDatetimeButton
             datetime={endValidityId}
           />
