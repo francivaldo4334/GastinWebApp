@@ -20,7 +20,7 @@ export class ValidityRepositoryData implements IRepositoryData<ValidityDataModel
   }
 
   async edit(id: number, m: ValidityDataModel): Promise<ValidityDataModel> {
-    const model  = mapFromValidityDataModel(m)
+    const model = mapFromValidityDataModel(m)
     model.id = id
     await Database.instance.validities.update(id, model);
     const it = await Database.instance.validities.get(id);
