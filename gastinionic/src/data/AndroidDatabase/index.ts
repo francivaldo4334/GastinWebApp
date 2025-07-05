@@ -42,10 +42,10 @@ export class AndroidDatabase implements InterfaceDatabase {
           {
             toVersion: 3,
             statements: [
+              CREATE_IF_NOT_EXISTS_TB_VALIDITY,
               "ALTER TABLE TB_REGISTRO ADD COLUMN SALE_DATE INTEGER DEFAULT NULL;",
               "ALTER TABLE TB_REGISTRO ADD COLUMN UNIQUE_ID INTEGER DEFAULT NULL;",
               "ALTER TABLE TB_REGISTRO ADD COLUMN VALIDITY_ID INTEGER DEFAULT NULL;",
-              CREATE_IF_NOT_EXISTS_TB_VALIDITY,
               `
               INSERT INTO TB_VALIDITY (REGISTRO_ID, IS_EVER_DAYS, START_DATE, END_DATE)
               SELECT ID,IS_EVER_DAYS,START_DATE,END_DATE FROM TB_REGISTRO
