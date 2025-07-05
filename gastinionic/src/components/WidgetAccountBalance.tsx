@@ -73,9 +73,11 @@ export const WidgetAccountBalance = defineComponent({
           style="padding-bottom: 1.5rem;"
         >
           <IonRow>
-            <IonCol>
+            <IonCol
+              style="padding: 0;"
+            >
               <IonCard
-                style="height: 100%;"
+                style="height: 100%;margin: 0;"
               >
                 <IonItem
                   button
@@ -97,9 +99,11 @@ export const WidgetAccountBalance = defineComponent({
                 </IonItem>
               </IonCard>
             </IonCol>
-            <IonCol>
+            <IonCol
+              style="padding: 0;"
+            >
               <IonCard
-                style="height: 100%;"
+                style="height: 100%;margin: 0;"
               >
                 <IonCardHeader>
                   <IonCardSubtitle>

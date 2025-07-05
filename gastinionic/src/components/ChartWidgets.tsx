@@ -6,7 +6,7 @@ import { WidgetBarChart } from "./WidgetBarChart";
 
 export const ChartWidgets = defineComponent({
   setup() {
-    return () => (<IonContent class="ion-padding">
+    return () => (<IonContent>
       <WidgetAccountBalance />
       <WidgetPieChart />
       <WidgetBarChart />
