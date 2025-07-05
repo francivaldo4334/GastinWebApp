@@ -1,6 +1,7 @@
 import { Capacitor } from "@capacitor/core";
 import { DeixieDatabase } from "./DeixieDatabase"
 import { InterfaceDatabase, Table } from "./InterfaceDatabase";
+import { AndroidDatabase } from "./AndroidDatabase";
 export class Database implements InterfaceDatabase {
   private static _instance: Database
 
@@ -14,6 +15,8 @@ export class Database implements InterfaceDatabase {
       switch (Capacitor.getPlatform()) {
         case "web":
           this._instance = new DeixieDatabase()
+        case "android":
+          this._instance = new AndroidDatabase()
       }
 
     }
