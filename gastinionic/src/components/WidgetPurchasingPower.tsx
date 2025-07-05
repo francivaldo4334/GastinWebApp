@@ -1,11 +1,13 @@
 import { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle } from "@ionic/vue";
-import { defineComponent, onMounted, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import { WidgetSelectPeriodFormat } from "./WidgetSelectPeriodFormat";
 import { WidgetSelectPeriod } from "./WidgetSelectPeriod";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+import { onMounted } from "vue";
 
-export const WidgetCostOfLivingGrowth = defineComponent({
+export const WidgetPurchasingPower = defineComponent({
   setup() {
+
     const repo = FactoryRepositoryDomain.getRepository("metrics")
 
     const selectedFormat = ref<"month" | "year">("month")
@@ -28,7 +30,7 @@ export const WidgetCostOfLivingGrowth = defineComponent({
         type = selectedFormat.value,
         periodValue = new Date(selectedDate.value)
       } = params || {}
-      const data = await repo.costOfLivingGrowth({
+      const data = await repo.purchasingPower({
         type, periodValue
       })
       if (data)
@@ -46,7 +48,7 @@ export const WidgetCostOfLivingGrowth = defineComponent({
     return () => (
       <IonCard>
         <WidgetSelectPeriodFormat
-          title={`Inflação / ${mapPeriod[selectedFormat.value]}`}
+          title={`Poder de compra / ${mapPeriod[selectedFormat.value]}`}
           setFormat={(value: "month" | "year") => {
             selectedFormat.value = value;
             loadData()

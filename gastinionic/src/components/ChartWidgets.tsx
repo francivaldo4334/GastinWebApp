@@ -4,6 +4,7 @@ import { WidgetAccountBalance } from "./WidgetAccountBalance";
 import { WidgetPieChart } from "./WidgetPieChart";
 import { WidgetBarChart } from "./WidgetBarChart";
 import { WidgetCostOfLivingGrowth } from "./WidgetCostOfLivingGrowth";
+import { WidgetPurchasingPower } from "./WidgetPurchasingPower";
 
 export const ChartWidgets = defineComponent({
   setup() {
@@ -12,6 +13,7 @@ export const ChartWidgets = defineComponent({
       <WidgetPieChart />
       <WidgetBarChart />
       <WidgetCostOfLivingGrowth />
+      <WidgetPurchasingPower />
     </IonContent>)
   }
 })
