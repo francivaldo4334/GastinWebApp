@@ -17,6 +17,15 @@ export class AndroidDatabase implements InterfaceDatabase {
 
   static async getDb() {
     if (!AndroidDatabase.db) {
+      const CREATE_IF_NOT_EXISTS_TB_VALIDITY = `
+        CREATE TABLE IF NOT EXISTS TB_VALIDITY (
+          ID INTEGER PRIMARY KEY AUTOINCREMENT,
+          IS_EVER_DAYS INTEGER NOT NULL,
+          START_DATE INTEGER,
+          END_DATE INTEGER,
+          REGISTRO_ID INTEGER
+        );
+      `
       const sqlite = new SQLiteConnection(CapacitorSQLite);
       await CapacitorSQLite.addUpgradeStatement({
         database: "GASTIN_DATABASE",
@@ -35,6 +44,18 @@ export class AndroidDatabase implements InterfaceDatabase {
             statements: [
               "ALTER TABLE TB_REGISTRO ADD COLUMN SALE_DATE INTEGER DEFAULT NULL;",
               "ALTER TABLE TB_REGISTRO ADD COLUMN UNIQUE_ID INTEGER DEFAULT NULL;",
+              "ALTER TABLE TB_REGISTRO ADD COLUMN VALIDITY_ID INTEGER DEFAULT NULL;",
+              CREATE_IF_NOT_EXISTS_TB_VALIDITY,
+              `
+              INSERT INTO TB_VALIDITY (REGISTRO_ID, IS_EVER_DAYS, START_DATE, END_DATE)
+              SELECT ID,IS_EVER_DAYS,START_DATE,END_DATE FROM TB_REGISTRO
+              WHERE IS_RECURRENT = 1;
+              `,
+              `
+              UPDATE TB_REGISTRO SET VALIDITY_ID = (
+                SELECT v.ID FROM TB_VALIDITY v WHERE v.REGISTRO_ID = TB_REGISTRO.ID
+              );
+              `
             ]
           }
         ]
@@ -84,14 +105,7 @@ export class AndroidDatabase implements InterfaceDatabase {
           FOREIGN KEY (VALIDITY_ID) REFERENCES TB_VALIDITY(ID) ON DELETE CASCADE
         );
       `);
-      await database.execute(`
-        CREATE TABLE IF NOT EXISTS TB_VALIDITY (
-          ID INTEGER PRIMARY KEY AUTOINCREMENT,
-          IS_EVER_DAYS INTEGER NOT NULL,
-          START_DATE INTEGER,
-          END_DATE INTEGER
-        );
-      `)
+      await database.execute(CREATE_IF_NOT_EXISTS_TB_VALIDITY)
 
       AndroidDatabase.db = database
     }
