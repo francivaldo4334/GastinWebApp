@@ -1,4 +1,4 @@
-import { addDays, addMonths, endOfDay, endOfMonth, endOfYear, format, getDay, getMonth, startOfDay, startOfMonth, startOfYear } from "date-fns";
+import { addDays, addMonths, addYears, endOfDay, endOfMonth, endOfYear, format, getDay, getMonth, startOfDay, startOfMonth, startOfYear } from "date-fns";
 import { CategoryRepositoryDomain } from "./CategoryRepositoryDomain";
 import { ExpenditureRepositoryDomain } from "./ExpenditureRepositoryDomain";
 import { IRepositoryDomain } from "./IRepositoryDomain";
@@ -117,5 +117,102 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     }
 
     return dataChart
+  }
+  async costOfLivingGrowth(params: {
+    type: "month" | "year";
+    periodValue: Date;
+  }) {
+    const { type, periodValue } = params
+
+    let currentPeriodInit: Date;
+    let currentPeriodEnd: Date;
+    let oldPeriodInit: Date;
+    let oldPeriodEnd: Date;
+
+    if (type === "month") {
+      const initMonth = startOfMonth(periodValue)
+      const endMonth = endOfMonth(periodValue)
+
+      currentPeriodInit = startOfDay(initMonth)
+      currentPeriodEnd = endOfDay(endMonth)
+
+      oldPeriodInit = addMonths(currentPeriodInit, -1)
+      oldPeriodEnd = addMonths(currentPeriodEnd, -1)
+    }
+    else {
+      const initYear = startOfYear(periodValue)
+      const endYear = endOfYear(periodValue)
+
+      currentPeriodInit = startOfDay(initYear)
+      currentPeriodEnd = endOfDay(endYear)
+
+      oldPeriodInit = addYears(currentPeriodInit, -1)
+      oldPeriodEnd = addYears(currentPeriodEnd, -1)
+    }
+
+
+    const currentSpends = await this.expenditureRepository.range(currentPeriodInit, currentPeriodEnd)
+    const oldSpends = await this.expenditureRepository.range(oldPeriodInit, oldPeriodEnd)
+
+    const currentTotal = currentSpends.reduce((sum, { value }) => sum + value, 0);
+    const oldTotal = oldSpends.reduce((sum, { value }) => sum + value, 0);
+
+    if (oldTotal === 0) {
+      return currentTotal === 0 ? 0 : null;
+    }
+
+    const result = ((currentTotal - oldTotal) / oldTotal) * 100
+
+    return Math.floor(result)
+  }
+  async purchasingPower(params: {
+    type: "month" | "year";
+    periodValue: Date;
+  }) {
+    const { type, periodValue } = params
+
+    let currentPeriodInit: Date;
+    let currentPeriodEnd: Date;
+    let oldPeriodInit: Date;
+    let oldPeriodEnd: Date;
+
+    if (type === "month") {
+      const initMonth = startOfMonth(periodValue)
+      const endMonth = endOfMonth(periodValue)
+
+      currentPeriodInit = startOfDay(initMonth)
+      currentPeriodEnd = endOfDay(endMonth)
+
+      oldPeriodInit = addMonths(currentPeriodInit, -1)
+      oldPeriodEnd = addMonths(currentPeriodEnd, -1)
+    }
+    else {
+      const initYear = startOfYear(periodValue)
+      const endYear = endOfYear(periodValue)
+
+      currentPeriodInit = startOfDay(initYear)
+      currentPeriodEnd = endOfDay(endYear)
+
+      oldPeriodInit = addYears(currentPeriodInit, -1)
+      oldPeriodEnd = addYears(currentPeriodEnd, -1)
+    }
+
+
+    const currentSpends = await this.expenditureRepository.range(currentPeriodInit, currentPeriodEnd)
+    const currentReceipt = await this.receiptRepository.range(currentPeriodInit, currentPeriodEnd)
+    const oldSpends = await this.expenditureRepository.range(oldPeriodInit, oldPeriodEnd)
+    const oldReceipt = await this.receiptRepository.range(oldPeriodInit, oldPeriodEnd)
+
+    const currentSpendTotal = currentSpends.reduce((sum, { value }) => sum + value, 0);
+    const oldSpendTotal = oldSpends.reduce((sum, { value }) => sum + value, 0);
+    const currentReceiptTotal = currentReceipt.reduce((sum, { value }) => sum + value, 0);
+    const oldReceiptTotal = oldReceipt.reduce((sum, { value }) => sum + value, 0);
+
+    const varReceipt = (currentReceiptTotal - oldReceiptTotal) / oldReceiptTotal
+    const varSpend = (currentSpendTotal - oldSpendTotal) / oldSpendTotal
+
+    const result = ((1 + varReceipt) / (1 + varSpend)) - 1
+
+    return Math.floor(result * 100)
   }
 }

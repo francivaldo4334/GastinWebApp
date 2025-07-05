@@ -1,5 +1,4 @@
-import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonIcon, IonItem, IonModal, IonPopover, IonRow, IonToolbar } from "@ionic/vue";
-import { ellipsisVertical } from "ionicons/icons";
+import { IonCard, IonCol, IonGrid, IonRow } from "@ionic/vue";
 import { computed, defineComponent, onMounted, ref, watch } from "vue";
 
 import {
@@ -10,6 +9,8 @@ import { Bar } from "vue-chartjs";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { useModalStore } from "@/stores/useModalStore";
 import { storeToRefs } from "pinia";
+import { WidgetSelectPeriod } from "./WidgetSelectPeriod";
+import { WidgetSelectPeriodFormat } from "./WidgetSelectPeriodFormat";
 
 ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale);
 
@@ -18,16 +19,13 @@ export const WidgetBarChart = defineComponent({
 
     const repo = FactoryRepositoryDomain.getRepository("metrics")
 
-    const isOpenMoreOptions = ref(false)
     const selectedFormat = ref<"month" | "year">("month")
     const datenow = new Date().toISOString()
+    const selectedDate = ref<string>(datenow)
 
-    const selectedMonth = ref<string>(datenow)
-    const selectedYear = ref<string>(datenow)
     const metrics = ref<{ value: string; label: string; }[]>([])
 
     const modalStore = useModalStore()
-
     const {
       isOpenExpenditure,
     } = storeToRefs(modalStore)
@@ -38,17 +36,15 @@ export const WidgetBarChart = defineComponent({
     }
 
     const loadData = async (params?: {
-      month: string;
-      year: string;
+      date: string;
       mode: "month" | "year";
     }) => {
       const {
-        month = selectedMonth.value,
-        year = selectedYear.value,
+        date = selectedDate.value,
         mode = selectedFormat.value
       } = params || {}
 
-      const periodValue = mode === "month" ? month : year
+      const periodValue = date
 
       if (!periodValue)
         return
@@ -65,8 +61,8 @@ export const WidgetBarChart = defineComponent({
       loadData()
     })
 
-    watch([selectedYear, selectedMonth, selectedFormat, isOpenExpenditure], ([year, month, mode]) => {
-      loadData({ month,year,mode })
+    watch([selectedDate, selectedFormat, isOpenExpenditure], ([date, mode]) => {
+      loadData({ date, mode })
     })
 
 
@@ -81,97 +77,21 @@ export const WidgetBarChart = defineComponent({
     }));
     return () => (
       <IonCard>
-        <IonToolbar>
-          <IonCardHeader>
-            <IonCardTitle>Evolução / {mapPeriod[selectedFormat.value]}</IonCardTitle>
-          </IonCardHeader>
-          <IonButtons slot="end">
-            <IonButton
-              id="widget-bar-chart-more-options"
-              onClick={() => {
-                isOpenMoreOptions.value = true
-              }}
-            >
-              <IonIcon
-                icon={ellipsisVertical}
-              />
-            </IonButton>
-            <IonPopover
-              trigger="widget-bar-chart-more-options"
-              isOpen={isOpenMoreOptions.value}
-            >
-              <IonContent
-                onClick={() => {
-                  isOpenMoreOptions.value = false
-                }}
-              >
-                <IonItem
-                  button
-                  onClick={() => {
-                    selectedFormat.value = "month"
-                    loadData()
-                  }}
-                >Mostar por mês</IonItem>
-                <IonItem
-                  button
-                  onClick={() => {
-                    selectedFormat.value = "year"
-                    loadData()
-                  }}
-                >Mostar por ano</IonItem>
-              </IonContent>
-            </IonPopover>
-          </IonButtons>
-        </IonToolbar>
-        <IonItem>
-          <IonDatetimeButton
-            slot="end"
-            datetime="widget-bar-chart-calendar-select-month"
-            style={selectedFormat.value === "month" ?
-              "display: flex;"
-              :
-              "display: none;"
-            }
-          />
-          <IonDatetimeButton
-            slot="end"
-            datetime="widget-bar-chart-calendar-select-year"
-            style={selectedFormat.value === "year" ?
-              "display: flex;"
-              :
-              "display: none;"
-            }
-          />
-          <IonModal keepContentsMounted>
-            <IonDatetime
-              id="widget-bar-chart-calendar-select-month"
-              presentation="month"
-              value={selectedMonth.value}
-              onIonChange={e => {
-                const value = e.detail.value
-                if (typeof value != "string")
-                  return
-                selectedMonth.value = value
-                loadData()
-              }}
-            />
-          </IonModal>
-          <IonModal keepContentsMounted>
-            <IonDatetime
-              id="widget-bar-chart-calendar-select-year"
-              presentation="year"
-              value={selectedYear.value}
-              onIonChange={e => {
-                const value = e.detail.value
-                if (typeof value != "string")
-                  return
-                selectedYear.value = value
-                loadData()
-              }}
-            />
-          </IonModal>
-        </IonItem>
-
+        <WidgetSelectPeriodFormat
+          title={`Evolução / ${mapPeriod[selectedFormat.value]}`}
+          setFormat={(value: "month" | "year") => {
+            selectedFormat.value = value;
+            loadData()
+          }}
+        />
+        <WidgetSelectPeriod
+          format={selectedFormat.value}
+          value={selectedDate.value}
+          setValue={(value: string) => {
+            selectedDate.value = value
+            loadData()
+          }}
+        />
         <IonGrid>
           <IonRow>
             <IonCol>

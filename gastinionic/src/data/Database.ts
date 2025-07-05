@@ -11,12 +11,12 @@ export class Database implements InterfaceDatabase {
 
   static get instance(): Database {
     if (!this._instance) {
-
-      switch (Capacitor.getPlatform()) {
-        case "web":
-          this._instance = new DeixieDatabase()
-        case "android":
-          this._instance = new AndroidDatabase()
+      const platform = Capacitor.getPlatform()
+      if (platform == "android") {
+        this._instance = new AndroidDatabase()
+      }
+      else {
+        this._instance = new DeixieDatabase()
       }
 
     }

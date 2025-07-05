@@ -3,6 +3,7 @@ import { defineComponent } from "vue";
 import { WidgetAccountBalance } from "./WidgetAccountBalance";
 import { WidgetPieChart } from "./WidgetPieChart";
 import { WidgetBarChart } from "./WidgetBarChart";
+import { WidgetCostOfLivingGrowth } from "./WidgetCostOfLivingGrowth";
 
 export const ChartWidgets = defineComponent({
   setup() {
@@ -10,6 +11,7 @@ export const ChartWidgets = defineComponent({
       <WidgetAccountBalance />
       <WidgetPieChart />
       <WidgetBarChart />
+      <WidgetCostOfLivingGrowth />
     </IonContent>)
   }
 })
