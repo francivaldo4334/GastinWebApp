@@ -38,6 +38,7 @@ export const WidgetCostOfLivingGrowth = defineComponent({
       const data = await repo.costOfLivingGrowth({
         type, periodValue
       })
+      console.log("ok", data)
       if (data)
         metricValue.value = data
     }
