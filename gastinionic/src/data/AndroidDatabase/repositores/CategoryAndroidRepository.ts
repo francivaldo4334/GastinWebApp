@@ -6,14 +6,17 @@ import { CategoriaToCategoryModel, CategoryModelToCategoria, isoStringToNumber }
 export class CategoryAndroidRepository implements Table {
   async add(data: any): Promise<any> {
     const category = CategoryModelToCategoria(data)
+    const datenow = new Date()
+    const datestring = datenow.toISOString()
 
     const result = await AndroidDatabase.db.run(
-      `INSERT INTO TB_CATEGORIA (NAME, DESCRIPTION, COLOR, CREATE_AT) values (?,?,?);`,
+      `INSERT INTO TB_CATEGORIA (NAME, DESCRIPTION, COLOR, CREATE_AT, TOTAL) values (?,?,?,?,?);`,
       [
         category.NAME,
         category.DESCRIPTION,
         category.COLOR,
-        isoStringToNumber(new Date().toISOString()),
+        isoStringToNumber(datestring),
+        0,
       ]
     )
 
@@ -23,7 +26,7 @@ export class CategoryAndroidRepository implements Table {
 
     const categoryCreated = await this.get(lastId)
 
-    return CategoriaToCategoryModel(categoryCreated)
+    return categoryCreated
   }
   async get(id: any): Promise<any> {
     const queryResult = await AndroidDatabase.db.query(

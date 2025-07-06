@@ -29,7 +29,7 @@ export const CategoriaToCategoryModel = (data: Categoria): CategoryModel => {
     id: data.ID,
     title: data.NAME,
     description: data.DESCRIPTION,
-    color: NumberToColorString(data.COLOR)
+    color: (data.COLOR ? NumberToColorString(data.COLOR) : undefined)!
   }
 }
 
