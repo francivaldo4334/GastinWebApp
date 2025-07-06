@@ -20,6 +20,7 @@ export default defineComponent({
     const {
       onOpenReceipt: onOpenModalReceipt,
       onOpenReceiptDetails: onOpenModalReceiptDetails,
+      onLoadCharData,
     } = modalStore
 
     const repo = FactoryRepositoryDomain.getRepository("receipt")
@@ -33,6 +34,7 @@ export default defineComponent({
     const onRemoveReceipt = async (id: number) => {
       await repo.delete(id)
       await loadList()
+      onLoadCharData()
     }
 
     watch(chartDataLoaded, (it) => {

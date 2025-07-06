@@ -22,6 +22,7 @@ export default defineComponent({
     const {
       onOpenExpenditure: onOpenModalExpenditure,
       onOpenExpenditureDetails,
+      onLoadCharData,
     } = modalStore
 
     const loadList = async () => {
@@ -32,6 +33,7 @@ export default defineComponent({
     const onRemoveExpenditure = async (id: number) => {
       await repo.delete(id)
       await loadList()
+      onLoadCharData()
     }
 
     watch(chartDataLoaded, (it) => {

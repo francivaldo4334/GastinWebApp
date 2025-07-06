@@ -21,6 +21,7 @@ export default defineComponent({
     const {
       onOpenCategoryDetails: onOpenModalCategoryDetails,
       onOpenCategory: onOpenModalCategory,
+      onLoadCharData,
     } = modalStore
 
     const loadList = async () => {
@@ -31,6 +32,7 @@ export default defineComponent({
     const onRemoveCategory = async (id: number) => {
       await repo.delete(id)
       await loadList()
+      onLoadCharData()
     }
 
     watch(chartDataLoaded, (it) => {
