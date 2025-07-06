@@ -38,7 +38,6 @@ export const WidgetCostOfLivingGrowth = defineComponent({
       const data = await repo.costOfLivingGrowth({
         type, periodValue
       })
-      console.log("ok", data)
       if (data)
         metricValue.value = data
     }
@@ -79,7 +78,7 @@ export const WidgetCostOfLivingGrowth = defineComponent({
               Aumento em comparação com o período anterior
             </IonCardSubtitle>
             <IonCardTitle >
-              {metricValue.value} %
+              {metricValue.value.toFixed(2)} %
             </IonCardTitle>
           </IonCardHeader>
         </IonCard>

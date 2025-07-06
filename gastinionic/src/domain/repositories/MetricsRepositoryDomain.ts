@@ -163,56 +163,52 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
 
     const result = ((currentTotal - oldTotal) / oldTotal) * 100
 
-    return Math.floor(result)
+    return result
   }
   async purchasingPower(params: {
     type: "month" | "year";
     periodValue: Date;
   }) {
-    const { type, periodValue } = params
+    const { type, periodValue } = params;
 
-    let currentPeriodInit: Date;
-    let currentPeriodEnd: Date;
-    let oldPeriodInit: Date;
-    let oldPeriodEnd: Date;
+    let currentPeriodInit: Date, currentPeriodEnd: Date;
+    let oldPeriodInit: Date, oldPeriodEnd: Date;
 
     if (type === "month") {
-      const initMonth = startOfMonth(periodValue)
-      const endMonth = endOfMonth(periodValue)
-
-      currentPeriodInit = startOfDay(initMonth)
-      currentPeriodEnd = endOfDay(endMonth)
-
-      oldPeriodInit = addMonths(currentPeriodInit, -1)
-      oldPeriodEnd = addMonths(currentPeriodEnd, -1)
-    }
-    else {
-      const initYear = startOfYear(periodValue)
-      const endYear = endOfYear(periodValue)
-
-      currentPeriodInit = startOfDay(initYear)
-      currentPeriodEnd = endOfDay(endYear)
-
-      oldPeriodInit = addYears(currentPeriodInit, -1)
-      oldPeriodEnd = addYears(currentPeriodEnd, -1)
+      const init = startOfMonth(periodValue);
+      const end = endOfMonth(periodValue);
+      currentPeriodInit = startOfDay(init);
+      currentPeriodEnd = endOfDay(end);
+      oldPeriodInit = startOfDay(addMonths(init, -1));
+      oldPeriodEnd = endOfDay(addMonths(end, -1));
+    } else {
+      const init = startOfYear(periodValue);
+      const end = endOfYear(periodValue);
+      currentPeriodInit = startOfDay(init);
+      currentPeriodEnd = endOfDay(end);
+      oldPeriodInit = startOfDay(addYears(init, -1));
+      oldPeriodEnd = endOfDay(addYears(end, -1));
     }
 
+    const [currentSpends, currentReceipts, oldSpends, oldReceipts] = await Promise.all([
+      this.expenditureRepository.range(currentPeriodInit, currentPeriodEnd),
+      this.receiptRepository.range(currentPeriodInit, currentPeriodEnd),
+      this.expenditureRepository.range(oldPeriodInit, oldPeriodEnd),
+      this.receiptRepository.range(oldPeriodInit, oldPeriodEnd)
+    ]);
 
-    const currentSpends = await this.expenditureRepository.range(currentPeriodInit, currentPeriodEnd)
-    const currentReceipt = await this.receiptRepository.range(currentPeriodInit, currentPeriodEnd)
-    const oldSpends = await this.expenditureRepository.range(oldPeriodInit, oldPeriodEnd)
-    const oldReceipt = await this.receiptRepository.range(oldPeriodInit, oldPeriodEnd)
+    const currentSpendTotal = calcRecordtotal(currentPeriodInit, currentPeriodEnd, currentSpends);
+    const currentReceiptTotal = calcRecordtotal(currentPeriodInit, currentPeriodEnd, currentReceipts);
+    const oldSpendTotal = calcRecordtotal(oldPeriodInit, oldPeriodEnd, oldSpends);
+    const oldReceiptTotal = calcRecordtotal(oldPeriodInit, oldPeriodEnd, oldReceipts);
 
-    const currentSpendTotal = calcRecordtotal(currentPeriodInit, currentPeriodEnd, currentSpends)
-    const oldSpendTotal = calcRecordtotal(oldPeriodInit, oldPeriodEnd, oldSpends)
-    const currentReceiptTotal = calcRecordtotal(currentPeriodInit, currentPeriodEnd, currentReceipt);
-    const oldReceiptTotal = calcRecordtotal(oldPeriodInit, oldPeriodEnd, oldReceipt)
+    if (oldSpendTotal === 0 || oldReceiptTotal === 0) return 0;
 
-    const varReceipt = (currentReceiptTotal - oldReceiptTotal) / oldReceiptTotal
-    const varSpend = (currentSpendTotal - oldSpendTotal) / oldSpendTotal
+    const varReceipt = (currentReceiptTotal - oldReceiptTotal) / oldReceiptTotal;
+    const varSpend = (currentSpendTotal - oldSpendTotal) / oldSpendTotal;
 
-    const result = ((1 + varReceipt) / (1 + varSpend)) - 1
+    const result = ((1 + varReceipt) / (1 + varSpend)) - 1;
 
-    return Math.floor(result * 100)
+    return Math.floor(result * 100);
   }
 }
