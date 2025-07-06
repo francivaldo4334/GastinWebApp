@@ -1,14 +1,17 @@
 import { Table } from "@/data/InterfaceDatabase";
 import { AndroidDatabase } from "..";
-import { RecordModelToRegistro, RegistroToRecordModel } from "./converters";
+import { isoStringToNumber, RecordModelToRegistro, RegistroToRecordModel } from "./converters";
 import { Registro } from "../models";
 
 export class RecordAndroidRepository implements Table {
   async add(data: any): Promise<any> {
     const registro = RecordModelToRegistro(data)
 
+    const datenow = new Date()
+    const datestring = datenow.toISOString()
+
     const result = await AndroidDatabase.db.run(
-      `INSERT INTO TB_REGISTRO (VALUE, DESCRIPTION, CATEGORIA_FK, SALE_DATE, VALIDITY_ID, UNIQUE_ID) values (?,?,?,?,?,?);`,
+      `INSERT INTO TB_REGISTRO (VALUE, DESCRIPTION, CATEGORIA_FK, SALE_DATE, VALIDITY_ID, UNIQUE_ID, CREATE_AT, UPDATE_AT) values (?,?,?,?,?,?,?,?);`,
       [
         registro.VALUE,
         registro.DESCRIPTION,
@@ -16,6 +19,8 @@ export class RecordAndroidRepository implements Table {
         registro.SALE_DATE,
         registro.VALIDITY_ID,
         registro.UNIQUE_ID,
+        isoStringToNumber(datestring),
+        isoStringToNumber(datestring),
       ]
     )
 
@@ -54,8 +59,11 @@ export class RecordAndroidRepository implements Table {
 
     const registro = RecordModelToRegistro(model)
 
+    const datenow = new Date()
+    const datestring = datenow.toISOString()
+
     await AndroidDatabase.db.run(
-      `UPDATE TB_REGISTRO SET VALUE = ?, DESCRIPTION = ?, CATEGORIA_FK = ?, SALE_DATE = ?, VALIDITY_ID = ?, UNIQUE_ID = ? WHERE ID = ?;`,
+      `UPDATE TB_REGISTRO SET VALUE = ?, DESCRIPTION = ?, CATEGORIA_FK = ?, SALE_DATE = ?, VALIDITY_ID = ?, UNIQUE_ID = ?, UPDATE_AT = ? WHERE ID = ?;`,
       [
         registro.VALUE,
         registro.DESCRIPTION,
@@ -63,6 +71,7 @@ export class RecordAndroidRepository implements Table {
         registro.SALE_DATE,
         registro.VALIDITY_ID,
         registro.UNIQUE_ID,
+        isoStringToNumber(datestring),
         id,
       ]
     )

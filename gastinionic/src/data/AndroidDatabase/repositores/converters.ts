@@ -66,8 +66,6 @@ export const RegistroToRecordModel = (data: Registro): RecordModel => {
 export const RecordModelToRegistro = (data: RecordModel): Registro => {
   if (typeof data.categoryId != "number")
     throw new Error()
-  if (typeof data.validityId != "number")
-    throw new Error()
   return {
     ID: data.id!,
     VALUE: data.value,
@@ -81,7 +79,7 @@ export const RecordModelToRegistro = (data: RecordModel): Registro => {
     START_DATE: 0,
     END_DATE: 0,
     SALE_DATE: (data.date ? isoStringToNumber(data.date) : undefined)!,
-    VALIDITY_ID: data.validityId!,
+    VALIDITY_ID: data.validityId as number,
     UNIQUE_ID: data.uniqueId!
   }
 }

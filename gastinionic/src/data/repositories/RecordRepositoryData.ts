@@ -22,8 +22,7 @@ export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
         throw new Error("o id de uniqueId deve ser unico")
       }
     }
-    const id = await Database.instance.records.add(mapFromRecordDataModel(m));
-    const it = await Database.instance.records.get(id);
+    const it = await Database.instance.records.add(mapFromRecordDataModel(m));
     return mapToRecordDataModel(it);
   }
 
