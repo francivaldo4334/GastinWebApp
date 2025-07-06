@@ -1,5 +1,8 @@
 export interface IRepositoryDomain<M extends IDomainModel> {
-  list(): Promise<M[]>;
+  list(params?: {
+    page: number;
+    perPage: number;
+  }): Promise<M[]>;
   get(id: number): Promise<M>;
   set(m: M): Promise<M>;
   edit(id: number, m: M): Promise<M>;
