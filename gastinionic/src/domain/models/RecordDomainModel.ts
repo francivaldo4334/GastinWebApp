@@ -8,6 +8,7 @@ export class RecordDomainModel implements IDomainModel {
   categoryId: number;
   isRecurrent: boolean;
   isEveryDays: boolean;
+  isEveryMonths: boolean;
   validityId?: number;
   initValidity?: string;
   endValidity?: string;
@@ -22,11 +23,13 @@ export class RecordDomainModel implements IDomainModel {
     categoryId: number;
     isRecurrent: boolean;
     isEveryDays: boolean;
+    isEveryMonths: boolean;
     createdAt?: string;
     initValidity?: string;
     endValidity?: string;
     date?: string;
     uniqueId?: number
+    validityId?: number;
   }) {
     this.id = data.id!;
     this.value = data.value;
@@ -39,6 +42,8 @@ export class RecordDomainModel implements IDomainModel {
     this.createdAt = data.createdAt;
     this.date = data.date
     this.uniqueId = data.uniqueId
+    this.isEveryMonths = data.isEveryMonths
+    this.validityId = data.validityId
   }
 }
 
@@ -58,6 +63,8 @@ export const mapToDomain = (
     createdAt: record.createdAt,
     date: record.date,
     uniqueId: record.uniqueId,
+    isEveryMonths: validity?.isEveryMonths ?? false,
+    validityId: validity?.id!
   });
 };
 
@@ -73,7 +80,7 @@ export const mapToRecordData = (
     validityId: domain.validityId,
     createdAt: domain.createdAt,
     date: domain.date,
-    uniqueId: domain.uniqueId
+    uniqueId: domain.uniqueId,
   });
 };
 
@@ -86,5 +93,6 @@ export const mapToValidityData = (
     isEveryDays: domain.isEveryDays,
     initValidity: domain.initValidity,
     endValidity: domain.endValidity,
+    isEveryMonths: domain.isEveryMonths,
   });
 };

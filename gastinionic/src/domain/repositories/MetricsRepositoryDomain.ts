@@ -3,6 +3,7 @@ import { CategoryRepositoryDomain } from "./CategoryRepositoryDomain";
 import { ExpenditureRepositoryDomain } from "./ExpenditureRepositoryDomain";
 import { IRepositoryDomain } from "./IRepositoryDomain";
 import { ReceiptRepositoryDomain } from "./ReceiptRepositoryDomain";
+import { calcRecordtotal } from "../services/calcRecordtotal";
 
 export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
   receiptRepository: ReceiptRepositoryDomain;
@@ -41,8 +42,8 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
   }> {
     const receipts = await this.receiptRepository.range(init, end)
     const expenditures = await this.expenditureRepository.range(init, end)
-    const totalReceipt = receipts.map(it => it.value).reduce((a, b) => a + b, 0)
-    const totalSpend = expenditures.map(it => it.value).reduce((a, b) => a + b, 0)
+    const totalReceipt = calcRecordtotal(init, end, receipts)
+    const totalSpend = calcRecordtotal(init, end, expenditures)
     const totalBalance = totalReceipt - totalSpend
     return {
       received: totalReceipt,
@@ -61,7 +62,7 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
       this.categoryRepository.list(),
       this.expenditureRepository.range(init, end)
     ])
-    const total = spends.reduce((sum, { value }) => sum + value, 0) || 1
+    const total = calcRecordtotal(init, end, spends) || 1
     const dataChart = categories.map(it => {
       const value = spends
         .filter(i => i.categoryId === it.id)
@@ -111,7 +112,7 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
       }
 
       const spends = await this.expenditureRepository.range(searchInit, searchEnd)
-      const total = spends.reduce((sum, { value }) => sum + value, 0)
+      const total = calcRecordtotal(searchInit, searchEnd, spends)
 
       dataChart.push({ label, value: (total / 100).toFixed(2) })
     }
@@ -203,10 +204,10 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     const oldSpends = await this.expenditureRepository.range(oldPeriodInit, oldPeriodEnd)
     const oldReceipt = await this.receiptRepository.range(oldPeriodInit, oldPeriodEnd)
 
-    const currentSpendTotal = currentSpends.reduce((sum, { value }) => sum + value, 0);
-    const oldSpendTotal = oldSpends.reduce((sum, { value }) => sum + value, 0);
-    const currentReceiptTotal = currentReceipt.reduce((sum, { value }) => sum + value, 0);
-    const oldReceiptTotal = oldReceipt.reduce((sum, { value }) => sum + value, 0);
+    const currentSpendTotal = calcRecordtotal(currentPeriodInit, currentPeriodEnd, currentSpends)
+    const oldSpendTotal = calcRecordtotal(oldPeriodInit, oldPeriodEnd, oldSpends)
+    const currentReceiptTotal = calcRecordtotal(currentPeriodInit, currentPeriodEnd, currentReceipt);
+    const oldReceiptTotal = calcRecordtotal(oldPeriodInit, oldPeriodEnd, oldReceipt)
 
     const varReceipt = (currentReceiptTotal - oldReceiptTotal) / oldReceiptTotal
     const varSpend = (currentSpendTotal - oldSpendTotal) / oldSpendTotal
