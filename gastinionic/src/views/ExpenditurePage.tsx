@@ -43,6 +43,11 @@ export default defineComponent({
     onMounted(async () => {
       loadList()
     })
+    const formatDate = (value: string) => {
+      const [date, time] = value.split("T")
+      const [year, month, day] = date.split("-")
+      return `${day}/${month}/${year}`
+    }
 
     return () => (
       <IonPage>
@@ -83,6 +88,15 @@ export default defineComponent({
                       <IonText>
                         {it.description}
                       </IonText>
+                      <p>
+                        {
+                          !it.isRecurrent ?
+                            formatDate(it.date!)
+                            : it.isEveryDays ?
+                              "..."
+                              : `${formatDate(it.initValidity!)} - ${formatDate(it.endValidity!)}`
+                        }
+                      </p>
                     </IonLabel>
                     <IonLabel slot="end">
                       R$ {formatMoney(String(it.value))}
