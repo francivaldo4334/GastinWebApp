@@ -5,6 +5,7 @@ export interface Table {
   delete(id: any): Promise<void>;
   toArray(): Promise<any[]>;
   update(id: any, model: any): Promise<any>;
+  filter(object: Record<string, any>): Promise<any[]>;
 }
 
 export interface InterfaceDatabase {

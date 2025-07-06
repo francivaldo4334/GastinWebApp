@@ -4,6 +4,9 @@ import { isoStringToNumber, RecordModelToRegistro, RegistroToRecordModel } from 
 import { Registro } from "../models";
 
 export class RecordAndroidRepository implements Table {
+  filter(object: Record<string, any>): Promise<any[]> {
+    throw new Error("Method not implemented.");
+  }
   async add(data: any): Promise<any> {
     const registro = RecordModelToRegistro(data)
 

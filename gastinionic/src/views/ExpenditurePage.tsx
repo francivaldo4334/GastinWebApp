@@ -1,9 +1,10 @@
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
+import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
 import { RecordDomainModel } from "@/domain/models/RecordDomainModel";
 import { useModalStore } from "@/stores/useModalStore";
 import { formatMoney } from "@/utils/formatMoney";
-import { IonBackButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonModal, IonPage, IonText, IonTitle, IonToolbar } from "@ionic/vue";
-import { addOutline, chevronBackOutline, trashOutline } from "ionicons/icons";
+import { IonBackButton, IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonModal, IonPage, IonPopover, IonSelect, IonSelectOption, IonText, IonTitle, IonToolbar } from "@ionic/vue";
+import { addOutline, chevronBackOutline, ellipsisVertical, trashOutline } from "ionicons/icons";
 import { storeToRefs } from "pinia";
 import { defineComponent, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
@@ -12,8 +13,12 @@ export default defineComponent({
   setup() {
     const route = useRoute()
 
+    const repoCategories = FactoryRepositoryDomain.getRepository("category")
     const repo = FactoryRepositoryDomain.getRepository("expenditure")
     const expenditures = ref<RecordDomainModel[]>([])
+    const categories = ref<CategoryDomainModel[]>([])
+    const selectedCategoryFilter = ref(0)
+    const isOpenPopover = ref(false)
     const modalStore = useModalStore()
     const {
       chartDataLoaded,
@@ -25,8 +30,8 @@ export default defineComponent({
       onLoadCharData,
     } = modalStore
 
-    const loadList = async () => {
-      const list = await repo.list()
+    const loadList = async (categoryId?: number) => {
+      const list = categoryId ? await repo.filterByCategory(categoryId) : await repo.list()
       expenditures.value = list
     }
 
@@ -40,8 +45,16 @@ export default defineComponent({
       loadList()
     })
 
+    watch(selectedCategoryFilter, (it) => {
+      if (it) {
+        loadList(it)
+      }
+    })
+
     onMounted(async () => {
       loadList()
+      const listcategorie = await repoCategories.list()
+      categories.value = listcategorie
     })
     const formatDate = (value: string) => {
       const [date, time] = value.split("T")
@@ -62,6 +75,38 @@ export default defineComponent({
             <IonTitle>
               Despesas
             </IonTitle>
+            <IonButtons slot="end">
+              <IonButton
+                id="popover-spend-more"
+                onClick={() => {
+                  isOpenPopover.value = true
+                }}
+              >
+                <IonIcon
+                  icon={ellipsisVertical}
+                />
+              </IonButton>
+              <IonPopover
+                isOpen={isOpenPopover.value}
+                trigger="popover-spend-more"
+              >
+                <IonContent>
+                  <IonSelect
+                    label="Filtar por categoria"
+                    value={selectedCategoryFilter.value}
+                    onIonChange={e => {
+                      selectedCategoryFilter.value = e.detail.value
+                    }}
+                  >
+                    <IonSelectOption value={0}> Todas </IonSelectOption>
+                    {categories.value.map(it => (
+                      <IonSelectOption value={it.id}>{it.title}</IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonContent>
+              </IonPopover>
+            </IonButtons>
+
           </IonToolbar>
         </IonHeader>
         <IonContent>

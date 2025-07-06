@@ -38,4 +38,8 @@ export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
     await Database.instance.records.delete(id);
     return true;
   }
+
+  async filterByCategoryId(categoryId: number) {
+    return await Database.instance.records.filter({ categoryId })
+  }
 }

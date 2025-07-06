@@ -4,6 +4,9 @@ import { AndroidDatabase } from "..";
 import { Validity } from "../models";
 
 export class ValidityAndroidRepository implements Table {
+  filter(object: Record<string, any>): Promise<any[]> {
+    throw new Error("Method not implemented.");
+  }
   async add(data: any): Promise<any> {
     const validity = ValidityModelToValidity(data)
 

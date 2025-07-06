@@ -91,4 +91,7 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
   async delete(id: number): Promise<boolean> {
     return await this.recordRepository.delete(id);
   }
+  filterByCategory(categoryId: number): Promise<RecordDomainModel[]> {
+    return this.recordRepository.filterByCategoryId(categoryId)
+  }
 }

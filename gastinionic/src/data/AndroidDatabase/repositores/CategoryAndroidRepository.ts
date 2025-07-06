@@ -4,6 +4,9 @@ import { Categoria } from "../models";
 import { CategoriaToCategoryModel, CategoryModelToCategoria, isoStringToNumber } from "./converters";
 
 export class CategoryAndroidRepository implements Table {
+  filter(object: Record<string, any>): Promise<any[]> {
+    throw new Error("Method not implemented.");
+  }
   async add(data: any): Promise<any> {
     const category = CategoryModelToCategoria(data)
     const datenow = new Date()
