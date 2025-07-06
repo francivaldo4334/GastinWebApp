@@ -5,13 +5,14 @@ import { formatMoney } from "@/utils/formatMoney";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { useModalStore } from "@/stores/useModalStore";
 import { storeToRefs } from "pinia";
+import { endOfMonth, startOfMonth } from "date-fns";
 
 export const WidgetAccountBalance = defineComponent({
   setup() {
     const repo = FactoryRepositoryDomain.getRepository("metrics")
-    const dateNow = new Date().toISOString()
-    const initValidity = ref(dateNow)
-    const endValidity = ref(dateNow)
+    const dateNow = new Date()
+    const initValidity = ref(startOfMonth(dateNow).toISOString())
+    const endValidity = ref(endOfMonth(dateNow).toISOString())
     const receivedValue = ref(0)
     const spendValue = ref(0)
     const currentBalace = ref(0)

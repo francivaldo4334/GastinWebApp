@@ -8,12 +8,14 @@ import { WidgetPurchasingPower } from "./WidgetPurchasingPower";
 
 export const ChartWidgets = defineComponent({
   setup() {
-    return () => (<IonContent>
-      <WidgetAccountBalance />
-      <WidgetPieChart />
-      <WidgetBarChart />
-      <WidgetCostOfLivingGrowth />
-      <WidgetPurchasingPower />
-    </IonContent>)
+    return () => (
+      <IonContent>
+        <WidgetAccountBalance />
+        <WidgetPieChart />
+        <WidgetBarChart />
+        <WidgetCostOfLivingGrowth />
+        <WidgetPurchasingPower />
+      </IonContent>
+    )
   }
 })
