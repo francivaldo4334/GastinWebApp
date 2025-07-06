@@ -4,6 +4,9 @@ import { Categoria } from "../models";
 import { CategoriaToCategoryModel, CategoryModelToCategoria, isoStringToNumber } from "./converters";
 
 export class CategoryAndroidRepository implements Table {
+  paginate(page: number, perPage: number): Promise<any[]> {
+    throw new Error("Method not implemented.");
+  }
   filter(object: Record<string, any>): Promise<any[]> {
     throw new Error("Method not implemented.");
   }

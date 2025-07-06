@@ -6,6 +6,7 @@ export interface Table {
   toArray(): Promise<any[]>;
   update(id: any, model: any): Promise<any>;
   filter(object: Record<string, any>): Promise<any[]>;
+  paginate(page: number, perPage: number): Promise<any[]>;
 }
 
 export interface InterfaceDatabase {

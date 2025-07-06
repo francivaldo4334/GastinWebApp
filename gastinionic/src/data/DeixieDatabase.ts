@@ -7,6 +7,12 @@ class DeixieTable implements Table {
   constructor(db: DeixieDatabase, tablename: string) {
     this.table = (db as any)[tablename]
   }
+  paginate(page: number, perPage: number): Promise<any[]> {
+    return this.table.orderBy("id")
+      .offset((page - 1) * perPage)
+      .limit(perPage)
+      .toArray()
+  }
 
   add(data: any): Promise<any> {
     return this.table.add(data)

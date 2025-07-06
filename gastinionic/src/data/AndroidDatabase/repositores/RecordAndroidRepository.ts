@@ -4,6 +4,9 @@ import { isoStringToNumber, RecordModelToRegistro, RegistroToRecordModel } from 
 import { Registro } from "../models";
 
 export class RecordAndroidRepository implements Table {
+  paginate(page: number, perPage: number): Promise<any[]> {
+    throw new Error("Method not implemented.");
+  }
   filter(object: Record<string, any>): Promise<any[]> {
     throw new Error("Method not implemented.");
   }
