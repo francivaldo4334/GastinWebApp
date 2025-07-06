@@ -16,11 +16,11 @@ export const StringToColorNumber = (colorString: string): number => {
   return parseInt(hex, 16);
 }
 
-function numberToISOString(timestamp: number): string {
+export function numberToISOString(timestamp: number): string {
   return new Date(timestamp).toISOString();
 }
 
-function isoStringToNumber(iso: string): number {
+export function isoStringToNumber(iso: string): number {
   return new Date(iso).getTime();
 }
 

@@ -1,15 +1,20 @@
 import { Table } from "@/data/InterfaceDatabase";
 import { AndroidDatabase } from "..";
 import { Categoria } from "../models";
-import { CategoriaToCategoryModel, CategoryModelToCategoria } from "./converters";
+import { CategoriaToCategoryModel, CategoryModelToCategoria, isoStringToNumber } from "./converters";
 
 export class CategoryAndroidRepository implements Table {
   async add(data: any): Promise<any> {
     const category = CategoryModelToCategoria(data)
 
     const result = await AndroidDatabase.db.run(
-      `INSERT INTO TB_CATEGORIA (NAME, DESCRIPTION, COLOR) values (?,?,?);`,
-      [category.NAME, category.DESCRIPTION, category.COLOR]
+      `INSERT INTO TB_CATEGORIA (NAME, DESCRIPTION, COLOR, CREATE_AT) values (?,?,?);`,
+      [
+        category.NAME,
+        category.DESCRIPTION,
+        category.COLOR,
+        isoStringToNumber(new Date().toISOString()),
+      ]
     )
 
     const lastId = result.changes?.lastId ?? null
@@ -49,7 +54,12 @@ export class CategoryAndroidRepository implements Table {
 
     await AndroidDatabase.db.run(
       `UPDATE TB_CATEGORIA SET NAME = ?, DESCRIPTION = ?, COLOR = ? WHERE ID = ?;`,
-      [category.NAME, category.DESCRIPTION, category.COLOR, id]
+      [
+        category.NAME,
+        category.DESCRIPTION,
+        category.COLOR,
+        id,
+      ]
     )
 
     const resultUpdated = await this.get(id)
