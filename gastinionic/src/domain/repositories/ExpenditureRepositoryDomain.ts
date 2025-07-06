@@ -29,12 +29,12 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     page: number;
     perPage: number;
   }): Promise<RecordDomainModel[]> {
-    let records = !params
+    const records = !params
       ?
       await this.recordRepository.list()
       :
       await this.recordRepository.paginate(params.page, params.perPage)
-
+    console.log(records)
     const result = await Promise.all(
       records
         .filter(it =>
