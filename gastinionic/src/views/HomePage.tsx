@@ -40,7 +40,7 @@ export default defineComponent({
     } = modalStore
 
     return () => (
-      <IonPage>
+      <>
         <IonMenu contentId="home-page" side="end">
           <IonHeader>
             <IonToolbar>
@@ -187,7 +187,7 @@ export default defineComponent({
             <ChartWidgets />
           </IonContent>
         </IonPage>
-      </IonPage>
+      </>
     )
   }
 })
