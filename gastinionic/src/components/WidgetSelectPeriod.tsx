@@ -21,11 +21,13 @@ export const WidgetSelectPeriod = defineComponent({
     value: string,
     setValue: (value: string) => void
   }) {
+    const barchartidmonth = `widget-bar-chart-calendar-select-month_${Math.random()}`
+    const barchartidyear = `widget-bar-chart-calendar-select-year_${Math.random()}`
     return () => (
       <IonItem>
         <IonDatetimeButton
           slot="end"
-          datetime="widget-bar-chart-calendar-select-month"
+          datetime={barchartidmonth}
           style={props.format === "month" ?
             "display: flex;"
             :
@@ -34,7 +36,7 @@ export const WidgetSelectPeriod = defineComponent({
         />
         <IonDatetimeButton
           slot="end"
-          datetime="widget-bar-chart-calendar-select-year"
+          datetime={barchartidyear}
           style={props.format === "year" ?
             "display: flex;"
             :
@@ -43,8 +45,8 @@ export const WidgetSelectPeriod = defineComponent({
         />
         <IonModal keepContentsMounted>
           <IonDatetime
-            id="widget-bar-chart-calendar-select-month"
-            presentation="month"
+            id={barchartidmonth}
+            presentation="month-year"
             value={props.value}
             onIonChange={e => {
               const value = e.detail.value
@@ -56,7 +58,7 @@ export const WidgetSelectPeriod = defineComponent({
         </IonModal>
         <IonModal keepContentsMounted>
           <IonDatetime
-            id="widget-bar-chart-calendar-select-year"
+            id={barchartidyear}
             presentation="year"
             value={props.value}
             onIonChange={e => {
