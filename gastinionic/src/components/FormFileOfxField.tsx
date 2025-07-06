@@ -41,7 +41,6 @@ export const FormFileOfxField = defineComponent({
         <input
           type="file"
           accept=".ofx"
-          value={props.value}
           onChange={(event) => {
             const input = event.target as HTMLInputElement
             const file = input.files?.[0]

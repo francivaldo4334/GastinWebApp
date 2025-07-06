@@ -13,6 +13,7 @@ export class RecordDomainModel implements IDomainModel {
   endValidity?: string;
   createdAt?: string;
   date?: string;
+  uniqueId?: number
 
   constructor(data: {
     id?: number;
@@ -25,6 +26,7 @@ export class RecordDomainModel implements IDomainModel {
     initValidity?: string;
     endValidity?: string;
     date?: string;
+    uniqueId?: number
   }) {
     this.id = data.id!;
     this.value = data.value;
@@ -36,6 +38,7 @@ export class RecordDomainModel implements IDomainModel {
     this.endValidity = data.endValidity;
     this.createdAt = data.createdAt;
     this.date = data.date
+    this.uniqueId = data.uniqueId
   }
 }
 
@@ -54,6 +57,7 @@ export const mapToDomain = (
     endValidity: validity?.endValidity,
     createdAt: record.createdAt,
     date: record.date,
+    uniqueId: record.uniqueId,
   });
 };
 
@@ -69,6 +73,7 @@ export const mapToRecordData = (
     validityId: domain.validityId,
     createdAt: domain.createdAt,
     date: domain.date,
+    uniqueId: domain.uniqueId
   });
 };
 

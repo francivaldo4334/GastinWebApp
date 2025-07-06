@@ -36,7 +36,12 @@ export class FactoryRepositoryDomain {
         expenditureRepository: this.getRepository("expenditure"),
         categoryRepository: this.getRepository("category"),
       }),
-      importdata: () => new ImportDataRepositoryDomain(),
+      importdata: () => new ImportDataRepositoryDomain({
+        receiptRepository: this.getRepository("receipt"),
+        expendituresRepository: this.getRepository("expenditure"),
+        categoryRepository: this.getRepository("category"),
+
+      }),
     };
 
     const factory = factories[type];
