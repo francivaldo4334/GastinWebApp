@@ -46,9 +46,7 @@ export default defineComponent({
     })
 
     watch(selectedCategoryFilter, (it) => {
-      if (it) {
-        loadList(it)
-      }
+      loadList(it)
     })
 
     onMounted(async () => {
