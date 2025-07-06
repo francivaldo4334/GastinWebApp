@@ -96,6 +96,7 @@ export default defineComponent({
                     value={selectedCategoryFilter.value}
                     onIonChange={e => {
                       selectedCategoryFilter.value = e.detail.value
+                      isOpenPopover.value = false
                     }}
                   >
                     <IonSelectOption value={0}> Todas </IonSelectOption>
