@@ -3,6 +3,9 @@ import { CategoryDataModel, mapFromCategoryDataModel, mapToCategoryDataModel } f
 import { IRepositoryData } from "./IRepositoryData";
 
 export class CategoryRepositoryData implements IRepositoryData<CategoryDataModel> {
+  paginate(page: number, perPage: number): Promise<CategoryDataModel[]> {
+    throw new Error("Method not implemented.");
+  }
   async list(): Promise<CategoryDataModel[]> {
     const list = await Database.instance.categories.toArray()
     return list.map(mapToCategoryDataModel)

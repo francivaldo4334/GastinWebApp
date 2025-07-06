@@ -3,6 +3,9 @@ import { mapFromValidityDataModel, mapToValidityDataModel, ValidityDataModel } f
 import { IRepositoryData } from "./IRepositoryData";
 
 export class ValidityRepositoryData implements IRepositoryData<ValidityDataModel> {
+  paginate(page: number, perPage: number): Promise<ValidityDataModel[]> {
+    throw new Error("Method not implemented.");
+  }
   async list(): Promise<ValidityDataModel[]> {
     const list = await Database.instance.validities.toArray();
     return list.map(mapToValidityDataModel);
