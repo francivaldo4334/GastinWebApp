@@ -9,15 +9,16 @@ import {
 } from "chart.js";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { useModalStore } from "@/stores/useModalStore";
+import { endOfMonth, startOfMonth } from "date-fns";
 
 ChartJS.register(Title, Tooltip, ArcElement);
 export const WidgetPieChart = defineComponent({
   setup() {
     const repo = FactoryRepositoryDomain.getRepository("metrics")
     const isOpenMoreOptions = ref(false)
-    const datenow = new Date().toISOString()
-    const initValidity = ref(datenow)
-    const endValidity = ref(datenow)
+    const datenow = new Date()
+    const initValidity = ref(startOfMonth(datenow).toISOString())
+    const endValidity = ref(endOfMonth(datenow).toISOString())
 
     const {
       onOpenCategory
