@@ -64,9 +64,8 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     ])
     const total = calcRecordtotal(init, end, spends) || 1
     const dataChart = categories.map(it => {
-      const value = spends
-        .filter(i => i.categoryId === it.id)
-        .reduce((sum, { value }) => sum + value, 0)
+      const value = calcRecordtotal(init, end, spends
+        .filter(i => i.categoryId === it.id))
       return {
         label: it.title,
         value: value,
