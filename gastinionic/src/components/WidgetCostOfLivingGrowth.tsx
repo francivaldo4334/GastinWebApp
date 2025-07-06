@@ -56,7 +56,7 @@ export const WidgetCostOfLivingGrowth = defineComponent({
     return () => (
       <IonCard>
         <WidgetSelectPeriodFormat
-          title={`Inflação / ${mapPeriod[selectedFormat.value]}`}
+          title={`Custo de vida / ${mapPeriod[selectedFormat.value]}`}
           setFormat={(value: "month" | "year") => {
             selectedFormat.value = value;
             loadData()
