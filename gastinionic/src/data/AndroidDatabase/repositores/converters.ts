@@ -17,7 +17,13 @@ export const StringToColorNumber = (colorString: string): number => {
 }
 
 export function numberToISOString(timestamp: number): string {
-  return new Date(timestamp).toISOString();
+  try {
+    return new Date(timestamp).toISOString();
+  }
+  catch {
+    console.error(`Não foi posivel converter o timestamp ${timestamp}`)
+    return ""
+  }
 }
 
 export function isoStringToNumber(iso: string): number {
