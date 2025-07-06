@@ -11,17 +11,16 @@ import { useRoute } from "vue-router";
 export default defineComponent({
   setup() {
     const route = useRoute()
-    const expenditureDetails = ref()
 
     const repo = FactoryRepositoryDomain.getRepository("expenditure")
     const expenditures = ref<RecordDomainModel[]>([])
     const modalStore = useModalStore()
     const {
-      isOpenExpenditure: isOpenModalExpenditure,
+      chartDataLoaded,
     } = storeToRefs(modalStore)
 
     const {
-      onOpenExpenditure:onOpenModalExpenditure,
+      onOpenExpenditure: onOpenModalExpenditure,
       onOpenExpenditureDetails,
     } = modalStore
 
@@ -35,15 +34,8 @@ export default defineComponent({
       await loadList()
     }
 
-    watch(isOpenModalExpenditure, (isOpen) => {
-      if (!isOpen) {
-        loadList()
-      }
-    })
-    watch(expenditureDetails, (it) => {
-      if (!it) {
-        loadList()
-      }
+    watch(chartDataLoaded, (it) => {
+      loadList()
     })
 
     onMounted(async () => {

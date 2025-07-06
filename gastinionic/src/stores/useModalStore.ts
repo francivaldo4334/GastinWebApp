@@ -9,23 +9,52 @@ export const useModalStore = defineStore("modals", () => {
   const isOpenCategory = ref(false)
   const isOpenCategoryDetails = ref(false)
   const isOpenImportOfx = ref(false)
+  const now = new Date().toISOString()
+  const chartDataLoaded = ref(now)
 
   const onOpenReceipt = () => isOpenReceipt.value = true
-  const onCloseReceipt = () => isOpenReceipt.value = false
   const onOpenReceiptDetails = (data: any) => isOpenReceiptDetails.value = data
-  const onCloseReceiptDetails = () => isOpenReceiptDetails.value = false
   const onOpenImportOfx = () => isOpenImportOfx.value = true
-  const onCloseImportOfx = () => isOpenImportOfx.value = false
-
   const onOpenExpenditure = () => isOpenExpenditure.value = true
-  const onCloseExpenditure = () => isOpenExpenditure.value = false
   const onOpenExpenditureDetails = (data: any) => isOpenExpenditureDetails.value = data
-  const onCloseExpenditureDetails = () => isOpenExpenditureDetails.value = false
-
   const onOpenCategory = () => isOpenCategory.value = true
-  const onCloseCategory = () => isOpenCategory.value = false
   const onOpenCategoryDetails = (data: any) => isOpenCategoryDetails.value = data
-  const onCloseCategoryDetails = () => isOpenCategoryDetails.value = false
+
+  const onLoadCharData = () => {
+    const now = new Date().toISOString()
+    chartDataLoaded.value = now
+  }
+
+  const onCloseReceipt = () => {
+    isOpenReceipt.value = false
+    onLoadCharData()
+  }
+  const onCloseReceiptDetails = () => {
+    isOpenReceiptDetails.value = false
+    onLoadCharData()
+  }
+  const onCloseImportOfx = () => {
+    isOpenImportOfx.value = false
+    onLoadCharData()
+  }
+
+  const onCloseExpenditure = () => {
+    isOpenExpenditure.value = false
+    onLoadCharData()
+  }
+  const onCloseExpenditureDetails = () => {
+    isOpenExpenditureDetails.value = false
+    onLoadCharData()
+  }
+
+  const onCloseCategory = () => {
+    isOpenCategory.value = false
+    onLoadCharData()
+  }
+  const onCloseCategoryDetails = () => {
+    isOpenCategoryDetails.value = false
+    onLoadCharData()
+  }
 
   return {
     isOpenReceipt,
@@ -50,5 +79,8 @@ export const useModalStore = defineStore("modals", () => {
     onCloseExpenditureDetails,
     onOpenCategoryDetails,
     onCloseCategoryDetails,
+
+    chartDataLoaded,
+    onLoadCharData,
   }
 })

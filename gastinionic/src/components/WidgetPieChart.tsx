@@ -10,6 +10,7 @@ import {
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { useModalStore } from "@/stores/useModalStore";
 import { endOfMonth, startOfMonth } from "date-fns";
+import { storeToRefs } from "pinia";
 
 ChartJS.register(Title, Tooltip, ArcElement);
 export const WidgetPieChart = defineComponent({
@@ -20,10 +21,13 @@ export const WidgetPieChart = defineComponent({
     const initValidity = ref(startOfMonth(datenow).toISOString())
     const endValidity = ref(endOfMonth(datenow).toISOString())
 
+    const modalStore = useModalStore()
+    const {
+      chartDataLoaded,
+    } = storeToRefs(modalStore)
     const {
       onOpenCategory
-    } = useModalStore()
-
+    } = modalStore
 
     const pieItems = ref<{
       label: string;
@@ -63,6 +67,9 @@ export const WidgetPieChart = defineComponent({
     })
     watch([initValidity, endValidity], ([init, end]) => {
       loadData({ init, end })
+    })
+    watch(chartDataLoaded, () => {
+      loadData()
     })
 
     const chartData = () => ({

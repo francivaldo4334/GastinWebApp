@@ -30,6 +30,7 @@ export default defineComponent({
       onCloseReceiptDetails,
       onCloseImportOfx,
     } = modalStore
+
     return () => (
       <>
         {slots.default?.()}

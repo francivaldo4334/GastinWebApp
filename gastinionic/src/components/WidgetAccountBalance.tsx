@@ -20,8 +20,7 @@ export const WidgetAccountBalance = defineComponent({
     const modalStore = useModalStore()
 
     const {
-      isOpenReceipt,
-      isOpenExpenditure,
+      chartDataLoaded,
     } = storeToRefs(modalStore)
 
     const loadData = async () => {
@@ -50,9 +49,8 @@ export const WidgetAccountBalance = defineComponent({
       loadData()
     })
 
-    watch([isOpenReceipt, isOpenExpenditure], ([receipt, expenditure]) => {
-      if (!receipt || !expenditure)
-        loadData()
+    watch(chartDataLoaded, () => {
+      loadData()
     })
     watch([initValidity, endValidity], () => {
       loadData()

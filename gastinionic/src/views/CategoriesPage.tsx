@@ -15,8 +15,7 @@ export default defineComponent({
 
     const modalStore = useModalStore()
     const {
-      isOpenCategory: isOpenModalCategory,
-      isOpenCategoryDetails: categoryDetails,
+      chartDataLoaded,
     } = storeToRefs(modalStore)
 
     const {
@@ -34,15 +33,8 @@ export default defineComponent({
       await loadList()
     }
 
-    watch(isOpenModalCategory, (isOpen) => {
-      if (!isOpen) {
-        loadList()
-      }
-    })
-    watch(categoryDetails, (it) => {
-      if (!it) {
-        loadList()
-      }
+    watch(chartDataLoaded, (it) => {
+      loadList()
     })
 
     onMounted(async () => {

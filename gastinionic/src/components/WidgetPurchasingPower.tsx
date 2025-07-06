@@ -4,6 +4,8 @@ import { WidgetSelectPeriodFormat } from "./WidgetSelectPeriodFormat";
 import { WidgetSelectPeriod } from "./WidgetSelectPeriod";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { onMounted } from "vue";
+import { useModalStore } from "@/stores/useModalStore";
+import { storeToRefs } from "pinia";
 
 export const WidgetPurchasingPower = defineComponent({
   setup() {
@@ -16,6 +18,11 @@ export const WidgetPurchasingPower = defineComponent({
 
     const metricValue = ref(0)
 
+    const modalStore = useModalStore()
+
+    const {
+      chartDataLoaded,
+    } = storeToRefs(modalStore)
 
     const mapPeriod = {
       "month": "Mês",
@@ -44,6 +51,9 @@ export const WidgetPurchasingPower = defineComponent({
         type: format,
         periodValue: new Date(dateString)
       })
+    })
+    watch(chartDataLoaded, () => {
+      loadData()
     })
     return () => (
       <IonCard>

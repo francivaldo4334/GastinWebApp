@@ -27,7 +27,7 @@ export const WidgetBarChart = defineComponent({
 
     const modalStore = useModalStore()
     const {
-      isOpenExpenditure,
+      chartDataLoaded,
     } = storeToRefs(modalStore)
 
     const mapPeriod = {
@@ -61,8 +61,11 @@ export const WidgetBarChart = defineComponent({
       loadData()
     })
 
-    watch([selectedDate, selectedFormat, isOpenExpenditure], ([date, mode]) => {
+    watch([selectedDate, selectedFormat], ([date, mode]) => {
       loadData({ date, mode })
+    })
+    watch(chartDataLoaded, () => {
+      loadData()
     })
 
 

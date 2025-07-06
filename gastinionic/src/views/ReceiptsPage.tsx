@@ -14,13 +14,12 @@ export default defineComponent({
 
     const modalStore = useModalStore()
     const {
-      isOpenReceipt: isOpenModalReceipt,
-      isOpenReceiptDetails: receiptDetails
+      chartDataLoaded,
     } = storeToRefs(modalStore)
 
     const {
       onOpenReceipt: onOpenModalReceipt,
-      onOpenReceiptDetails:onOpenModalReceiptDetails,
+      onOpenReceiptDetails: onOpenModalReceiptDetails,
     } = modalStore
 
     const repo = FactoryRepositoryDomain.getRepository("receipt")
@@ -36,15 +35,8 @@ export default defineComponent({
       await loadList()
     }
 
-    watch(isOpenModalReceipt, (isOpen) => {
-      if (!isOpen) {
-        loadList()
-      }
-    })
-    watch(receiptDetails, (it) => {
-      if (!it) {
-        loadList()
-      }
+    watch(chartDataLoaded, (it) => {
+      loadList()
     })
 
     onMounted(async () => {
