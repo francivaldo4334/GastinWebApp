@@ -6,17 +6,23 @@ const applyFilter = (table: DTable, filters?: Record<string, any>): Collection<a
     return table.toCollection()
   }
 
+  let query: Collection<any, any, any> | undefined
+
   for (const [key, value] of Object.entries(filters)) {
     if (key.endsWith("__gt")) {
       const field = key.replace("__gt", "")
-      return table.where(field).above(value)
+      query = table.where(field).above(value)
+      break;
     }
     if (key.endsWith("__lt")) {
       const field = key.replace("__lt", "")
-      return table.where(field).below(value)
+      query = table.where(field).below(value)
     }
   }
-  return table.toCollection()
+  if (!query) {
+    query = table.toCollection()
+  }
+  return query
 }
 
 class DeixieTable implements Table {
@@ -55,14 +61,68 @@ class DeixieTable implements Table {
   update(id: any, model: any): Promise<any> {
     return this.table.update(id, model)
   }
-  filter(object: Record<string, any>): Promise<any[]> {
-    return this.table
-      .filter((it: any) =>
-        Object.entries(object).every(([key, value]) =>
-          value == null ? true : it[key] === value
-        )
-      )
-      .toArray();
+  filter(filters: Record<string, any>): Promise<any[]> {
+    const collection = this.table.toArray()
+    if (!filters)
+      return collection;
+    function conditionallookup(it: any, lookup: string | undefined, field: string, value: any): boolean {
+      switch (lookup) {
+        case "gt":
+          return it[field] > value
+        case "lt":
+          return it[field] < value
+        case "gte":
+          return it[field] >= value
+        case "lte":
+          return it[field] <= value
+        default:
+          return it[field] === value
+      }
+    }
+
+    function handlerfilter(list: any[], filter: any) {
+      if (!Object.keys(filter).length)
+        return list
+      let filteredList = list
+      for (const [key, value] of Object.entries(filter)) {
+        if (key.startsWith("block_")) {
+          const [, condition] = key.split("__")
+          switch (condition) {
+            case "or":
+              const list_or = value as any[]
+              for (const or_filter of list_or) {
+                //...
+              }
+              filteredList = filteredList.filter(it => true)
+              break;
+            case "and":
+              //
+              break;
+            case "not":
+              //
+              break;
+          }
+        }
+        else {
+          const [field, lookup] = key.split("__")
+          if (!lookup) {
+            filteredList = filteredList.filter(it => it[field] === value)
+          }
+          else {
+            if (lookup.startsWith("query_")) {
+              //...
+            }
+            else {
+              filteredList = filteredList.filter(it => conditionallookup(it, lookup, field, value))
+            }
+          }
+        }
+      }
+      return filteredList
+    }
+
+
+    return collection;
   }
 
 }

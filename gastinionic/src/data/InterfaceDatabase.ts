@@ -6,11 +6,7 @@ export interface Table {
   toArray(): Promise<any[]>;
   update(id: any, model: any): Promise<any>;
   filter(object: Record<string, any>): Promise<any[]>;
-  paginate(
-    page: number,
-    perPage: number,
-    filters?: Record<string, any>
-  ): Promise<{
+  paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{
     items: any[]
     count: number
   }>;

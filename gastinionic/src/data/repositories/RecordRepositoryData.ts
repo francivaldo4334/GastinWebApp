@@ -4,7 +4,7 @@ import { IRepositoryData } from "./IRepositoryData";
 
 export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
   paginate(page: number, perPage: number, filter?: Record<string, any>): Promise<{ items: RecordDataModel[]; count: number; }> {
-    return Database.instance.records.paginate(page,perPage, filter)
+    return Database.instance.records.paginate(page, perPage, filter)
   }
   async list(): Promise<RecordDataModel[]> {
     const list = await Database.instance.records.toArray();
@@ -44,5 +44,32 @@ export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
 
   async filterByCategoryId(categoryId: number) {
     return await Database.instance.records.filter({ categoryId })
+  }
+
+  rangeValidity(init_date: string, end_date: string): Promise<any[]> {
+    return Database.instance.records.filter({
+      block__or: [
+        {
+          validityId: null,
+          date__gte: init_date,
+          date__lte: end_date,
+        },
+        {
+          validityId__query_validities__isEveryDays: true
+        },
+        {
+          block__not: {
+            block__or: [
+              {
+                validityId__query_validities__endValidity__lt: init_date
+              },
+              {
+                validityId__query_validities__initValidity__gt: end_date
+              }
+            ]
+          }
+        }
+      ]
+    })
   }
 }
