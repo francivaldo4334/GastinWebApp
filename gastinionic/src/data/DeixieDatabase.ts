@@ -2,10 +2,12 @@ import Dexie, { Table as DTable } from "dexie"
 import { InterfaceDatabase, Table } from "./InterfaceDatabase";
 
 class DeixieTable implements Table {
-  table: DTable
-
-  constructor(db: DeixieDatabase, tablename: string) {
-    this.table = (db as any)[tablename]
+  tablename: keyof DeixieDatabase
+  get table(): DTable {
+    return DeixieDatabase.getInstance()[this.tablename]
+  }
+  constructor(tablename: keyof DeixieDatabase) {
+    this.tablename = tablename
   }
   async paginate(page: number, perPage: number): Promise<{
     items: any[]
@@ -46,7 +48,10 @@ class DeixieTable implements Table {
 
 }
 
-export class DeixieDatabase extends Dexie implements InterfaceDatabase {
+export class _DeixieDatabase extends Dexie {
+  categories!: DTable
+  records!: DTable
+  validities!: DTable
   constructor() {
     super("gastindatabase")
     this.version(1).stores({
@@ -54,11 +59,21 @@ export class DeixieDatabase extends Dexie implements InterfaceDatabase {
       records: "++id,title,description,value,categoryId,validityId,createdAt,date",
       validities: "++id,isEveryDays,initValidity,endValidity",
     })
-    this.on("ready", () => {
-      this.categories = new DeixieTable(this, "categories");
-      this.records = new DeixieTable(this, "records");
-      this.validities = new DeixieTable(this, "validities");
-    });
+  }
+}
+
+export class DeixieDatabase implements InterfaceDatabase {
+  static deixei: _DeixieDatabase
+  static getInstance() {
+    if (!this.deixei) {
+      this.deixei = new _DeixieDatabase()
+    }
+    return this.deixei
+  }
+  constructor() {
+    this.categories = new DeixieTable("categories");
+    this.records = new DeixieTable("records");
+    this.validities = new DeixieTable("validities");
   }
   categories!: Table
   records!: Table
