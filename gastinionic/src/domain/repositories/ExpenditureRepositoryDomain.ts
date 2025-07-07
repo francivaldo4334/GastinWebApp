@@ -21,7 +21,14 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     this.recordRepository = data.recordRepository;
   }
   async paginate(page: number, perPage: number): Promise<{ results: RecordDomainModel[]; total: number; }> {
-    const result = await this.recordRepository.paginate(page, perPage)
+    const result = await this.recordRepository.paginate(
+      page,
+      perPage,
+      {
+        value__lt: 0
+      }
+    )
+
     const list = await Promise.all(
       result.items.map(async it => {
         const v = it.validityId ? await this.validityRepository.get(it.validityId) : undefined

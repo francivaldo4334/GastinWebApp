@@ -3,8 +3,8 @@ import { mapFromRecordDataModel, mapToRecordDataModel, RecordDataModel } from ".
 import { IRepositoryData } from "./IRepositoryData";
 
 export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
-  paginate(page: number, perPage: number): Promise<{ items: RecordDataModel[]; count: number; }> {
-    return Database.instance.records.paginate(page,perPage)
+  paginate(page: number, perPage: number, filter?: Record<string, any>): Promise<{ items: RecordDataModel[]; count: number; }> {
+    return Database.instance.records.paginate(page,perPage, filter)
   }
   async list(): Promise<RecordDataModel[]> {
     const list = await Database.instance.records.toArray();

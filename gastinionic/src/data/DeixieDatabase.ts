@@ -1,6 +1,25 @@
 import Dexie, { Table as DTable } from "dexie"
 import { InterfaceDatabase, Table } from "./InterfaceDatabase";
 
+const applyFilter = (filter?: Record<string, any>, item?: any): boolean => {
+  if (!filter)
+    return true
+  if (!item)
+    return true
+
+  return Object.entries(filter).every(([key, value]) => {
+    if (key.endsWith("__gt")) {
+      const [v,] = key.split("__")
+      return filter[v] > value
+    }
+    if (key.endsWith("__lt")) {
+      const [v,] = key.split("__")
+      return filter[v] < value
+    }
+    return value == null ? true : filter[key] === value
+  })
+}
+
 class DeixieTable implements Table {
   tablename: keyof DeixieDatabase
   get table(): DTable {
@@ -9,11 +28,12 @@ class DeixieTable implements Table {
   constructor(tablename: keyof DeixieDatabase) {
     this.tablename = tablename
   }
-  async paginate(page: number, perPage: number): Promise<{
+  async paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{
     items: any[]
     count: number
   }> {
     const items = await this.table.orderBy("id")
+      .filter(applyFilter.bind(filters))
       .offset((page - 1) * perPage)
       .limit(perPage)
       .toArray()

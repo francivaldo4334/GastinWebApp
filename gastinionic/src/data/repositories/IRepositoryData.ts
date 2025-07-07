@@ -4,7 +4,7 @@ export interface IRepositoryData<M extends IDataModel> {
   set(m: M): Promise<M>;
   edit(id: number, m: M): Promise<M>;
   delete(id: number): Promise<boolean>;
-  paginate(page: number, perPage: number): Promise<{
+  paginate(page: number, perPage: number, filter?: Record<string, any>): Promise<{
     items: M[];
     count: number;
   }>;
