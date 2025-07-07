@@ -25,7 +25,7 @@ import {
 } from "@ionic/vue";
 import { addOutline, chevronBackOutline, trashOutline } from "ionicons/icons";
 import { storeToRefs } from "pinia";
-import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 export default defineComponent({
