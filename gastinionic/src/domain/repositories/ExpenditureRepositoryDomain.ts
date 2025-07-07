@@ -9,16 +9,20 @@ import { ValueGreaterThenZero } from "../rules/ValueGreaterThenZero";
 import { createOrUpdateValidity } from "../services/createOrUpdateValidity";
 import { ValueLowerThanZero } from "../rules/ValueLowerThanZero";
 import { recordInValidity } from "../services/recordInValidity";
+import { CategoryRepositoryData } from "@/data/repositories/CategoryRepositoryData";
 
 export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDomainModel> {
   validityRepository: ValidityRepositoryData;
   recordRepository: RecordRepositoryData;
+  categoryRepository: CategoryRepositoryData;
   constructor(data: {
     validityRepository: ValidityRepositoryData;
     recordRepository: RecordRepositoryData;
+    categoryRepository: CategoryRepositoryData;
   }) {
     this.validityRepository = data.validityRepository;
     this.recordRepository = data.recordRepository;
+    this.categoryRepository = data.categoryRepository;
   }
   async paginate(page: number, perPage: number): Promise<{ results: RecordDomainModel[]; total: number; }> {
     const result = await this.recordRepository.paginate(
@@ -32,7 +36,8 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     const list = await Promise.all(
       result.items.map(async it => {
         const v = it.validityId ? await this.validityRepository.get(it.validityId) : undefined
-        return mapToDomain(it, v)
+        const c = await this.categoryRepository.get(it.categoryId)
+        return mapToDomain(it, v, c)
       })
     )
     return {

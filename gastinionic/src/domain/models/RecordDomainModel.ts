@@ -1,3 +1,4 @@
+import { CategoryDataModel } from "@/data/models/CategoryDataModel";
 import { RecordDataModel } from "@/data/models/RecordDataModel";
 import { ValidityDataModel } from "@/data/models/ValidityDataModel";
 
@@ -15,6 +16,7 @@ export class RecordDomainModel implements IDomainModel {
   createdAt?: string;
   date?: string;
   uniqueId?: number
+  categoryTitle?: string
 
   constructor(data: {
     id?: number;
@@ -30,6 +32,7 @@ export class RecordDomainModel implements IDomainModel {
     date?: string;
     uniqueId?: number
     validityId?: number;
+    categoryTitle?: string
   }) {
     this.id = data.id!;
     this.value = data.value;
@@ -44,12 +47,14 @@ export class RecordDomainModel implements IDomainModel {
     this.uniqueId = data.uniqueId
     this.isEveryMonths = data.isEveryMonths
     this.validityId = data.validityId
+    this.categoryTitle = data.categoryTitle
   }
 }
 
 export const mapToDomain = (
   record: RecordDataModel,
-  validity?: ValidityDataModel
+  validity?: ValidityDataModel,
+  category?: CategoryDataModel,
 ): RecordDomainModel => {
   return new RecordDomainModel({
     id: record.id,
@@ -64,7 +69,8 @@ export const mapToDomain = (
     date: record.date,
     uniqueId: record.uniqueId,
     isEveryMonths: validity?.isEveryMonths ?? false,
-    validityId: validity?.id!
+    validityId: validity?.id!,
+    categoryTitle: category?.title,
   });
 };
 

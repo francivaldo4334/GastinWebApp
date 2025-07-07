@@ -29,6 +29,7 @@ export class FactoryRepositoryDomain {
         new ExpenditureRepositoryDomain({
           validityRepository: new ValidityRepositoryData(),
           recordRepository: new RecordRepositoryData(),
+          categoryRepository: new CategoryRepositoryData()
         }),
       category: () => new CategoryRepositoryDomain(new CategoryRepositoryData()),
       metrics: () => new MetricsRepositoryDomain({
