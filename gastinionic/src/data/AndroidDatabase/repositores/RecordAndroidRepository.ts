@@ -29,7 +29,7 @@ const handleFilters = (qb: squel.Select, filters?: Record<string, any>): squel.S
 export class RecordAndroidRepository implements Table {
   async paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{ items: any[]; count: number; }> {
 
-    const offset = page * perPage
+    const offset = (page-1) * perPage
 
     const mainQuery = handleFilters(
       squel.select().from("TB_REGISTRO").where("1"),
@@ -45,7 +45,6 @@ export class RecordAndroidRepository implements Table {
         .from("TB_REGISTRO").where("1"),
       filters
     ).toString()
-    //
     const queryResult = await AndroidDatabase.db.query(mainQuery)
     const queryTotalResult = await AndroidDatabase.db.query(countQuery)
 
