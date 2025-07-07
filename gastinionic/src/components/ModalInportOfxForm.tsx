@@ -5,7 +5,7 @@ import { z } from "zod";
 import { FormFileOfxField } from "./FormFileOfxField";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 
-export const ModalInportOfxForm = defineComponent({
+export const ModalImportOfxForm = defineComponent({
   props: {
     onClose: {
       type: Function,

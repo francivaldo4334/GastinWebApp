@@ -5,7 +5,7 @@ import { ModalReceiptForm } from "@/components/ModalReceiptForm";
 import { IonContent, IonModal } from "@ionic/vue";
 import { useModalStore } from "@/stores/useModalStore";
 import { storeToRefs } from "pinia";
-import { ModalInportOfxForm } from "@/components/ModalInportOfxForm";
+import { ModalImportOfxForm } from "@/components/ModalInportOfxForm";
 
 export default defineComponent({
   setup(_, { slots }) {
@@ -104,7 +104,7 @@ export default defineComponent({
           backdropDismiss={false}
         >
           <IonContent>
-            <ModalInportOfxForm
+            <ModalImportOfxForm
               onClose={onCloseImportOfx}
             />
           </IonContent>

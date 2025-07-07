@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/vue";
 import { defineComponent, onMounted, ref } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
@@ -57,6 +57,7 @@ export const ModalExpenditureForm = defineComponent({
         initValidity: data.initValidity,
         endValidity: data.endValidity,
         date: data.date,
+        isEveryMonths: false
       })
       if (props.details)
         await repo.edit(props.details.id, model)
@@ -84,6 +85,9 @@ export const ModalExpenditureForm = defineComponent({
               <IonButtons slot="start" >
                 <IonButton color="danger" onClick={props.onClose}>Cancelar</IonButton>
               </IonButtons>
+              <IonTitle style={{"text-align": "center"}}>
+                Despesa
+              </IonTitle>
               <IonButtons slot="end" >
                 <IonButton color="success" type="submit">Adicionar</IonButton>
               </IonButtons>

@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/vue";
 import { defineComponent } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
@@ -61,6 +61,9 @@ export const ModalCategoryForm = defineComponent({
               <IonButtons slot="start" >
                 <IonButton color="danger" onClick={props.onClose}>Cancelar</IonButton>
               </IonButtons>
+              <IonTitle style={{"text-align": "center"}}>
+                Categoria
+              </IonTitle>
               <IonButtons slot="end" >
                 <IonButton color="success" type="submit">Adicionar</IonButton>
               </IonButtons>
