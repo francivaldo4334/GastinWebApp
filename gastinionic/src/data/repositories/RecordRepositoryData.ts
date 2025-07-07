@@ -4,7 +4,7 @@ import { IRepositoryData } from "./IRepositoryData";
 
 export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
   paginate(page: number, perPage: number): Promise<{ items: RecordDataModel[]; count: number; }> {
-      throw new Error("Method not implemented.");
+    return Database.instance.records.paginate(page,perPage)
   }
   async list(): Promise<RecordDataModel[]> {
     const list = await Database.instance.records.toArray();

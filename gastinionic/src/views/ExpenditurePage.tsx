@@ -7,7 +7,7 @@ import { formatMoney } from "@/utils/formatMoney";
 import { IonBackButton, IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonModal, IonPage, IonPopover, IonSelect, IonSelectOption, IonText, IonTitle, IonToolbar } from "@ionic/vue";
 import { addOutline, chevronBackOutline, ellipsisVertical, trashOutline } from "ionicons/icons";
 import { storeToRefs } from "pinia";
-import { defineComponent, onMounted, ref, watch } from "vue";
+import { defineComponent, onMounted, reactive, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 export default defineComponent({
@@ -16,10 +16,13 @@ export default defineComponent({
 
     const repoCategories = FactoryRepositoryDomain.getRepository("category")
     const repo = FactoryRepositoryDomain.getRepository("expenditure")
-    const expenditures = ref<RecordDomainModel[]>([])
     const categories = ref<CategoryDomainModel[]>([])
-    const selectedCategoryFilter = ref(0)
-    const isOpenPopover = ref(false)
+    const pagination = reactive({
+      items: [] as RecordDomainModel[],
+      total: 0,
+      currentPage: 1,
+      perPage: 20
+    })
     const modalStore = useModalStore()
     const {
       chartDataLoaded,
@@ -31,9 +34,10 @@ export default defineComponent({
       onLoadCharData,
     } = modalStore
 
-    const loadList = async (categoryId?: number) => {
-      const list = categoryId ? await repo.filterByCategory(categoryId) : await repo.list()
-      expenditures.value = list
+    const loadList = async () => {
+      const list = await repo.paginate(pagination.currentPage, pagination.perPage)
+      pagination.items = list.results
+      pagination.total = list.total
     }
 
     const onRemoveExpenditure = async (id: number) => {
@@ -46,9 +50,6 @@ export default defineComponent({
       loadList()
     })
 
-    watch(selectedCategoryFilter, (it) => {
-      loadList(it)
-    })
 
     onMounted(async () => {
       loadList()
@@ -74,39 +75,6 @@ export default defineComponent({
             <IonTitle>
               Despesas
             </IonTitle>
-            <IonButtons slot="end">
-              <IonButton
-                id="popover-spend-more"
-                onClick={() => {
-                  isOpenPopover.value = true
-                }}
-              >
-                <IonIcon
-                  icon={ellipsisVertical}
-                />
-              </IonButton>
-              <IonPopover
-                isOpen={isOpenPopover.value}
-                trigger="popover-spend-more"
-              >
-                <IonContent>
-                  <IonSelect
-                    label="Filtar por categoria"
-                    value={selectedCategoryFilter.value}
-                    onIonChange={e => {
-                      selectedCategoryFilter.value = e.detail.value
-                      isOpenPopover.value = false
-                    }}
-                  >
-                    <IonSelectOption value={0}> Todas </IonSelectOption>
-                    {categories.value.map(it => (
-                      <IonSelectOption value={it.id}>{it.title}</IonSelectOption>
-                    ))}
-                  </IonSelect>
-                </IonContent>
-              </IonPopover>
-            </IonButtons>
-
           </IonToolbar>
         </IonHeader>
         <IonContent>
@@ -121,7 +89,7 @@ export default defineComponent({
           </IonFab>
           <IonList>
             {
-              expenditures.value.map(it => (
+              pagination.items.map(it => (
                 <IonItemSliding>
                   <IonItem
                     button
@@ -163,7 +131,14 @@ export default defineComponent({
                 </IonItemSliding>
               ))
             }
-            <Pagination />
+            <Pagination
+              page={pagination.currentPage}
+              countItems={pagination.total}
+              perPage={pagination.perPage}
+              setPage={(value: number) => {
+                pagination.currentPage = value
+              }}
+            />
           </IonList>
         </IonContent>
       </IonPage>
