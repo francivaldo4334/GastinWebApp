@@ -31,9 +31,7 @@ export default defineComponent({
     } = modalStore
 
     const loadList = async (categoryId?: number) => {
-      const list = categoryId ? await repo.filterByCategory(categoryId) : await repo.list({
-        page: 1, perPage: 10
-      })
+      const list = categoryId ? await repo.filterByCategory(categoryId) : await repo.list()
       expenditures.value = list
     }
 

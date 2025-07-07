@@ -25,16 +25,8 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     const list = await this.list()
     return list.filter(it => recordInValidity(it, init, end))
   }
-  async list(params?: {
-    page: number;
-    perPage: number;
-  }): Promise<RecordDomainModel[]> {
-    const records = !params
-      ?
-      await this.recordRepository.list()
-      :
-      await this.recordRepository.paginate(params.page, params.perPage)
-    console.log(records)
+  async list(): Promise<RecordDomainModel[]> {
+    const records = await this.recordRepository.list()
     const result = await Promise.all(
       records
         .filter(it =>
@@ -43,7 +35,7 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
             .applyAllValidations(it)
         )
         .map(async r => {
-          const v = await this.validityRepository.get(r.validityId!)
+          const v = r.validityId ? await this.validityRepository.get(r.validityId) : undefined
           return mapToDomain(r, v);
         })
     )
