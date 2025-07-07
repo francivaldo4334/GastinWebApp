@@ -55,25 +55,6 @@ export class RecordAndroidRepository implements Table {
       items: categories?.map(RegistroToRecordModel) ?? [],
       count,
     }
-
-    // const queryResult = await AndroidDatabase.db.query(
-    //   `SELECT * FROM TB_REGISTRO ORDER BY ID LIMIT ? OFFSET ?;`,
-    //   [perPage, page * perPage]
-    // )
-    // const queryTotalResult = await AndroidDatabase.db.query(
-    //   `SELECT COUNT(*) as TOTAL FROM TB_REGISTRO`
-    // )
-    // const categories: Registro[] | undefined = queryResult.values
-    // const count = queryTotalResult.values?.[0].TOTAL
-    // if (!categories)
-    //   return {
-    //     items: [],
-    //     count: 0,
-    //   }
-    // return {
-    //   items: categories.map(RegistroToRecordModel),
-    //   count
-    // }
   }
   filter(object: Record<string, any>): Promise<any[]> {
     throw new Error("Method not implemented.");
