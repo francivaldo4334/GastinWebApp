@@ -1,23 +1,22 @@
-import Dexie, { Table as DTable } from "dexie"
+import Dexie, { Collection, Table as DTable } from "dexie"
 import { InterfaceDatabase, Table } from "./InterfaceDatabase";
 
-const applyFilter = (filter?: Record<string, any>, item?: any): boolean => {
-  if (!filter)
-    return true
-  if (!item)
-    return true
+const applyFilter = (table: DTable, filters?: Record<string, any>): Collection<any, any, any> => {
+  if (!filters || Object.keys(filters).length === 0) {
+    return table.toCollection()
+  }
 
-  return Object.entries(filter).every(([key, value]) => {
+  for (const [key, value] of Object.entries(filters)) {
     if (key.endsWith("__gt")) {
-      const [v,] = key.split("__")
-      return filter[v] > value
+      const field = key.replace("__gt", "")
+      return table.where(field).above(value)
     }
     if (key.endsWith("__lt")) {
-      const [v,] = key.split("__")
-      return filter[v] < value
+      const field = key.replace("__lt", "")
+      return table.where(field).below(value)
     }
-    return value == null ? true : filter[key] === value
-  })
+  }
+  return table.toCollection()
 }
 
 class DeixieTable implements Table {
@@ -32,8 +31,8 @@ class DeixieTable implements Table {
     items: any[]
     count: number
   }> {
-    const items = await this.table.orderBy("id")
-      .filter(applyFilter.bind(filters))
+    const collection = applyFilter(this.table, filters)
+    const items = await collection
       .offset((page - 1) * perPage)
       .limit(perPage)
       .toArray()
