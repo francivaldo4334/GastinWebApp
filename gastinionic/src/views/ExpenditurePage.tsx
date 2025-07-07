@@ -4,8 +4,26 @@ import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
 import { RecordDomainModel } from "@/domain/models/RecordDomainModel";
 import { useModalStore } from "@/stores/useModalStore";
 import { formatMoney } from "@/utils/formatMoney";
-import { IonBackButton, IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonModal, IonPage, IonPopover, IonSelect, IonSelectOption, IonText, IonTitle, IonToolbar } from "@ionic/vue";
-import { addOutline, chevronBackOutline, ellipsisVertical, trashOutline } from "ionicons/icons";
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonFab,
+  IonFabButton,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonItemOption,
+  IonItemOptions,
+  IonItemSliding,
+  IonLabel,
+  IonList,
+  IonPage,
+  IonText,
+  IonTitle,
+  IonToolbar
+} from "@ionic/vue";
+import { addOutline, chevronBackOutline, trashOutline } from "ionicons/icons";
 import { storeToRefs } from "pinia";
 import { defineComponent, onMounted, reactive, ref, watch } from "vue";
 import { useRoute } from "vue-router";
@@ -47,6 +65,10 @@ export default defineComponent({
     }
 
     watch(chartDataLoaded, (it) => {
+      loadList()
+    })
+
+    watch(pagination, () => {
       loadList()
     })
 
