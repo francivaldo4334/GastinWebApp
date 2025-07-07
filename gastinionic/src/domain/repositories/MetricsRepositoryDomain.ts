@@ -19,6 +19,9 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     this.expenditureRepository = data.expenditureRepository;
     this.categoryRepository = data.categoryRepository;
   }
+  paginate(page: number, perPage: number): Promise<{ results: any[]; total: number; }> {
+    throw new Error("Method not implemented.");
+  }
   list(): Promise<any[]> {
     throw new Error("Method not implemented.");
   }

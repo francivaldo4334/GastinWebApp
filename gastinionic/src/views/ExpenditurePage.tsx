@@ -1,3 +1,4 @@
+import { Pagination } from "@/components/Pagination";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { CategoryDomainModel } from "@/domain/models/CategoryDomainModel";
 import { RecordDomainModel } from "@/domain/models/RecordDomainModel";
@@ -162,6 +163,7 @@ export default defineComponent({
                 </IonItemSliding>
               ))
             }
+            <Pagination />
           </IonList>
         </IonContent>
       </IonPage>

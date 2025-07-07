@@ -19,6 +19,9 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
     this.validityRepository = data.validityRepository;
     this.recordRepository = data.recordRepository;
   }
+  paginate(page: number, perPage: number): Promise<{ results: RecordDomainModel[]; total: number; }> {
+    throw new Error("Method not implemented.");
+  }
   async range(init: Date, end: Date): Promise<RecordDomainModel[]> {
     const list = await this.list()
 

@@ -7,4 +7,8 @@ export interface IRepositoryDomain<M extends IDomainModel> {
   set(m: M): Promise<M>;
   edit(id: number, m: M): Promise<M>;
   delete(id: number): Promise<boolean>;
+  paginate(page: number, perPage: number): Promise<{
+    results: M[];
+    total: number;
+  }>;
 }

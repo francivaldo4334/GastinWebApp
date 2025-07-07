@@ -19,6 +19,9 @@ export class ImportDataRepositoryDomain implements IRepositoryDomain<any> {
     this.expendituresRepository = params.expendituresRepository
     this.categoryRepository = params.categoryRepository
   }
+  paginate(page: number, perPage: number): Promise<{ results: any[]; total: number; }> {
+    throw new Error("Method not implemented.");
+  }
   list(): Promise<any[]> {
     throw new Error("Method not implemented.");
   }

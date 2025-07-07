@@ -4,6 +4,9 @@ import { IRepositoryDomain } from "./IRepositoryDomain";
 
 export class CategoryRepositoryDomain implements IRepositoryDomain<CategoryDomainModel> {
   constructor(private categoryRepository: CategoryRepositoryData) { }
+    paginate(page: number, perPage: number): Promise<{ results: CategoryDomainModel[]; total: number; }> {
+        throw new Error("Method not implemented.");
+    }
 
   async list(): Promise<CategoryDomainModel[]> {
     const dataModels = await this.categoryRepository.list();

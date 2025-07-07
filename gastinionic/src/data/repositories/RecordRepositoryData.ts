@@ -3,8 +3,8 @@ import { mapFromRecordDataModel, mapToRecordDataModel, RecordDataModel } from ".
 import { IRepositoryData } from "./IRepositoryData";
 
 export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
-  paginate(page: number, perPage: number): Promise<RecordDataModel[]> {
-    return Database.instance.records.paginate(page, perPage)
+  paginate(page: number, perPage: number): Promise<{ items: RecordDataModel[]; count: number; }> {
+      throw new Error("Method not implemented.");
   }
   async list(): Promise<RecordDataModel[]> {
     const list = await Database.instance.records.toArray();

@@ -3,7 +3,7 @@ import { mapFromValidityDataModel, mapToValidityDataModel, ValidityDataModel } f
 import { IRepositoryData } from "./IRepositoryData";
 
 export class ValidityRepositoryData implements IRepositoryData<ValidityDataModel> {
-  paginate(page: number, perPage: number): Promise<ValidityDataModel[]> {
+  paginate(page: number, perPage: number): Promise<{ items: ValidityDataModel[]; count: number; }> {
     throw new Error("Method not implemented.");
   }
   async list(): Promise<ValidityDataModel[]> {
