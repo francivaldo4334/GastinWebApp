@@ -25,6 +25,7 @@
     "date-fns": "^4.1.0",
     "dexie": "^4.0.11",
     "ionicons": "^7.0.0",
+    "knex": "^3.1.0",
     "ofx-data-extractor": "^1.4.8",
     "pinia": "^3.0.3",
     "vue": "^3.3.0",

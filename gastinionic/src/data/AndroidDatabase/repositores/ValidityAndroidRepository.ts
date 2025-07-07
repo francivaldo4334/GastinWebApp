@@ -4,7 +4,7 @@ import { AndroidDatabase } from "..";
 import { Validity } from "../models";
 
 export class ValidityAndroidRepository implements Table {
-  paginate(page: number, perPage: number): Promise<any[]> {
+  paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{ items: any[]; count: number; }> {
     throw new Error("Method not implemented.");
   }
   filter(object: Record<string, any>): Promise<any[]> {
