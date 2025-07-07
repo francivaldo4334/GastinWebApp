@@ -43,7 +43,7 @@ export const Pagination = defineComponent({
               Anterior
             </IonButton>
           </IonButtons>
-          <IonLabel>Página 1 de 20</IonLabel>
+          <IonLabel>Página {props.page} de {totalPage.value}</IonLabel>
           <IonButtons>
             <IonButton
               disabled={props.page >= totalPage.value}
