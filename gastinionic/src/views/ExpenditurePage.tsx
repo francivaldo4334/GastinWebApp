@@ -39,12 +39,6 @@ export default defineComponent({
     const total = ref(0)
     const currentPage = ref(1)
     const perPage = 20
-    // const pagination = reactive({
-    //   items: [] as RecordDomainModel[],
-    //   total: 0,
-    //   currentPage: 1,
-    //   perPage: 20
-    // })
     const modalStore = useModalStore()
     const {
       chartDataLoaded,
