@@ -35,12 +35,16 @@ export default defineComponent({
     const repoCategories = FactoryRepositoryDomain.getRepository("category")
     const repo = FactoryRepositoryDomain.getRepository("expenditure")
     const categories = ref<CategoryDomainModel[]>([])
-    const pagination = reactive({
-      items: [] as RecordDomainModel[],
-      total: 0,
-      currentPage: 1,
-      perPage: 20
-    })
+    const expenditures = ref<RecordDomainModel[]>([])
+    const total = ref(0)
+    const currentPage = ref(1)
+    const perPage = 20
+    // const pagination = reactive({
+    //   items: [] as RecordDomainModel[],
+    //   total: 0,
+    //   currentPage: 1,
+    //   perPage: 20
+    // })
     const modalStore = useModalStore()
     const {
       chartDataLoaded,
@@ -52,10 +56,10 @@ export default defineComponent({
       onLoadCharData,
     } = modalStore
 
-    const loadList = async () => {
-      const list = await repo.paginate(pagination.currentPage, pagination.perPage)
-      pagination.items = list.results
-      pagination.total = list.total
+    const loadList = async (page?: number) => {
+      const list = await repo.paginate(page ? page : currentPage.value, perPage)
+      expenditures.value = list.results
+      total.value = list.total
     }
 
     const onRemoveExpenditure = async (id: number) => {
@@ -68,8 +72,8 @@ export default defineComponent({
       loadList()
     })
 
-    watch(pagination, () => {
-      loadList()
+    watch(currentPage, (page) => {
+      loadList(page)
     })
 
 
@@ -111,7 +115,7 @@ export default defineComponent({
           </IonFab>
           <IonList>
             {
-              pagination.items.map(it => (
+              expenditures.value.map(it => (
                 <IonItemSliding>
                   <IonItem
                     button
@@ -155,11 +159,11 @@ export default defineComponent({
               ))
             }
             <Pagination
-              page={pagination.currentPage}
-              countItems={pagination.total}
-              perPage={pagination.perPage}
+              page={currentPage.value}
+              countItems={total.value}
+              perPage={perPage}
               setPage={(value: number) => {
-                pagination.currentPage = value
+                currentPage.value = value
               }}
             />
           </IonList>
