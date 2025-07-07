@@ -2,52 +2,50 @@ import { Table } from "@/data/InterfaceDatabase";
 import { AndroidDatabase } from "..";
 import { isoStringToNumber, RecordModelToRegistro, RegistroToRecordModel } from "./converters";
 import { Registro } from "../models";
-import knex from "knex"
-
-const modifyFilter = (qb: knex.Knex.QueryBuilder<any, any>, filters?: Record<string, any>) => {
+import squel, { Select } from "squel"
+const handleFilters = (qb: squel.Select, filters?: Record<string, any>): squel.Select => {
+  let query: Select = qb
   if (filters) {
     Object.entries(filters).forEach(([key, value]) => {
-      const [field, lookup] = key.split("__")
+      const [_field, lookup] = key.split("__")
+      const field = _field.toUpperCase()
       switch (lookup) {
         case "gt":
-          qb.andWhere(field, ">", value)
+          query = qb.where(`${field} > ${value}`)
           break;
         case "lt":
-          qb.andWhere(field, "<", value)
+          query = qb.where(`${field} < ${value}`)
           break;
         default:
-          qb.andWhere(field, "=", value)
+          query = qb.where(`${field} = ${value}`)
           break;
       }
     })
   }
+  return query
 }
 
+
 export class RecordAndroidRepository implements Table {
-  async paginate(
-    page: number,
-    perPage: number,
-    filters?: Record<string, any>
-  ): Promise<{ items: any[]; count: number }> {
+  async paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{ items: any[]; count: number; }> {
+
     const offset = page * perPage
 
-    const db = knex({ client: "sqlite3" })
-
-    const mainQuery = db("TB_REGISTRO")
-      .select("*")
-      .where(1)
-      .modify(qb => modifyFilter(qb, filters))
-      .orderBy("ID")
+    const mainQuery = handleFilters(
+      squel.select().from("TB_REGISTRO").where("1"),
+      filters
+    ) .order("ID")
       .limit(perPage)
       .offset(offset)
       .toString()
-
-    const countQuery = db("TB_REGISTRO")
-      .count({ TOTAL: "*" })
-      .where(1)
-      .modify(qb => modifyFilter(qb, filters))
-      .toString()
-
+      
+    const countQuery = handleFilters(
+      squel.select()
+        .field("COUNT(*)", "TOTAL")
+        .from("TB_REGISTRO").where("1"),
+      filters
+    ).toString()
+    //
     const queryResult = await AndroidDatabase.db.query(mainQuery)
     const queryTotalResult = await AndroidDatabase.db.query(countQuery)
 
@@ -58,6 +56,25 @@ export class RecordAndroidRepository implements Table {
       items: categories?.map(RegistroToRecordModel) ?? [],
       count,
     }
+
+    // const queryResult = await AndroidDatabase.db.query(
+    //   `SELECT * FROM TB_REGISTRO ORDER BY ID LIMIT ? OFFSET ?;`,
+    //   [perPage, page * perPage]
+    // )
+    // const queryTotalResult = await AndroidDatabase.db.query(
+    //   `SELECT COUNT(*) as TOTAL FROM TB_REGISTRO`
+    // )
+    // const categories: Registro[] | undefined = queryResult.values
+    // const count = queryTotalResult.values?.[0].TOTAL
+    // if (!categories)
+    //   return {
+    //     items: [],
+    //     count: 0,
+    //   }
+    // return {
+    //   items: categories.map(RegistroToRecordModel),
+    //   count
+    // }
   }
   filter(object: Record<string, any>): Promise<any[]> {
     throw new Error("Method not implemented.");
