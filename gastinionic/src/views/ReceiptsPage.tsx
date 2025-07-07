@@ -105,6 +105,7 @@ export default defineComponent({
                       <IonText>
                         {it.description}
                       </IonText>
+                      <h5>{it.categoryTitle}</h5>
                       <p>
                         {
                           !it.isRecurrent ?
