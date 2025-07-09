@@ -91,14 +91,53 @@ export class ImportDataRepositoryDomain implements IRepositoryDomain<any> {
     })
     return { categoriesToBeCreated, createToBeRecords }
   }
-  async importOfx(params: { createToBeRecords: RecordDomainModel[], categoriesToBeCreated: CategoryDomainModel[] }) {
-    const { categoriesToBeCreated, createToBeRecords } = params
-    await Promise.all(categoriesToBeCreated.map(this.categoryRepository.set))
+  async importOfx(params: {
+    file: File,
+    categoriesToBeCreated: CategoryDomainModel[],
+  }) {
+
+    const text = await params.file.text();
+    const ofx = new Ofx(text)
+
+    const bankTransferList = ofx.getBankTransferList()
+
+    const categories = await this.categoryRepository.list()
+
+    const receipts = await this.receiptRepository.list()
+    const spends = await this.expendituresRepository.list()
+    const amounts = receipts.concat(spends)
+
+    const categoriesToBeCreated = await Promise.all(params.categoriesToBeCreated.map(async it => await this.categoryRepository.set(it)))
+
+    const categoriesSearch = categories.concat(categoriesToBeCreated)
+    const createToBeRecords = bankTransferList.map(it => {
+      const exists = amounts.find(i => {
+        return i.uniqueId === Number(it.FITID)
+      })
+      if (!exists) {
+        const category = categoriesSearch.find(i => {
+          return i.title === String(it.TRNTYPE)
+        })
+        return new RecordDomainModel({
+          value: Math.floor(it.TRNAMT * 100),
+          description: it.MEMO || "",
+          categoryId: category!.id,
+          isRecurrent: false,
+          isEveryDays: false,
+          uniqueId: Number(it.FITID),
+          date: `${it.DTPOSTED}T00:00:00`,
+        })
+      }
+    })
+
     await Promise.all(createToBeRecords.map(async record => {
       if (!record)
         return
-      if (record.value < 0)
-        return await this.expendituresRepository.set(record)
+      if (record.value < 0) {
+        const newrecord = record
+        newrecord.value = Math.abs(newrecord.value)
+        return await this.expendituresRepository.set(newrecord)
+      }
       return await this.receiptRepository.set(record)
     }))
   }

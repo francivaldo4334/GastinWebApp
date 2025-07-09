@@ -34,10 +34,10 @@ export const ModalImportOfxForm = defineComponent({
       uploadfile: z.custom<File>()
     })
     const formControl = useForm({ schema })
-    const onImportOfx = async () => {
+    const onImportOfx = async (data: z.output<typeof schema>) => {
       await repo.importOfx({
         categoriesToBeCreated: categoriesToBeCreated.value,
-        createToBeRecords: recordsToBeCreated.items,
+        file: data.uploadfile
       })
       props.onClose()
     }
