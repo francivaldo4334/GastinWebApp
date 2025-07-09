@@ -161,7 +161,7 @@ export class MetricsRepositoryDomain implements IRepositoryDomain<any> {
     const oldTotal = oldSpends.reduce((sum, { value }) => sum + value, 0);
 
     if (oldTotal === 0) {
-      return currentTotal === 0 ? 0 : null;
+      return 0
     }
 
     const result = ((currentTotal - oldTotal) / oldTotal) * 100
