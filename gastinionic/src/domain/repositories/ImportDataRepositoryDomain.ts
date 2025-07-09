@@ -60,11 +60,11 @@ export class ImportDataRepositoryDomain implements IRepositoryDomain<any> {
     const amounts = receipts.concat(spends)
 
     const categoriesToBeCreated = categoriesOfxItems.map(it =>
-        new CategoryDomainModel({
-          title: String(it),
-          description: "",
-          color: "#000000",
-        })
+      new CategoryDomainModel({
+        title: String(it),
+        description: "",
+        color: "#000000",
+      })
     )
 
 
@@ -79,7 +79,7 @@ export class ImportDataRepositoryDomain implements IRepositoryDomain<any> {
           return i.title === String(it.TRNTYPE)
         })
         return new RecordDomainModel({
-          value: Math.abs(Math.floor(it.TRNAMT * 100)),
+          value: Math.floor(it.TRNAMT * 100),
           description: it.MEMO || "",
           categoryId: category!.id,
           isRecurrent: false,
@@ -89,10 +89,10 @@ export class ImportDataRepositoryDomain implements IRepositoryDomain<any> {
         })
       }
     })
-    return {categoriesToBeCreated, createToBeRecords}
+    return { categoriesToBeCreated, createToBeRecords }
   }
-  async importOfx(file: File) {
-    const {categoriesToBeCreated, createToBeRecords} = await this.getOfxToBeCreated(file)
+  async importOfx(params: { createToBeRecords: RecordDomainModel[], categoriesToBeCreated: CategoryDomainModel[] }) {
+    const { categoriesToBeCreated, createToBeRecords } = params
     await Promise.all(categoriesToBeCreated.map(this.categoryRepository.set))
     await Promise.all(createToBeRecords.map(async record => {
       if (!record)
