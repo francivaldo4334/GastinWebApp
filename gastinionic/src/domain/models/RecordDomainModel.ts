@@ -25,7 +25,6 @@ export class RecordDomainModel implements IDomainModel {
     categoryId: number;
     isRecurrent: boolean;
     isEveryDays: boolean;
-    isEveryMonths: boolean;
     createdAt?: string;
     initValidity?: string;
     endValidity?: string;
@@ -45,7 +44,7 @@ export class RecordDomainModel implements IDomainModel {
     this.createdAt = data.createdAt;
     this.date = data.date
     this.uniqueId = data.uniqueId
-    this.isEveryMonths = data.isEveryMonths
+    this.isEveryMonths = !data.isEveryDays
     this.validityId = data.validityId
     this.categoryTitle = data.categoryTitle
   }

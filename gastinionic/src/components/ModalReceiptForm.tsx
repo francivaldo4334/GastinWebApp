@@ -48,7 +48,6 @@ export const ModalReceiptForm = defineComponent({
         initValidity: data.initValidity,
         endValidity: data.endValidity,
         date: data.date,
-        isEveryMonths: false,
       })
       if (props.details)
         await repo.edit(props.details.id, model)
