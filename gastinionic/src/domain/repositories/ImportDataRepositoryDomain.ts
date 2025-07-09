@@ -37,16 +37,11 @@ export class ImportDataRepositoryDomain implements IRepositoryDomain<any> {
   delete(id: number): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
-  async importOfx(file: File) {
+  async getOfxToBeCreated(file: File) {
     const text = await file.text();
     const ofx = new Ofx(text)
 
     const bankTransferList = ofx.getBankTransferList()
-
-    const receipts = await this.receiptRepository.list()
-    const spends = await this.expendituresRepository.list()
-
-    const amounts = receipts.concat(spends)
 
     const categories = await this.categoryRepository.list()
 
@@ -59,17 +54,23 @@ export class ImportDataRepositoryDomain implements IRepositoryDomain<any> {
     ).filter(it => {
       return !categories.map(it => it.title).includes(it)
     })
-    const categoriesCreated = await Promise.all(categoriesOfxItems.map(it =>
-      this.categoryRepository.set(
+
+    const receipts = await this.receiptRepository.list()
+    const spends = await this.expendituresRepository.list()
+    const amounts = receipts.concat(spends)
+
+    const categoriesToBeCreated = categoriesOfxItems.map(it =>
         new CategoryDomainModel({
           title: String(it),
           description: "",
           color: "#000000",
         })
-      )))
+    )
 
-    const categoriesSearch = categories.concat(categoriesCreated)
-    await Promise.all(bankTransferList.map(async it => {
+
+    const categoriesSearch = categories.concat(categoriesToBeCreated)
+
+    const createToBeRecords = bankTransferList.map(it => {
       const exists = amounts.find(i => {
         return i.uniqueId === Number(it.FITID)
       })
@@ -77,29 +78,28 @@ export class ImportDataRepositoryDomain implements IRepositoryDomain<any> {
         const category = categoriesSearch.find(i => {
           return i.title === String(it.TRNTYPE)
         })
-        if (it.TRNAMT < 0) {
-          await this.expendituresRepository.set(new RecordDomainModel({
-            value: Math.abs(Math.floor(it.TRNAMT * 100)),
-            description: it.MEMO || "",
-            categoryId: category!.id,
-            isRecurrent: false,
-            isEveryDays: false,
-            uniqueId: Number(it.FITID),
-            date: `${it.DTPOSTED}T00:00:00`,
-          }))
-        }
-        else {
-          await this.receiptRepository.set(new RecordDomainModel({
-            value: Math.abs(Math.floor(it.TRNAMT * 100)),
-            description: it.MEMO || "",
-            categoryId: category!.id,
-            isRecurrent: false,
-            isEveryDays: false,
-            uniqueId: Number(it.FITID),
-            date: `${it.DTPOSTED}T00:00:00`,
-          }))
-        }
+        return new RecordDomainModel({
+          value: Math.abs(Math.floor(it.TRNAMT * 100)),
+          description: it.MEMO || "",
+          categoryId: category!.id,
+          isRecurrent: false,
+          isEveryDays: false,
+          uniqueId: Number(it.FITID),
+          date: `${it.DTPOSTED}T00:00:00`,
+        })
       }
+    })
+    return {categoriesToBeCreated, createToBeRecords}
+  }
+  async importOfx(file: File) {
+    const {categoriesToBeCreated, createToBeRecords} = await this.getOfxToBeCreated(file)
+    await Promise.all(categoriesToBeCreated.map(this.categoryRepository.set))
+    await Promise.all(createToBeRecords.map(async record => {
+      if (!record)
+        return
+      if (record.value < 0)
+        return await this.expendituresRepository.set(record)
+      return await this.receiptRepository.set(record)
     }))
   }
 }

@@ -26,7 +26,7 @@ export const ModalImportOfxForm = defineComponent({
     })
     const formControl = useForm({ schema })
     const onImportOfx = (data: z.output<typeof schema>) => {
-      repo.importOfx(data.file)
+      repo.getOfxToBeCreated(data.file).then(console.log)
     }
     return () => (
       <IonContent>
