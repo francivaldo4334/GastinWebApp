@@ -155,7 +155,20 @@ export const ModalExpenditureForm = defineComponent({
               render={(props: FormFieldProps<boolean>) => (
                 <FormCheckboxField
                   {...props}
-                  label="Diariamente:"
+                  label="Todo dia:"
+                  disabled={!formControl.fields.isRecurrent}
+                />
+              )}
+            />
+            <FormField
+              control={formControl}
+              name="isEveryday"
+              render={(props: FormFieldProps<boolean>) => (
+                <FormCheckboxField
+                  {...props}
+                  value={!props.value}
+                  setValue={(b: boolean) => props.setValue(!b)}
+                  label="Todo mês:"
                   disabled={!formControl.fields.isRecurrent}
                 />
               )}
@@ -168,8 +181,7 @@ export const ModalExpenditureForm = defineComponent({
                   {...props}
                   label="Início da Vigência:"
                   disabled={!(
-                    formControl.fields.isRecurrent &&
-                    !formControl.fields.isEveryday
+                    formControl.fields.isRecurrent
                   )}
                 />
               )}
@@ -182,8 +194,7 @@ export const ModalExpenditureForm = defineComponent({
                   {...props}
                   label="Fim da Vigência:"
                   disabled={!(
-                    formControl.fields.isRecurrent &&
-                    !formControl.fields.isEveryday
+                    formControl.fields.isRecurrent
                   )}
                 />
               )}
