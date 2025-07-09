@@ -78,6 +78,7 @@ export class AndroidDatabase implements InterfaceDatabase {
                 CREATE TABLE IF NOT EXISTS TB_VALIDITY (
                   ID INTEGER PRIMARY KEY AUTOINCREMENT,
                   IS_EVER_DAYS INTEGER NOT NULL,
+                  IS_EVER_MONTH INTEGER NOT NULL DEFAULT 0,
                   START_DATE INTEGER,
                   END_DATE INTEGER,
                   REGISTRO_ID INTEGER

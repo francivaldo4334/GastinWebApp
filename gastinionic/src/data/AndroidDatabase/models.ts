@@ -49,6 +49,7 @@ export interface Registro {
 export interface Validity {
   ID: number
   IS_EVER_DAYS: boolean
+  IS_EVER_MONTH: boolean
   START_DATE: number
   END_DATE: number
 }
