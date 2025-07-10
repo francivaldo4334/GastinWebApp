@@ -62,6 +62,10 @@ export const ModalReceiptForm = defineComponent({
         value: it.id,
         label: it.title
       }))
+
+      if (details instanceof RecordDomainModel) {
+        formControl.fields.category = details.categoryId
+      }
     })
 
     return () => (
@@ -75,7 +79,7 @@ export const ModalReceiptForm = defineComponent({
               <IonButtons slot="start" >
                 <IonButton color="danger" onClick={props.onClose}>Cancelar</IonButton>
               </IonButtons>
-              <IonTitle style={{"text-align": "center"}}>
+              <IonTitle style={{ "text-align": "center" }}>
                 Receita
               </IonTitle>
               <IonButtons slot="end" >
@@ -157,7 +161,7 @@ export const ModalReceiptForm = defineComponent({
                 <FormCheckboxField
                   {...props}
                   value={!props.value}
-                  setValue={(b:boolean) => props.setValue(!b)}
+                  setValue={(b: boolean) => props.setValue(!b)}
                   label="Todo mês:"
                   disabled={!formControl.fields.isRecurrent}
                 />

@@ -44,6 +44,10 @@ export const ModalExpenditureForm = defineComponent({
         value: it.id,
         label: it.title
       }))
+
+      if (details instanceof RecordDomainModel) {
+        formControl.fields.category = details.categoryId
+      }
     })
 
 
@@ -84,7 +88,7 @@ export const ModalExpenditureForm = defineComponent({
               <IonButtons slot="start" >
                 <IonButton color="danger" onClick={props.onClose}>Cancelar</IonButton>
               </IonButtons>
-              <IonTitle style={{"text-align": "center"}}>
+              <IonTitle style={{ "text-align": "center" }}>
                 Despesa
               </IonTitle>
               <IonButtons slot="end" >
