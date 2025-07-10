@@ -17,8 +17,9 @@ export default defineComponent({
     const repoCategories = FactoryRepositoryDomain.getRepository("category")
     const repo = FactoryRepositoryDomain.getRepository("receipt")
     const categories = ref<CategoryDomainModel[]>([])
+    const items = ref<RecordDomainModel[]>([])
+    const total = ref(0)
     const pagination = reactive({
-      items: [] as RecordDomainModel[],
       total: 0,
       currentPage: 1,
       perPage: 20
@@ -36,8 +37,8 @@ export default defineComponent({
 
     const loadList = async () => {
       const list = await repo.paginate(pagination.currentPage, pagination.perPage)
-      pagination.items = list.results
-      pagination.total = list.total
+      items.value = list.results
+      total.value = list.total
     }
 
     const onRemoveExpenditure = async (id: number) => {
@@ -93,7 +94,7 @@ export default defineComponent({
           </IonFab>
           <IonList>
             {
-              pagination.items.map(it => (
+              items.value.map(it => (
                 <IonItemSliding>
                   <IonItem
                     button
@@ -138,7 +139,7 @@ export default defineComponent({
             }
             <Pagination
               page={pagination.currentPage}
-              countItems={pagination.total}
+              countItems={total.value}
               perPage={pagination.perPage}
               setPage={(value: number) => {
                 pagination.currentPage = value
