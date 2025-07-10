@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, loadingController } from "@ionic/vue";
 import { defineComponent } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
@@ -44,11 +44,22 @@ export const ModalCategoryForm = defineComponent({
         description: data.description,
         color: data.color,
       })
-      if (props.details)
-        await repo.edit(props.details.id, model)
-      else
-        await repo.set(model)
-      props.onClose()
+      const loading = await loadingController.create({
+        message: "Criando..."
+      })
+      loading.present()
+      const handler = async () => {
+        if (props.details)
+          await repo.edit(props.details.id, model)
+        else
+          await repo.set(model)
+      }
+
+      await handler().then(() => {
+        props.onClose()
+      }).finally(() => {
+        loading.dismiss()
+      })
     }
     return () => (
       <IonContent>
@@ -61,7 +72,7 @@ export const ModalCategoryForm = defineComponent({
               <IonButtons slot="start" >
                 <IonButton color="danger" onClick={props.onClose}>Cancelar</IonButton>
               </IonButtons>
-              <IonTitle style={{"text-align": "center"}}>
+              <IonTitle style={{ "text-align": "center" }}>
                 Categoria
               </IonTitle>
               <IonButtons slot="end" >
