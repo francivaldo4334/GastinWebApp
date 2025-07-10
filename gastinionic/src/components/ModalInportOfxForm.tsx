@@ -53,8 +53,6 @@ export const ModalImportOfxForm = defineComponent({
       })
       loading.present()
 
-      await new Promise(r => setTimeout(r, 3000))
-
       repo.importOfx({
         categoriesToBeCreated: categoriesToBeCreated.value,
         file: data.uploadfile
