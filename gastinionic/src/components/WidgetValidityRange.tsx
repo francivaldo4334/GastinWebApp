@@ -1,4 +1,4 @@
-import { IonButtons, IonDatetime, IonDatetimeButton, IonItem, IonModal, IonText } from "@ionic/vue";
+import { IonButtons, IonDatetime, IonDatetimeButton, IonItem, IonModal } from "@ionic/vue";
 import { defineComponent } from "vue";
 
 export const WidgetValidityRange = defineComponent({
