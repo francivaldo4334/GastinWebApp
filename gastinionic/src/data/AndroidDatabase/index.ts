@@ -18,6 +18,8 @@ export class AndroidDatabase implements InterfaceDatabase {
   static async getDb() {
     if (!AndroidDatabase.db) {
       const sqlite = new SQLiteConnection(CapacitorSQLite);
+      await CapacitorSQLite.addSQLiteSuffix({ dbNameList: ["GASTIN_DATABASE"] })
+
       await CapacitorSQLite.checkConnectionsConsistency({ dbNames: ["GASTIN_DATABASE"], openModes: ["no-encryption"] });
       await CapacitorSQLite.closeConnection({ database: "GASTIN_DATABASE" }).catch(() => { });
       const dbV1 = await sqlite.createConnection(
@@ -108,9 +110,7 @@ export class AndroidDatabase implements InterfaceDatabase {
         3,
         false
       )
-
       await dbV3.open()
-
       AndroidDatabase.db = dbV3
     }
     return AndroidDatabase.db
