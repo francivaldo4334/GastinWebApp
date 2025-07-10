@@ -98,7 +98,18 @@ export class AndroidDatabase implements InterfaceDatabase {
               UPDATE TB_REGISTRO SET VALIDITY_ID = (
                 SELECT v.ID FROM TB_VALIDITY v WHERE v.REGISTRO_ID = TB_REGISTRO.ID
               );
+              `,
               `
+                UPDATE TB_REGISTRO
+                SET VALUE = -ABS(VALUE)
+                WHERE IS_DEPESA = 1;
+              `,
+
+              `
+                UPDATE TB_REGISTRO
+                SET SALE_DATE = CREATE_AT
+                WHERE SALE_DATE IS NULL;
+              `,
             ]
           }
         ]
