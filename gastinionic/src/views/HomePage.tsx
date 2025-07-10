@@ -15,6 +15,7 @@ import {
   IonMenuToggle,
   IonPage,
   IonTitle,
+  IonToggle,
   IonToolbar,
 } from "@ionic/vue";
 import {
@@ -25,13 +26,17 @@ import {
   addCircleOutline,
   removeCircleOutline,
   fileTrayOutline,
+  moonOutline,
 } from "ionicons/icons"
 import { defineComponent, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { App as CapacitorApp } from "@capacitor/app"
+import { ThemeController } from "@/utils/themecontroller";
 
 export default defineComponent({
   setup() {
+    const themectl = new ThemeController()
+    themectl.initializeTheme()
     const router = useRouter()
     const modalStore = useModalStore()
 
@@ -63,6 +68,22 @@ export default defineComponent({
             </IonToolbar>
           </IonHeader>
           <IonContent>
+            <IonItem>
+              <IonIcon
+                icon={moonOutline}
+                slot="start"
+                aria-hidden
+              />
+              <IonToggle
+                checked={themectl.theme === "dark"}
+                onIonChange={()=>{
+                  themectl.toggleTheme()
+                  themectl.applyTheme(themectl.theme)
+                }}
+              >
+                Modo escuro
+              </IonToggle>
+            </IonItem>
             <IonMenuToggle>
               <IonItem
                 button
