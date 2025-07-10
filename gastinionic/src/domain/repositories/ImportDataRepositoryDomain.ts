@@ -121,7 +121,7 @@ export class ImportDataRepositoryDomain implements IRepositoryDomain<any> {
         return new RecordDomainModel({
           value: Math.floor(it.TRNAMT * 100),
           description: it.MEMO || "",
-          categoryId: category!.id,
+          categoryId: (category ? category.id : undefined)!,
           isRecurrent: false,
           isEveryDays: false,
           uniqueId: Number(it.FITID),
