@@ -40,7 +40,7 @@ import { StatusBar, Style } from '@capacitor/status-bar'
 if (Capacitor.isNativePlatform()) {
   StatusBar.setOverlaysWebView({ overlay: false })
   StatusBar.setBackgroundColor({ color: '#000000' })
-  StatusBar.setStyle({ style: Style.Light })
+  StatusBar.setStyle({ style: Style.Dark })
 }
 
 const pinia = createPinia()
