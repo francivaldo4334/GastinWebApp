@@ -1,7 +1,19 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonItem, IonLabel, IonList, IonListHeader, IonText, IonToolbar } from "@ionic/vue";
+import {
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonText,
+  IonToolbar,
+  loadingController,
+} from "@ionic/vue";
 import { defineComponent, reactive, ref } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
-import { record, z } from "zod";
+import { z } from "zod";
 import { FormFileOfxField } from "./FormFileOfxField";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { RecordDomainModel } from "@/domain/models/RecordDomainModel";
@@ -35,18 +47,36 @@ export const ModalImportOfxForm = defineComponent({
     })
     const formControl = useForm({ schema })
     const onImportOfx = async (data: z.output<typeof schema>) => {
-      await repo.importOfx({
+      const loading = await loadingController.create({
+        message: "Inserindo dados..."
+      })
+      loading.present()
+
+      await new Promise(r => setTimeout(r, 3000))
+
+      repo.importOfx({
         categoriesToBeCreated: categoriesToBeCreated.value,
         file: data.uploadfile
+      }).then(() => {
+        props.onClose()
+      }).finally(() => {
+        loading.dismiss()
       })
-      props.onClose()
     }
 
     const onLoadOfxData = async (ofxfile: File) => {
-      const result = await repo.getOfxToBeCreated(ofxfile)
-      categoriesToBeCreated.value = result.categoriesToBeCreated
-      recordsToBeCreated.count = result.createToBeRecords.filter(it => !it).length
-      recordsToBeCreated.items = result.createToBeRecords.filter(it => !!it)
+      const loading = await loadingController.create({
+        message: "Carregando..."
+      })
+      loading.present()
+      await repo.getOfxToBeCreated(ofxfile).then(result => {
+        categoriesToBeCreated.value = result.categoriesToBeCreated
+        recordsToBeCreated.count = result.createToBeRecords.filter(it => !it).length
+        recordsToBeCreated.items = result.createToBeRecords.filter(it => !!it)
+      }).finally(() => {
+        loading.dismiss()
+      })
+
     }
     return () => (
       <IonContent>
@@ -60,7 +90,9 @@ export const ModalImportOfxForm = defineComponent({
                 <IonButton color="danger" onClick={props.onClose}>Cancelar</IonButton>
               </IonButtons>
               <IonButtons slot="end" >
-                <IonButton color="success" type="submit">Adicionar</IonButton>
+                <IonButton color="success" type="submit">
+                  <IonText>Adicionar</IonText>
+                </IonButton>
               </IonButtons>
             </IonToolbar>
           </IonHeader>
@@ -82,9 +114,7 @@ export const ModalImportOfxForm = defineComponent({
             <IonList>
               {
                 !!recordsToBeCreated.count &&
-                <IonListHeader>{recordsToBeCreated.count}
-                  Registros já foram inseridos anteriormente
-                </IonListHeader>
+                <IonListHeader>({recordsToBeCreated.count}) Registros já foram inseridos anteriormente</IonListHeader>
               }
               <IonListHeader>
                 Categorias que vão ser criadas
