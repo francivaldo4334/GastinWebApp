@@ -2,7 +2,7 @@ import { defineComponent, onMounted, ref, watch } from "vue";
 import { z } from "zod";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
-import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, loadingController } from "@ionic/vue";
 import { FormMoneyField } from "./FormMoneyField";
 import { FormTextField } from "./FormTextField";
 import { FormSelectField } from "./FormSelectField";
@@ -49,11 +49,24 @@ export const ModalReceiptForm = defineComponent({
         endValidity: data.endValidity,
         date: data.date,
       })
-      if (props.details)
-        await repo.edit(props.details.id, model)
-      else
-        await repo.set(model)
-      props.onClose()
+      const handler = async () => {
+        if (props.details)
+          await repo.edit(props.details.id, model)
+        else
+          await repo.set(model)
+      }
+
+      const loading = await loadingController.create({
+        message: "Criando..."
+      })
+
+      loading.present()
+
+      handler().then(() => {
+        props.onClose()
+      }).finally(() => {
+        loading.dismiss()
+      })
     }
 
     onMounted(async () => {
