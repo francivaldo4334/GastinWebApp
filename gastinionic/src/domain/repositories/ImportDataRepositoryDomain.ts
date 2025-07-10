@@ -101,15 +101,14 @@ export class ImportDataRepositoryDomain implements IRepositoryDomain<any> {
 
     const bankTransferList = ofx.getBankTransferList()
 
-    const categories = await this.categoryRepository.list()
-
     const receipts = await this.receiptRepository.list()
     const spends = await this.expendituresRepository.list()
     const amounts = receipts.concat(spends)
 
-    const categoriesToBeCreated = await Promise.all(params.categoriesToBeCreated.map(async it => await this.categoryRepository.set(it)))
+    await Promise.all(params.categoriesToBeCreated.map(async it => await this.categoryRepository.set(it)))
 
-    const categoriesSearch = categories.concat(categoriesToBeCreated)
+    const categoriesSearch = await this.categoryRepository.list()
+
     const createToBeRecords = bankTransferList.map(it => {
       const exists = amounts.find(i => {
         return i.uniqueId === Number(it.FITID)
@@ -121,7 +120,7 @@ export class ImportDataRepositoryDomain implements IRepositoryDomain<any> {
         return new RecordDomainModel({
           value: Math.floor(it.TRNAMT * 100),
           description: it.MEMO || "",
-          categoryId: (category ? category.id : undefined)!,
+          categoryId: category!.id,
           isRecurrent: false,
           isEveryDays: false,
           uniqueId: Number(it.FITID),
