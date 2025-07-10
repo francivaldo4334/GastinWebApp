@@ -26,10 +26,13 @@ import {
   removeCircleOutline,
   fileTrayOutline,
 } from "ionicons/icons"
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { App as CapacitorApp } from "@capacitor/app"
 
 export default defineComponent({
   setup() {
+    const router = useRouter()
     const modalStore = useModalStore()
 
     const {
@@ -38,6 +41,18 @@ export default defineComponent({
       onOpenCategory,
       onOpenImportOfx,
     } = modalStore
+
+    onMounted(() => {
+      CapacitorApp.addListener("backButton", ({ canGoBack }) => {
+        const currentRoute = router.currentRoute.value
+        if (currentRoute.path === "/") {
+          CapacitorApp.exitApp()
+        }
+        else if (canGoBack) {
+          window.history.back()
+        }
+      })
+    })
 
     return () => (
       <IonPage>
