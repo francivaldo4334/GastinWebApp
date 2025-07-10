@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, loadingController } from "@ionic/vue";
+import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, loadingController, toastController } from "@ionic/vue";
 import { defineComponent, onMounted, ref } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
@@ -62,6 +62,10 @@ export const ModalExpenditureForm = defineComponent({
         endValidity: data.endValidity,
         date: data.date,
       })
+      const toastError = await toastController.create({
+        message: "Ocorreu um erro ao criar despesa",
+        duration: 2000
+      })
       const loading = await loadingController.create({
         message: "Criando..."
       })
@@ -74,6 +78,8 @@ export const ModalExpenditureForm = defineComponent({
       }
       handler().then(() => {
         props.onClose()
+      }).catch(() => {
+        toastError.present()
       }).finally(() => {
         loading.dismiss()
       })

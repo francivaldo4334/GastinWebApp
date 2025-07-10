@@ -2,7 +2,7 @@ import { defineComponent, onMounted, ref, watch } from "vue";
 import { z } from "zod";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
-import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, loadingController } from "@ionic/vue";
+import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, loadingController, toastController } from "@ionic/vue";
 import { FormMoneyField } from "./FormMoneyField";
 import { FormTextField } from "./FormTextField";
 import { FormSelectField } from "./FormSelectField";
@@ -55,6 +55,10 @@ export const ModalReceiptForm = defineComponent({
         else
           await repo.set(model)
       }
+      const toastError = await toastController.create({
+        message: "Ocorreu um erro ao carregar os dados",
+        duration: 2000
+      })
 
       const loading = await loadingController.create({
         message: "Criando..."
@@ -64,6 +68,8 @@ export const ModalReceiptForm = defineComponent({
 
       handler().then(() => {
         props.onClose()
+      }).catch(() => {
+        toastError.present()
       }).finally(() => {
         loading.dismiss()
       })

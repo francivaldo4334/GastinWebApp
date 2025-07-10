@@ -10,6 +10,7 @@ import {
   IonText,
   IonToolbar,
   loadingController,
+  toastController,
 } from "@ionic/vue";
 import { defineComponent, reactive, ref } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
@@ -65,6 +66,10 @@ export const ModalImportOfxForm = defineComponent({
     }
 
     const onLoadOfxData = async (ofxfile: File) => {
+      const toastError = await toastController.create({
+        message: "Ocorreu um erro ao carregar os dados",
+        duration: 2000
+      })
       const loading = await loadingController.create({
         message: "Carregando..."
       })
@@ -73,6 +78,8 @@ export const ModalImportOfxForm = defineComponent({
         categoriesToBeCreated.value = result.categoriesToBeCreated
         recordsToBeCreated.count = result.createToBeRecords.filter(it => !it).length
         recordsToBeCreated.items = result.createToBeRecords.filter(it => !!it)
+      }).catch(() => {
+        toastError.present()
       }).finally(() => {
         loading.dismiss()
       })

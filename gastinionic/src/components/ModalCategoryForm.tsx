@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, loadingController } from "@ionic/vue";
+import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, loadingController, toastController } from "@ionic/vue";
 import { defineComponent } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
@@ -44,6 +44,10 @@ export const ModalCategoryForm = defineComponent({
         description: data.description,
         color: data.color,
       })
+      const toastError = await toastController.create({
+        message: "Ocorreu um erro ao criar categoria",
+        duration: 2000
+      })
       const loading = await loadingController.create({
         message: "Criando..."
       })
@@ -57,6 +61,8 @@ export const ModalCategoryForm = defineComponent({
 
       await handler().then(() => {
         props.onClose()
+      }).catch(() => {
+        toastError.present()
       }).finally(() => {
         loading.dismiss()
       })
