@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/vue";
+import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, loadingController } from "@ionic/vue";
 import { defineComponent, onMounted, ref } from "vue";
 import { Form, FormField, FormFieldProps, useForm } from "./Form";
 import { z } from "zod";
@@ -62,11 +62,21 @@ export const ModalExpenditureForm = defineComponent({
         endValidity: data.endValidity,
         date: data.date,
       })
-      if (props.details)
-        await repo.edit(props.details.id, model)
-      else
-        await repo.set(model)
-      props.onClose()
+      const loading = await loadingController.create({
+        message: "Criando..."
+      })
+      loading.present()
+      const handler = async () => {
+        if (props.details)
+          await repo.edit(props.details.id, model)
+        else
+          await repo.set(model)
+      }
+      handler().then(() => {
+        props.onClose()
+      }).finally(() => {
+        loading.dismiss()
+      })
     }
 
     onMounted(async () => {
