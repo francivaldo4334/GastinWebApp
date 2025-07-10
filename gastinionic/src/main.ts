@@ -33,11 +33,15 @@ import '@ionic/vue/css/palettes/dark.class.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import { StatusBar, Style } from "@capacitor/status-bar"
-
 import { createPinia } from "pinia"
+import { Capacitor } from '@capacitor/core'
+import { StatusBar, Style } from '@capacitor/status-bar'
 
-StatusBar.setOverlaysWebView({ overlay: false })
+if (Capacitor.isNativePlatform()) {
+  StatusBar.setOverlaysWebView({ overlay: false })
+  StatusBar.setBackgroundColor({ color: '#000000' })
+  StatusBar.setStyle({ style: Style.Light })
+}
 
 const pinia = createPinia()
 const app = createApp(App)
