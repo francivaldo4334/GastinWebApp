@@ -9,6 +9,31 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_REGISTRO>
   constructor(db: DatabaseSQLInterface) {
     this.db = db
   }
+  insert(data: TB_REGISTRO): TB_REGISTRO | undefined {
+    const datenow = new Date().getTime()
+    const queryString = squel.insert()
+      .into(this.tableName)
+      .set("CREATE_AT", datenow)
+      .set("VALUE", data.VALUE)
+      .set("DESCRIPTION", data.DESCRIPTION)
+      .set("IS_DEPESA", data.IS_DEPESA)
+      .set("IS_RECURRENT", data.IS_RECURRENT)
+      .set("IS_EVER_DAYS", data.IS_EVER_DAYS)
+      .set("SALE_DATE", data.SALE_DATE)
+      .set("CATEGORIA_FK", data.CATEGORIA_FK)
+      .set("VALIDITY_ID", data.VALIDITY_ID)
+      .set("UNIQUE_ID", data.UNIQUE_ID)
+      .set("START_DATE", data.START_DATE)
+      .set("END_DATE", data.END_DATE)
+      .set("UPDATE_AT", datenow)
+      .toString()
+    const pk = this.db.query(queryString)
+    if (pk) {
+      const result = this.getById(pk)
+      return result
+    }
+    return
+  }
 
   getById(ID: number): TB_REGISTRO | undefined {
     const queryString = squel.select().from(this.tableName).where("ID = ?", ID).toString()

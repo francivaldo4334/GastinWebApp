@@ -10,6 +10,21 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_VALIDITY>
   constructor(db: DatabaseSQLInterface) {
     this.db = db
   }
+  insert(data: TB_VALIDITY): TB_VALIDITY | undefined {
+    const queryString = squel.insert()
+      .into(this.tableName)
+      .set("START_DATE", data.START_DATE)
+      .set("END_DATE", data.END_DATE)
+      .set("IS_EVER_MONTH", data.IS_EVER_MONTH)
+      .set("IS_EVER_DAYS", data.IS_EVER_DAYS)
+      .toString()
+    const pk = this.db.query(queryString)
+    if (pk) {
+      const result = this.getById(pk)
+      return result
+    }
+    return
+  }
 
   getById(ID: number): TB_VALIDITY | undefined {
     const queryString = squel.select().from(this.tableName).where("ID = ?", ID).toString()

@@ -9,6 +9,23 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_CATEGORIA
   constructor(db: DatabaseSQLInterface) {
     this.db = db
   }
+  insert(data: TB_CATEGORIA): TB_CATEGORIA | undefined {
+    const datenow = new Date().getTime()
+    const queryString = squel.insert()
+      .into(this.tableName)
+      .set("TOTAL", data.TOTAL)
+      .set("COLOR", data.COLOR)
+      .set("NAME", data.NAME)
+      .set("DESCRIPTION", data.DESCRIPTION)
+      .set("CREATE_AT", datenow)
+      .toString()
+    const pk = this.db.query(queryString)
+    if (pk) {
+      const result = this.getById(pk)
+      return result
+    }
+    return
+  }
 
   getById(ID: number): TB_CATEGORIA | undefined {
     const queryString = squel.select().from(this.tableName).where("ID = ?", ID).toString()
