@@ -9,6 +9,15 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_REGISTRO>
   constructor(db: DatabaseSQLInterface) {
     this.db = db
   }
+
+  async count(): Promise<number> {
+    const queryString = squel.select()
+      .field("COUNT(*)", "TOTAL")
+      .from(this.tableName).where("1").toString()
+    const result = await this.db.query(queryString)
+    return result.TOTAL
+  }
+
   selectPaginated(perPage: number, page: number): Promise<TB_REGISTRO[]> {
     const offset = (page - 1) * perPage
     const queryString = squel.select()

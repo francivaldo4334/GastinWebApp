@@ -47,7 +47,11 @@ class CategoryDataModelTable implements Table<CategoryDataModel, TB_CATEGORIA> {
   }
   async paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{ items: any[]; count: number; }> {
     const results = await this.sqlRepo.selectPaginated(perPage, page)
-    return results.map(this.toModel)
+    const count = await this.sqlRepo.count()
+    return {
+      items: results.map(this.toModel),
+      count: count,
+    }
   }
   range?: ((init: string, end: string) => Promise<any>) | undefined;
 }

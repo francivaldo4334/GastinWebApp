@@ -5,4 +5,5 @@ export interface RepositoryInterface<T> {
   selectPaginated(perPage: number, page: number): Promise<T[]>;
   deleteById(ID: number): Promise<boolean>;
   updateItem(ID: number, data: T): Promise<T | undefined>; 
+  count(): Promise<number>;
 }
