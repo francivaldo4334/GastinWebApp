@@ -106,5 +106,6 @@ export const ValidityModelToValidity = (data: ValidityModel): Validity => {
     IS_EVER_DAYS: data.isEveryDays,
     START_DATE: (data.initValidity ? isoStringToNumber(data.initValidity) : undefined)!,
     END_DATE: (data.initValidity ? isoStringToNumber(data.initValidity) : undefined)!,
+    IS_EVER_MONTH: Boolean(data.isEveryMonths)
   }
 }

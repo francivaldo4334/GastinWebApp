@@ -17,8 +17,7 @@ export class ValidityRepositoryData implements IRepositoryData<ValidityDataModel
   }
 
   async set(m: ValidityDataModel): Promise<ValidityDataModel> {
-    const id = await Database.instance.validities.add(mapFromValidityDataModel(m));
-    const it = await Database.instance.validities.get(id);
+    const it = await Database.instance.validities.add(mapFromValidityDataModel(m));
     return mapToValidityDataModel(it);
   }
 
