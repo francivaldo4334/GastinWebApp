@@ -82,5 +82,4 @@ export class SQLDatabase implements InterfaceDatabase {
   categories: Table = new CategoryDataModelTable()
   records: Table = new RecordDataModelTable()
   validities: Table = new ValidityDataModelTable()
-
 }
