@@ -29,16 +29,16 @@ const handleFilters = (qb: squel.Select, filters?: Record<string, any>): squel.S
 export class RecordAndroidRepository implements Table {
   async paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{ items: any[]; count: number; }> {
 
-    const offset = (page-1) * perPage
+    const offset = (page - 1) * perPage
 
     const mainQuery = handleFilters(
       squel.select().from("TB_REGISTRO").where("1"),
       filters
-    ) .order("ID")
+    ).order("ID")
       .limit(perPage)
       .offset(offset)
       .toString()
-      
+
     const countQuery = handleFilters(
       squel.select()
         .field("COUNT(*)", "TOTAL")
@@ -134,5 +134,33 @@ export class RecordAndroidRepository implements Table {
     const resultUpdated = await this.get(id)
 
     return RegistroToRecordModel(resultUpdated)
+  }
+  async range(_init: string, _end: string): Promise<any> {
+    const init = isoStringToNumber(_init)
+    const end = isoStringToNumber(_end)
+    const queryString = squel.select()
+      .from("TB_REGISTRO")
+      .join("TB_VALIDITY", "v", "v.ID = VALIDITY_ID")
+      .where("1")
+      .where(`
+      (
+        VALIDITY_ID IS NULL AND
+        SALE_DATE >= ${init} AND
+        SALE_DATE <= ${end}
+      )
+      OR (
+        v.IS_EVER_DAYS = 1
+      )
+      OR NOT (
+        v.END_DATE < ${init} OR
+        v.START_DATE > ${end}
+      )
+      `).toString()
+
+    const queryResult = await AndroidDatabase.db.query(queryString)
+    const categories: Registro[] | undefined = queryResult.values
+    if (!categories)
+      return []
+    return categories.map(RegistroToRecordModel)
   }
 }

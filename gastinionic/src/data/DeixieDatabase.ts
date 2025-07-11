@@ -64,67 +64,9 @@ class DeixieTable implements Table {
     return this.table.update(id, model)
   }
   filter(filters: Record<string, any>): Promise<any[]> {
-    const collection = this.table.toArray()
     if (!filters)
-      return collection;
-    function conditionallookup(it: any, lookup: string | undefined, field: string, value: any): boolean {
-      switch (lookup) {
-        case "gt":
-          return it[field] > value
-        case "lt":
-          return it[field] < value
-        case "gte":
-          return it[field] >= value
-        case "lte":
-          return it[field] <= value
-        default:
-          return it[field] === value
-      }
-    }
-
-    function handlerfilter(list: any[], filter: any) {
-      if (!Object.keys(filter).length)
-        return list
-      let filteredList = list
-      for (const [key, value] of Object.entries(filter)) {
-        if (key.startsWith("block_")) {
-          const [, condition] = key.split("__")
-          switch (condition) {
-            case "or":
-              const list_or = value as any[]
-              for (const or_filter of list_or) {
-                //...
-              }
-              filteredList = filteredList.filter(it => true)
-              break;
-            case "and":
-              //
-              break;
-            case "not":
-              //
-              break;
-          }
-        }
-        else {
-          const [field, lookup] = key.split("__")
-          if (!lookup) {
-            filteredList = filteredList.filter(it => it[field] === value)
-          }
-          else {
-            if (lookup.startsWith("query_")) {
-              //...
-            }
-            else {
-              filteredList = filteredList.filter(it => conditionallookup(it, lookup, field, value))
-            }
-          }
-        }
-      }
-      return filteredList
-    }
-
-
-    return collection;
+      return this.table.toArray()
+    return applyFilter(this.table, filters).toArray();
   }
 
 }

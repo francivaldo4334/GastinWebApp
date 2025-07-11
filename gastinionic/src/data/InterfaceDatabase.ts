@@ -10,6 +10,7 @@ export interface Table {
     items: any[]
     count: number
   }>;
+  range?: (init: string, end:string) => Promise<any>;
 }
 
 export interface InterfaceDatabase {

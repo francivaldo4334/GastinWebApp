@@ -9,6 +9,7 @@ import { createValidity } from "../services/createValidity";
 import { createOrUpdateValidity } from "../services/createOrUpdateValidity";
 import { recordInValidity } from "../services/recordInValidity";
 import { CategoryRepositoryData } from "@/data/repositories/CategoryRepositoryData";
+import { Capacitor } from "@capacitor/core";
 
 export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainModel> {
   validityRepository: ValidityRepositoryData;
@@ -44,8 +45,20 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
     }
   }
   async range(init: Date, end: Date): Promise<RecordDomainModel[]> {
+    if (Capacitor.getPlatform() === "android") {
+      const records = await this.recordRepository.range(init.toISOString(), end.toUTCString());
+      const validities = await this.validityRepository.list();
+      return records
+        .filter(it => IRule.use()
+          .and(new ValueGreaterThenZero())
+          .applyAllValidations(it)
+        )
+        .map(r => {
+          const v = validities.find(v => v.id === r.validityId);
+          return mapToDomain(r, v);
+        });
+    }
     const list = await this.list()
-
     return list.filter(it => recordInValidity(it, init, end))
   }
   async list(): Promise<RecordDomainModel[]> {

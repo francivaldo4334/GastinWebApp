@@ -46,30 +46,7 @@ export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
     return await Database.instance.records.filter({ categoryId })
   }
 
-  rangeValidity(init_date: string, end_date: string): Promise<any[]> {
-    return Database.instance.records.filter({
-      block__or: [
-        {
-          validityId: null,
-          date__gte: init_date,
-          date__lte: end_date,
-        },
-        {
-          validityId__query_validities__isEveryDays: true
-        },
-        {
-          block__not: {
-            block__or: [
-              {
-                validityId__query_validities__endValidity__lt: init_date
-              },
-              {
-                validityId__query_validities__initValidity__gt: end_date
-              }
-            ]
-          }
-        }
-      ]
-    })
+  async range(init: string, end: string): Promise<RecordDataModel[]> {
+    return Database.instance.records.range!(init, end)
   }
 }
