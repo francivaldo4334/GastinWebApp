@@ -3,7 +3,7 @@ import { DatabaseSQLInterface } from "../DatabaseSQLInterface";
 import { TB_VALIDITY } from "../tables/TB_VALIDITY";
 import { RepositoryInterface } from "./RepositoryInterface";
 
-export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_VALIDITY> {
+export class TB_VALIDITY_Repository implements RepositoryInterface<TB_VALIDITY> {
 
   db: DatabaseSQLInterface
   tableName = "TB_VALIDITY"

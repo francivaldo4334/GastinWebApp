@@ -2,7 +2,7 @@ import squel from "squel";
 import { DatabaseSQLInterface } from "../DatabaseSQLInterface";
 import { TB_REGISTRO } from "../tables/TB_REGISTRO";
 import { RepositoryInterface } from "./RepositoryInterface";
-export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_REGISTRO> {
+export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> {
 
   db: DatabaseSQLInterface
   tableName = "TB_REGISTRO"

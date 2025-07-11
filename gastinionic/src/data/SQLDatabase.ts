@@ -2,8 +2,28 @@ import { InterfaceDatabase, Table } from "./InterfaceDatabase";
 import { CategoryDataModel } from "./models/CategoryDataModel";
 import { RecordDataModel } from "./models/RecordDataModel";
 import { ValidityDataModel } from "./models/ValidityDataModel";
+import { DatabaseSQLInterface } from "./SQL/DatabaseSQLInterface";
 import { RepositoryInterface } from "./SQL/repositories/RepositoryInterface";
+import { TB_REGISTRO_Repository } from "./SQL/repositories/TB_REGISTRO_Repository";
+import { TB_VALIDITY_Repository } from "./SQL/repositories/TB_VALIDITY_Repository";
 import { TB_CATEGORIA } from "./SQL/tables/TB_CATEGORIA";
+import { TB_REGISTRO } from "./SQL/tables/TB_REGISTRO";
+import { TB_VALIDITY } from "./SQL/tables/TB_VALIDITY";
+
+
+function NumberToISOString(timestamp: number): string {
+  try {
+    return new Date(timestamp).toISOString();
+  }
+  catch {
+    console.error(`Não foi posivel converter o timestamp ${timestamp}`)
+    return ""
+  }
+}
+
+function IsoStringToNumber(iso: string): number {
+  return new Date(iso).getTime();
+}
 
 class CommonTable implements Table<any, any> {
   sqlRepo!: RepositoryInterface<any>;
@@ -57,60 +77,116 @@ class CommonTable implements Table<any, any> {
 }
 
 class CategoryDataModelTable extends CommonTable implements Table<CategoryDataModel, TB_CATEGORIA> {
+  constructor(db: DatabaseSQLInterface) {
+    super()
+    this.sqlRepo = new TB_VALIDITY_Repository(db)
+  }
+
+  NumberToColorString = (colorNumber: number): string => {
+    const hex = colorNumber.toString(16).padStart(6, '0');
+    return `#${hex.slice(-6)}`;
+  }
+
+  StringToColorNumber = (colorString: string): number => {
+    let hex = colorString.replace('#', '');
+    if (hex.length === 6) {
+      hex = 'FF' + hex;
+    }
+    return parseInt(hex, 16);
+  }
+  toData(model: CategoryDataModel): TB_CATEGORIA {
+    const data: TB_CATEGORIA = {
+      ID: model.id,
+      NAME: model.title,
+      DESCRIPTION: model.description,
+      COLOR: this.StringToColorNumber(model.color),
+      CREATE_AT: 0,
+      TOTAL: 0
+    }
+    return data
+  }
+  toModel(data: TB_CATEGORIA): CategoryDataModel {
+    const model: CategoryDataModel = {
+      id: data.ID,
+      title: data.NAME,
+      description: data.DESCRIPTION,
+      color: this.NumberToColorString(data.COLOR),
+    }
+    return model
+  }
 }
 
-class RecordDataModelTable implements Table<RecordDataModel> {
-  add(data: RecordDataModel): Promise<RecordDataModel> {
-    throw new Error("Method not implemented.");
+class RecordDataModelTable extends CommonTable implements Table<RecordDataModel, TB_REGISTRO> {
+  constructor(db: DatabaseSQLInterface) {
+    super()
+    this.sqlRepo = new TB_REGISTRO_Repository(db)
   }
-  get(id: RecordDataModel): Promise<RecordDataModel> {
-    throw new Error("Method not implemented.");
+  toData(model: RecordDataModel): TB_REGISTRO {
+    const data: TB_REGISTRO = {
+      ID: model.id,
+      VALUE: model.value,
+      DESCRIPTION: model.description,
+      CATEGORIA_FK: model.categoryId,
+      CREATE_AT: IsoStringToNumber(model.createdAt),
+      UPDATE_AT: 0,
+      IS_DEPESA: 0,
+      START_DATE: 0,
+      END_DATE: 0,
+      IS_RECURRENT: 0,
+      IS_EVER_DAYS: 0,
+      SALE_DATE: model.date ? IsoStringToNumber(model.date) : 0,
+      UNIQUE_ID: model.uniqueId ? model.uniqueId : 0,
+      VALIDITY_ID: model.validityId
+    }
+    return data
   }
-  delete(id: RecordDataModel): Promise<void> {
-    throw new Error("Method not implemented.");
+  toModel(data: TB_REGISTRO): RecordDataModel {
+    const model: RecordDataModel = {
+      id: data.ID,
+      value: data.VALUE,
+      description: data.DESCRIPTION,
+      categoryId: data.CATEGORIA_FK,
+      createdAt: NumberToISOString(data.CREATE_AT)
+    }
+    return model
   }
-  toArray(): Promise<RecordDataModel[]> {
-    throw new Error("Method not implemented.");
-  }
-  update(id: number, model: RecordDataModel): Promise<RecordDataModel> {
-    throw new Error("Method not implemented.");
-  }
-  filter(object: Record<string, any>): Promise<RecordDataModel[]> {
-    throw new Error("Method not implemented.");
-  }
-  paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{ items: any[]; count: number; }> {
-    throw new Error("Method not implemented.");
-  }
-  range?: ((init: string, end: string) => Promise<any>) | undefined;
 }
 
-class ValidityDataModelTable implements Table<ValidityDataModel> {
-  add(data: ValidityDataModel): Promise<ValidityDataModel> {
-    throw new Error("Method not implemented.");
+class ValidityDataModelTable extends CommonTable implements Table<ValidityDataModel, TB_VALIDITY> {
+  constructor(db: DatabaseSQLInterface) {
+    super()
+    this.sqlRepo = new TB_VALIDITY_Repository(db)
   }
-  get(id: ValidityDataModel): Promise<ValidityDataModel> {
-    throw new Error("Method not implemented.");
+  toData(model: ValidityDataModel): TB_VALIDITY {
+    const data: TB_VALIDITY = {
+      ID: model.id,
+      IS_EVER_DAYS: Number(model.isEveryDays),
+      IS_EVER_MONTH: Number(model.isEveryMonths),
+      START_DATE: model.initValidity ? IsoStringToNumber(model.initValidity) : 0,
+      END_DATE: model.endValidity ? IsoStringToNumber(model.endValidity) : 0,
+      REGISTRO_ID: 0,
+    }
+    return data
   }
-  delete(id: ValidityDataModel): Promise<void> {
-    throw new Error("Method not implemented.");
+  toModel(data: TB_VALIDITY): ValidityDataModel {
+    const model: ValidityDataModel = {
+      id: data.ID,
+      isEveryDays: Boolean(data.IS_EVER_DAYS),
+      isEveryMonths: Boolean(data.IS_EVER_MONTH)
+    }
+    return model
   }
-  toArray(): Promise<ValidityDataModel[]> {
-    throw new Error("Method not implemented.");
-  }
-  update(id: number, model: ValidityDataModel): Promise<ValidityDataModel> {
-    throw new Error("Method not implemented.");
-  }
-  filter(object: Record<string, any>): Promise<ValidityDataModel[]> {
-    throw new Error("Method not implemented.");
-  }
-  paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{ items: any[]; count: number; }> {
-    throw new Error("Method not implemented.");
-  }
-  range?: ((init: string, end: string) => Promise<any>) | undefined;
 }
 
 export class SQLDatabase implements InterfaceDatabase {
-  categories: Table = new CategoryDataModelTable()
-  records: Table = new RecordDataModelTable()
-  validities: Table = new ValidityDataModelTable()
+  categories: Table
+  records: Table
+  validities: Table
+
+  constructor(db: DatabaseSQLInterface) {
+    this.categories = new CategoryDataModelTable(db)
+    this.records = new RecordDataModelTable(db)
+    this.validities = new ValidityDataModelTable(db)
+
+  }
 }

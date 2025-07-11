@@ -12,5 +12,5 @@ export interface TB_REGISTRO {
   IS_EVER_DAYS: number;
   SALE_DATE: number;
   UNIQUE_ID: number;
-  VALIDITY_ID: number;
+  VALIDITY_ID?: number;
 }
