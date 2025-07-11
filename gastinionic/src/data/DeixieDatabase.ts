@@ -46,8 +46,10 @@ class DeixieTable implements Table {
     return { items, count }
   }
 
-  add(data: any): Promise<any> {
-    return this.table.add(data)
+  async add(data: any): Promise<any> {
+    const id = await this.table.add(data)
+    const it = await this.get(id)
+    return it
   }
   get(id: any): Promise<any> {
     return this.table.get(id)
