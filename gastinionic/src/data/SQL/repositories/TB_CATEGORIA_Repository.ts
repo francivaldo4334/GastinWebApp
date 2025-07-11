@@ -9,7 +9,16 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_CATEGORIA
   constructor(db: DatabaseSQLInterface) {
     this.db = db
   }
-  insert(data: TB_CATEGORIA): TB_CATEGORIA | undefined {
+  selectPaginated(perPage: number, page: number): Promise<TB_CATEGORIA[]> {
+    const offset = (page - 1) * perPage
+    const queryString = squel.select()
+      .from(this.tableName)
+      .limit(perPage)
+      .offset(offset)
+      .toString()
+    return this.db.query(queryString)
+  }
+  async insert(data: TB_CATEGORIA): Promise<TB_CATEGORIA | undefined> {
     const datenow = new Date().getTime()
     const queryString = squel.insert()
       .into(this.tableName)
@@ -19,29 +28,29 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_CATEGORIA
       .set("DESCRIPTION", data.DESCRIPTION)
       .set("CREATE_AT", datenow)
       .toString()
-    const pk = this.db.query(queryString)
+    const pk = await this.db.query(queryString)
     if (pk) {
-      const result = this.getById(pk)
+      const result = await this.getById(pk)
       return result
     }
     return
   }
 
-  getById(ID: number): TB_CATEGORIA | undefined {
+  async getById(ID: number): Promise<TB_CATEGORIA | undefined> {
     const queryString = squel.select().from(this.tableName).where("ID = ?", ID).toString()
-    const results: TB_CATEGORIA[] = this.db.query(queryString)
+    const results: TB_CATEGORIA[] = await this.db.query(queryString)
     return results?.[0]
   }
-  selectAll(): TB_CATEGORIA[] {
+  selectAll(): Promise<TB_CATEGORIA[]> {
     const queryString = squel.select().from(this.tableName).toString()
     return this.db.query(queryString)
   }
-  deleteById(ID: number): boolean {
+  async deleteById(ID: number): Promise<boolean> {
     const queryString = squel.delete().from(this.tableName).where("ID = ?", ID).toString()
-    const result = this.db.query(queryString)
+    const result = await this.db.query(queryString)
     return Boolean(result)
   }
-  updateItem(ID: number, data: TB_CATEGORIA): TB_CATEGORIA | undefined {
+  async updateItem(ID: number, data: TB_CATEGORIA): Promise<TB_CATEGORIA | undefined> {
     const queryString = squel
       .update()
       .table(this.tableName)
@@ -51,7 +60,7 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_CATEGORIA
       .set("DESCRIPTION", data.DESCRIPTION)
       .where("ID = ?", ID)
       .toString()
-    const pk: number | undefined = this.db.query(queryString)
+    const pk: number | undefined = await this.db.query(queryString)
 
     if (pk) {
       const result = this.getById(pk)

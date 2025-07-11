@@ -9,7 +9,16 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_REGISTRO>
   constructor(db: DatabaseSQLInterface) {
     this.db = db
   }
-  insert(data: TB_REGISTRO): TB_REGISTRO | undefined {
+  selectPaginated(perPage: number, page: number): Promise<TB_REGISTRO[]> {
+    const offset = (page - 1) * perPage
+    const queryString = squel.select()
+      .from(this.tableName)
+      .limit(perPage)
+      .offset(offset)
+      .toString()
+    return this.db.query(queryString)
+  }
+  async insert(data: TB_REGISTRO): Promise<TB_REGISTRO | undefined> {
     const datenow = new Date().getTime()
     const queryString = squel.insert()
       .into(this.tableName)
@@ -27,29 +36,29 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_REGISTRO>
       .set("END_DATE", data.END_DATE)
       .set("UPDATE_AT", datenow)
       .toString()
-    const pk = this.db.query(queryString)
+    const pk = await this.db.query(queryString)
     if (pk) {
-      const result = this.getById(pk)
+      const result = await this.getById(pk)
       return result
     }
     return
   }
 
-  getById(ID: number): TB_REGISTRO | undefined {
+  async getById(ID: number): Promise<TB_REGISTRO | undefined> {
     const queryString = squel.select().from(this.tableName).where("ID = ?", ID).toString()
-    const results: TB_REGISTRO[] = this.db.query(queryString)
+    const results: TB_REGISTRO[] = await this.db.query(queryString)
     return results?.[0]
   }
-  selectAll(): TB_REGISTRO[] {
+  selectAll(): Promise<TB_REGISTRO[]> {
     const queryString = squel.select().from(this.tableName).toString()
     return this.db.query(queryString)
   }
-  deleteById(ID: number): boolean {
+  async deleteById(ID: number): Promise<boolean> {
     const queryString = squel.delete().from(this.tableName).where("ID = ?", ID).toString()
-    const result = this.db.query(queryString)
+    const result = await this.db.query(queryString)
     return Boolean(result)
   }
-  updateItem(ID: number, data: TB_REGISTRO): TB_REGISTRO | undefined {
+  async updateItem(ID: number, data: TB_REGISTRO): Promise<TB_REGISTRO | undefined> {
     const datenow = new Date().getTime()
     const queryString = squel
       .update()
@@ -68,10 +77,10 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_REGISTRO>
       .set("UPDATE_AT", datenow)
       .where("ID = ?", ID)
       .toString()
-    const pk: number | undefined = this.db.query(queryString)
+    const pk: number | undefined = await this.db.query(queryString)
 
     if (pk) {
-      const result = this.getById(pk)
+      const result = await this.getById(pk)
       return result
     }
     return

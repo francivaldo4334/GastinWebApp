@@ -1,7 +1,8 @@
 export interface RepositoryInterface<T> {
-  insert(data: T): T | undefined
-  getById(ID: number):T | undefined;
-  selectAll(): T[];
-  deleteById(ID: number): boolean;
-  updateItem(ID: number, data: T): T | undefined
+  insert(data: T): Promise<T | undefined>;
+  getById(ID: number):Promise<T | undefined>;
+  selectAll(): Promise<T[]>;
+  selectPaginated(perPage: number, page: number): Promise<T[]>;
+  deleteById(ID: number): Promise<boolean>;
+  updateItem(ID: number, data: T): Promise<T | undefined>; 
 }
