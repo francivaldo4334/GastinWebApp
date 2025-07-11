@@ -10,6 +10,8 @@ export const calcRecordtotal = (
       return it.value
     }
     if (it.isEveryDays) {
+      const start = new Date(it.initValidity!)
+      const end = new Date(it.endValidity!)
       const countDays = Math.abs(differenceInDays(end, start)) + 1
       return countDays * it.value
     }
