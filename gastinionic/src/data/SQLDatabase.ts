@@ -2,28 +2,52 @@ import { InterfaceDatabase, Table } from "./InterfaceDatabase";
 import { CategoryDataModel } from "./models/CategoryDataModel";
 import { RecordDataModel } from "./models/RecordDataModel";
 import { ValidityDataModel } from "./models/ValidityDataModel";
+import { RepositoryInterface } from "./SQL/repositories/RepositoryInterface";
+import { TB_CATEGORIA } from "./SQL/tables/TB_CATEGORIA";
 
-class CategoryDataModelTable implements Table<CategoryDataModel> {
-  add(data: CategoryDataModel): Promise<CategoryDataModel> {
+class CategoryDataModelTable implements Table<CategoryDataModel, TB_CATEGORIA> {
+  sqlRepo!: RepositoryInterface<TB_CATEGORIA>;
+  toData(model: CategoryDataModel): TB_CATEGORIA {
     throw new Error("Method not implemented.");
   }
-  get(id: CategoryDataModel): Promise<CategoryDataModel> {
+  toModel(data: TB_CATEGORIA): CategoryDataModel {
     throw new Error("Method not implemented.");
   }
-  delete(id: CategoryDataModel): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async add(model: CategoryDataModel): Promise<CategoryDataModel> {
+    const data = await this.sqlRepo.insert(this.toData(model))
+    if (!data)
+      throw new Error("Erro ao inserir dados.");
+    return this.toModel(data)
   }
-  toArray(): Promise<CategoryDataModel[]> {
-    throw new Error("Method not implemented.");
+  async get(id: number): Promise<CategoryDataModel> {
+    const data = await this.sqlRepo.getById(id)
+    if (!data)
+      throw new Error("Erro ao obter dados.");
+    return this.toModel(data)
   }
-  update(id: number, model: CategoryDataModel): Promise<CategoryDataModel> {
-    throw new Error("Method not implemented.");
+  async delete(id: number): Promise<void> {
+    const result = await this.sqlRepo.deleteById(id)
+    if (!result)
+      throw new Error("Erro ao deletar dados.");
+  }
+  async toArray(): Promise<CategoryDataModel[]> {
+    const results = await this.sqlRepo.selectAll()
+    return results.map(this.toModel)
+  }
+  async update(id: number, model: CategoryDataModel): Promise<CategoryDataModel> {
+    const dataUpdate = this.toData(model)
+    const result = await this.sqlRepo.updateItem(id, dataUpdate)
+    if (!result)
+      throw new Error("Erro ao atualizar dados.");
+    return this.toModel(result)
   }
   filter(object: Record<string, any>): Promise<CategoryDataModel[]> {
     throw new Error("Method not implemented.");
   }
-  paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{ items: any[]; count: number; }> {
-    throw new Error("Method not implemented.");
+  async paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{ items: any[]; count: number; }> {
+    const results = await this.sqlRepo.selectPaginated(perPage, page)
+    return results.map(this.toModel)
   }
   range?: ((init: string, end: string) => Promise<any>) | undefined;
 }

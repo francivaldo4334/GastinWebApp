@@ -1,8 +1,12 @@
+import { RepositoryInterface } from "./SQL/repositories/RepositoryInterface";
 
-export interface Table<T = any> {
+export interface Table<T = any, R = any> {
+  sqlRepo?: RepositoryInterface<R>
+  toModel?: (data: R) => T;
+  toData?: (model: T) => R;
   add(data: T): Promise<T>;
-  get(id: T): Promise<T>;
-  delete(id: T): Promise<void>;
+  get(id: number): Promise<T>;
+  delete(id: number): Promise<void>;
   toArray(): Promise<T[]>;
   update(id: number, model: T): Promise<T>;
   filter(object: Record<string, any>): Promise<T[]>;
