@@ -1,17 +1,45 @@
+import squel from "squel";
+import { DatabaseSQLInterface } from "../DatabaseSQLInterface";
 import { TB_CATEGORIA } from "../tables/TB_CATEGORIA";
 import { RepositoryInterface } from "./RepositoryInterface";
 
 export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_CATEGORIA> {
-    getById(ID: number): TB_CATEGORIA | undefined {
-        throw new Error("Method not implemented.");
+  db: DatabaseSQLInterface
+  tableName = "TB_CATEGORIA"
+  constructor(db: DatabaseSQLInterface) {
+    this.db = db
+  }
+
+  getById(ID: number): TB_CATEGORIA | undefined {
+    const queryString = squel.select().from(this.tableName).where("ID = ?", ID).toString()
+    const results: TB_CATEGORIA[] = this.db.query(queryString)
+    return results?.[0]
+  }
+  selectAll(): TB_CATEGORIA[] {
+    const queryString = squel.select().from(this.tableName).toString()
+    return this.db.query(queryString)
+  }
+  deleteById(ID: number): boolean {
+    const queryString = squel.delete().from(this.tableName).where("ID = ?", ID).toString()
+    const result = this.db.query(queryString)
+    return Boolean(result)
+  }
+  updateItem(ID: number, data: TB_CATEGORIA): TB_CATEGORIA | undefined {
+    const queryString = squel
+      .update()
+      .table(this.tableName)
+      .set("TOTAL", data.TOTAL)
+      .set("COLOR", data.COLOR)
+      .set("NAME", data.NAME)
+      .set("DESCRIPTION", data.DESCRIPTION)
+      .where("ID = ?", ID)
+      .toString()
+    const pk: number | undefined = this.db.query(queryString)
+
+    if (pk) {
+      const result = this.getById(pk)
+      return result
     }
-    selectAll(): TB_CATEGORIA[] {
-        throw new Error("Method not implemented.");
-    }
-    deleteById(ID: number): boolean {
-        throw new Error("Method not implemented.");
-    }
-    updateItem(ID: number, data: TB_CATEGORIA): TB_CATEGORIA | undefined {
-        throw new Error("Method not implemented.");
-    }
+    return
+  }
 }
