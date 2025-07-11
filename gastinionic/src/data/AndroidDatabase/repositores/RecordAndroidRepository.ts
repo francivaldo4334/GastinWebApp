@@ -61,7 +61,6 @@ export class RecordAndroidRepository implements Table {
   }
   async add(data: any): Promise<any> {
     const registro = RecordModelToRegistro(data)
-
     const datenow = new Date()
     const datestring = datenow.toISOString()
 

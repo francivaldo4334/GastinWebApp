@@ -12,7 +12,6 @@ export class ValidityAndroidRepository implements Table {
   }
   async add(data: any): Promise<any> {
     const validity = ValidityModelToValidity(data)
-
     const result = await AndroidDatabase.db.run(
       `INSERT INTO TB_VALIDITY (IS_EVER_DAYS, START_DATE, END_DATE, IS_EVER_MONTH) values (?,?,?,?);`,
       [validity.IS_EVER_DAYS ? 1 : 0, validity.START_DATE, validity.END_DATE, validity.IS_EVER_MONTH ? 1 : 0]
@@ -23,7 +22,7 @@ export class ValidityAndroidRepository implements Table {
       return
 
     const categoryCreated = await this.get(lastId)
-    return ValidityToValidityModel(categoryCreated)
+    return categoryCreated
   }
   async get(id: any): Promise<any> {
     const queryResult = await AndroidDatabase.db.query(
