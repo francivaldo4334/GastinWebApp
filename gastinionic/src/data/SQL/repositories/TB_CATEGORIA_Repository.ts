@@ -13,8 +13,11 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_CATEGORIA
     const queryString = squel.select()
       .field("COUNT(*)", "TOTAL")
       .from(this.tableName).where("1").toString()
-    const result = await this.db.query(queryString)
-    return result.TOTAL
+    const result: any[] = await this.db.query(queryString)
+    if (!result.length)
+      return 0
+
+    return result[0].TOTAL
   }
   selectPaginated(perPage: number, page: number): Promise<TB_CATEGORIA[]> {
     const offset = (page - 1) * perPage

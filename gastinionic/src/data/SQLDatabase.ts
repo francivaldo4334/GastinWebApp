@@ -4,6 +4,7 @@ import { RecordDataModel } from "./models/RecordDataModel";
 import { ValidityDataModel } from "./models/ValidityDataModel";
 import { DatabaseSQLInterface } from "./SQL/DatabaseSQLInterface";
 import { RepositoryInterface } from "./SQL/repositories/RepositoryInterface";
+import { TB_CATEGORIA_Repository } from "./SQL/repositories/TB_CATEGORIA_Repository";
 import { TB_REGISTRO_Repository } from "./SQL/repositories/TB_REGISTRO_Repository";
 import { TB_VALIDITY_Repository } from "./SQL/repositories/TB_VALIDITY_Repository";
 import { TB_CATEGORIA } from "./SQL/tables/TB_CATEGORIA";
@@ -23,6 +24,20 @@ function NumberToISOString(timestamp: number): string {
 
 function IsoStringToNumber(iso: string): number {
   return new Date(iso).getTime();
+}
+
+
+const NumberToColorString = (colorNumber: number): string => {
+  const hex = colorNumber.toString(16).padStart(6, '0');
+  return `#${hex.slice(-6)}`;
+}
+
+const StringToColorNumber = (colorString: string): number => {
+  let hex = colorString.replace('#', '');
+  if (hex.length === 6) {
+    hex = 'FF' + hex;
+  }
+  return parseInt(hex, 16);
 }
 
 class CommonTable implements Table<any, any> {
@@ -79,27 +94,15 @@ class CommonTable implements Table<any, any> {
 class CategoryDataModelTable extends CommonTable implements Table<CategoryDataModel, TB_CATEGORIA> {
   constructor(db: DatabaseSQLInterface) {
     super()
-    this.sqlRepo = new TB_VALIDITY_Repository(db)
+    this.sqlRepo = new TB_CATEGORIA_Repository(db)
   }
 
-  NumberToColorString = (colorNumber: number): string => {
-    const hex = colorNumber.toString(16).padStart(6, '0');
-    return `#${hex.slice(-6)}`;
-  }
-
-  StringToColorNumber = (colorString: string): number => {
-    let hex = colorString.replace('#', '');
-    if (hex.length === 6) {
-      hex = 'FF' + hex;
-    }
-    return parseInt(hex, 16);
-  }
   toData(model: CategoryDataModel): TB_CATEGORIA {
     const data: TB_CATEGORIA = {
       ID: model.id,
       NAME: model.title,
       DESCRIPTION: model.description,
-      COLOR: this.StringToColorNumber(model.color),
+      COLOR: StringToColorNumber(model.color),
       CREATE_AT: 0,
       TOTAL: 0
     }
@@ -110,7 +113,7 @@ class CategoryDataModelTable extends CommonTable implements Table<CategoryDataMo
       id: data.ID,
       title: data.NAME,
       description: data.DESCRIPTION,
-      color: this.NumberToColorString(data.COLOR),
+      color: NumberToColorString(data.COLOR),
     }
     return model
   }
