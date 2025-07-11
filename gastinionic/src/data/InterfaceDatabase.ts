@@ -1,11 +1,11 @@
 
-export interface Table {
-  add(data: any): Promise<any>;
-  get(id: any): Promise<any>;
-  delete(id: any): Promise<void>;
-  toArray(): Promise<any[]>;
-  update(id: any, model: any): Promise<any>;
-  filter(object: Record<string, any>): Promise<any[]>;
+export interface Table<T = any> {
+  add(data: T): Promise<T>;
+  get(id: T): Promise<T>;
+  delete(id: T): Promise<void>;
+  toArray(): Promise<T[]>;
+  update(id: number, model: T): Promise<T>;
+  filter(object: Record<string, any>): Promise<T[]>;
   paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{
     items: any[]
     count: number
