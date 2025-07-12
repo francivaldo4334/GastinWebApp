@@ -1,5 +1,5 @@
 import { ValidityRepositoryData } from "@/data/repositories/ValidityRepositoryData";
-import { mapToDomain, mapToRecordData, mapToValidityData, RecordDomainModel } from "../models/RecordDomainModel";
+import { mapToDomain, mapToRecordData, RecordDomainModel } from "../models/RecordDomainModel";
 import { IRepositoryDomain } from "./IRepositoryDomain";
 import { RecordRepositoryData } from "@/data/repositories/RecordRepositoryData";
 import { IRule } from "../rules/IRule";
@@ -7,9 +7,7 @@ import { ValueGreaterThenZero } from "../rules/ValueGreaterThenZero";
 import { ValidRecurrent } from "../rules/ValidRecurrent";
 import { createValidity } from "../services/createValidity";
 import { createOrUpdateValidity } from "../services/createOrUpdateValidity";
-import { recordInValidity } from "../services/recordInValidity";
 import { CategoryRepositoryData } from "@/data/repositories/CategoryRepositoryData";
-import { Capacitor } from "@capacitor/core";
 
 export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainModel> {
   validityRepository: ValidityRepositoryData;
@@ -45,21 +43,16 @@ export class ReceiptRepositoryDomain implements IRepositoryDomain<RecordDomainMo
     }
   }
   async range(init: Date, end: Date): Promise<RecordDomainModel[]> {
-    if (Capacitor.getPlatform() === "android") {
-      const records = await this.recordRepository.range(init.toISOString(), end.toUTCString());
-      const validities = await this.validityRepository.list();
-      return records
-        .filter(it => IRule.use()
-          .and(new ValueGreaterThenZero())
-          .applyAllValidations(it)
-        )
-        .map(r => {
-          const v = validities.find(v => v.id === r.validityId);
-          return mapToDomain(r, v);
-        });
-    }
-    const list = await this.list()
-    return list.filter(it => recordInValidity(it, init, end))
+    const records = await this.recordRepository.range(init.toISOString(), end.toISOString());
+    return await Promise.all(records
+      .filter(it => IRule.use()
+        .and(new ValueGreaterThenZero())
+        .applyAllValidations(it)
+      )
+      .map(async r => {
+        const v = r.validityId ? await this.validityRepository.get(r.validityId) : undefined
+        return mapToDomain(r, v);
+      }));
   }
   async list(): Promise<RecordDomainModel[]> {
     const records = await this.recordRepository.list();

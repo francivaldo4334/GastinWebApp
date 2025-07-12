@@ -6,4 +6,5 @@ export interface RepositoryInterface<T> {
   deleteById(ID: number): Promise<boolean>;
   updateItem(ID: number, data: T): Promise<T | undefined>;
   count(): Promise<number>;
+  selectRange?: (inti: number, end: number) => Promise<T[]>
 }

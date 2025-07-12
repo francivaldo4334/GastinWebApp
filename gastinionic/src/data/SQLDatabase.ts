@@ -100,7 +100,11 @@ class CommonTable implements Table<any, any> {
       count: count,
     }
   }
-  range?: ((init: string, end: string) => Promise<any>) | undefined;
+  range(_init: string, _end: string): Promise<any> {
+    const init = IsoStringToNumber(_init)
+    const end = IsoStringToNumber(_end)
+    return this.sqlRepo.selectRange!(init, end)
+  }
 }
 
 class CategoryDataModelTable extends CommonTable implements Table<CategoryDataModel, TB_CATEGORIA> {

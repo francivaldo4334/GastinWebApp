@@ -8,7 +8,6 @@ import { createValidity } from "../services/createValidity";
 import { ValueGreaterThenZero } from "../rules/ValueGreaterThenZero";
 import { createOrUpdateValidity } from "../services/createOrUpdateValidity";
 import { ValueLowerThanZero } from "../rules/ValueLowerThanZero";
-import { recordInValidity } from "../services/recordInValidity";
 import { CategoryRepositoryData } from "@/data/repositories/CategoryRepositoryData";
 
 export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDomainModel> {
@@ -45,8 +44,22 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
   }
 
   async range(init: Date, end: Date): Promise<RecordDomainModel[]> {
-    const list = await this.list()
-    return list.filter(it => recordInValidity(it, init, end))
+
+    const records = await this.recordRepository.range(init.toISOString(), end.toISOString())
+    const result = await Promise.all(
+      records
+        .filter(it =>
+          IRule.use()
+            .and(new ValueLowerThanZero())
+            .applyAllValidations(it)
+        )
+        .map(async r => {
+          const v = r.validityId ? await this.validityRepository.get(r.validityId) : undefined
+          return mapToDomain(r, v);
+        })
+    )
+
+    return result
   }
   async list(): Promise<RecordDomainModel[]> {
     const records = await this.recordRepository.list()

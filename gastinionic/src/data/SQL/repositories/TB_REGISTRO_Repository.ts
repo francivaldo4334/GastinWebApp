@@ -106,4 +106,23 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
     }
     return
   }
+  async selectRange(init: number, end: number): Promise<TB_REGISTRO[]> {
+    const queryString = squel.select().from(this.tableName)
+      .join("TB_VALIDITY", "v", "v.ID = VALIDITY_ID")
+      .where(
+        squel.expr()
+          .and("VALIDITY_ID IS NULL")
+          .and("SALE_DATE >= ?", init)
+          .and("SALE_DATE <= ?", end)
+          .or(
+            squel.expr()
+              .and("VALIDITY_ID IS NOT NULL")
+              .and("v.START_DATE >= ?", init)
+              .and("v.END_DATE <= ?", end)
+          )
+      )
+      .toString()
+    const result = await this.db.query(queryString)
+    return result
+  }
 }
