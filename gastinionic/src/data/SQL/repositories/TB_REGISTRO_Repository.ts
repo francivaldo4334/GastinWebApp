@@ -22,7 +22,7 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
     return result[0].TOTAL
   }
 
-  selectPaginated(perPage: number, page: number, filter?: "value_lt" | "value_gt"): Promise<TB_REGISTRO[]> {
+  async selectPaginated(perPage: number, page: number, filter?: "value_lt" | "value_gt"): Promise<TB_REGISTRO[]> {
     const offset = (page - 1) * perPage
     const applyQuery = (q: squel.Select): squel.Select => {
       if (!filter)
@@ -38,7 +38,7 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
       .limit(perPage)
       .offset(offset)
       .toString()
-    return this.db.query(queryString)
+    return await this.db.query(queryString)
   }
   async insert(data: TB_REGISTRO): Promise<TB_REGISTRO | undefined> {
     const datenow = new Date().getTime()
@@ -72,9 +72,9 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
     const results: TB_REGISTRO[] = await this.db.query(queryString)
     return results?.[0]
   }
-  selectAll(): Promise<TB_REGISTRO[]> {
+  async selectAll(): Promise<TB_REGISTRO[]> {
     const queryString = squel.select().from(this.tableName).toString()
-    return this.db.query(queryString)
+    return await this.db.query(queryString)
   }
   async deleteById(ID: number): Promise<boolean> {
     const queryString = squel.delete().from(this.tableName).where("ID = ?", ID).toString()

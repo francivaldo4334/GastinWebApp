@@ -72,6 +72,11 @@ export class SQLWeb implements DatabaseSQLInterface {
   async query(query: string): Promise<any> {
     const db = await SQLWeb.getDb();
     const result = db.exec(query);
+
+    if (query.toUpperCase().includes("DELETE")) {
+      this.saveData(db)
+      return result
+    }
     if (query.toUpperCase().includes("INSERT")) {
       const querylastId = squel
         .select()
