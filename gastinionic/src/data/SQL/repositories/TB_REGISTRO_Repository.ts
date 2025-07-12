@@ -21,10 +21,19 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
     return result[0].TOTAL
   }
 
-  selectPaginated(perPage: number, page: number): Promise<TB_REGISTRO[]> {
+  selectPaginated(perPage: number, page: number, filter?: "value_lt" | "value_gt"): Promise<TB_REGISTRO[]> {
     const offset = (page - 1) * perPage
-    const queryString = squel.select()
-      .from(this.tableName)
+    const applyQuery = (q: squel.Select): squel.Select => {
+      if (!filter)
+        return q
+      if (filter === "value_gt")
+        return q.where("VALUE > 0")
+      return q.where("VALUE < 0")
+    }
+    const queryString = applyQuery(
+      squel.select()
+        .from(this.tableName)
+    )
       .limit(perPage)
       .offset(offset)
       .toString()

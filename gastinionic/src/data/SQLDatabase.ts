@@ -81,7 +81,19 @@ class CommonTable implements Table<any, any> {
     throw new Error("Method not implemented.");
   }
   async paginate(page: number, perPage: number, filters?: Record<string, any>): Promise<{ items: any[]; count: number; }> {
-    const results = await this.sqlRepo.selectPaginated(perPage, page)
+    let filter: undefined | "value_gt" | "value_lt"
+
+    if (filters) {
+      const keys = Object.keys(filters)
+      if (keys.includes("value__lt")) {
+        filter = "value_lt"
+      }
+      else {
+        filter = "value_gt"
+      }
+    }
+
+    const results = await this.sqlRepo.selectPaginated(perPage, page, filter)
     const count = await this.sqlRepo.count()
     return {
       items: results.map(this.toModel),
