@@ -136,7 +136,7 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
 
     const recordsWithRecurrentFiltered = recordsWithRecurrent.filter(r => {
       const v = validities.find(v => v.ID === r.VALIDITY_ID!)!
-      return v.START_DATE >= init && v.END_DATE <= end
+      return v.END_DATE >= init && v.START_DATE <= end
     })
 
     return recordsWithoutRecurrent.concat(recordsWithRecurrentFiltered)
