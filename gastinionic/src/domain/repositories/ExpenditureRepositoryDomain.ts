@@ -48,11 +48,12 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     const records = await this.recordRepository.range(init.toISOString(), end.toISOString())
     const result = await Promise.all(
       records
-        .filter(it =>
-          IRule.use()
+        .filter(it => {
+          const b = IRule.use()
             .and(new ValueLowerThanZero())
             .applyAllValidations(it)
-        )
+          return b
+        })
         .map(async r => {
           const v = r.validityId ? await this.validityRepository.get(r.validityId) : undefined
           return mapToDomain(r, v);

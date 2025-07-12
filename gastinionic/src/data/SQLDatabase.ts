@@ -1,3 +1,4 @@
+import { recordInValidity } from "@/domain/services/recordInValidity";
 import { InterfaceDatabase, Table } from "./InterfaceDatabase";
 import { CategoryDataModel } from "./models/CategoryDataModel";
 import { RecordDataModel } from "./models/RecordDataModel";
@@ -100,10 +101,13 @@ class CommonTable implements Table<any, any> {
       count: count,
     }
   }
-  range(_init: string, _end: string): Promise<any> {
+  async range(_init: string, _end: string): Promise<any> {
     const init = IsoStringToNumber(_init)
     const end = IsoStringToNumber(_end)
-    return this.sqlRepo.selectRange!(init, end)
+    const list = await this.sqlRepo.selectRange!(init, end)
+    return list.map(this.toModel).filter(it => {
+      return recordInValidity(it, new Date(_init), new Date(_end))
+    })
   }
 }
 

@@ -14,7 +14,7 @@ export interface Table<T = any, R = any> {
     items: any[]
     count: number
   }>;
-  range?: (init: string, end:string) => Promise<any>;
+  range?: (init: string, end: string) => Promise<T[]>;
 }
 
 export interface InterfaceDatabase {

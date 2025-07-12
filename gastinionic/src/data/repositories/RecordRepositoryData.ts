@@ -47,6 +47,7 @@ export class RecordRepositoryData implements IRepositoryData<RecordDataModel> {
   }
 
   async range(init: string, end: string): Promise<RecordDataModel[]> {
-    return Database.instance.records.range!(init, end)
+    const list = await Database.instance.records.range!(init, end)
+    return list!.map(mapToRecordDataModel);
   }
 }
