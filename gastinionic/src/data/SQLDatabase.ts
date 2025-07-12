@@ -149,7 +149,9 @@ class RecordDataModelTable extends CommonTable implements Table<RecordDataModel,
       value: data.VALUE,
       description: data.DESCRIPTION,
       categoryId: data.CATEGORIA_FK,
-      createdAt: NumberToISOString(data.CREATE_AT)
+      createdAt: NumberToISOString(data.CREATE_AT),
+      date: NumberToISOString(data.SALE_DATE),
+      validityId: Number(data.VALIDITY_ID)
     }
     return model
   }
@@ -175,7 +177,9 @@ class ValidityDataModelTable extends CommonTable implements Table<ValidityDataMo
     const model: ValidityDataModel = {
       id: data.ID,
       isEveryDays: Boolean(data.IS_EVER_DAYS),
-      isEveryMonths: Boolean(data.IS_EVER_MONTH)
+      isEveryMonths: Boolean(data.IS_EVER_MONTH),
+      initValidity: NumberToISOString(data.START_DATE),
+      endValidity: NumberToISOString(data.END_DATE),
     }
     return model
   }

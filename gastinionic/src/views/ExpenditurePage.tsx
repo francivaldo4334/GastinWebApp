@@ -77,6 +77,8 @@ export default defineComponent({
       categories.value = listcategorie
     })
     const formatDate = (value: string) => {
+      if (!value)
+        return ""
       const [date, time] = value.split("T")
       const [year, month, day] = date.split("-")
       return `${day}/${month}/${year}`

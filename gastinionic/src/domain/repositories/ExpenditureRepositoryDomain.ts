@@ -28,9 +28,7 @@ export class ExpenditureRepositoryDomain implements IRepositoryDomain<RecordDoma
     const result = await this.recordRepository.paginate(
       page,
       perPage,
-      {
-        value__lt: 0
-      }
+      { value__lt: 0 }
     )
 
     const list = await Promise.all(
