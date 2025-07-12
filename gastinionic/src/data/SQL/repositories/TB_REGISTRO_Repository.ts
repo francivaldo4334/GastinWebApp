@@ -3,6 +3,8 @@ import { DatabaseSQLInterface } from "../DatabaseSQLInterface";
 import { TB_REGISTRO } from "../tables/TB_REGISTRO";
 import { RepositoryInterface } from "./RepositoryInterface";
 import { TB_VALIDITY } from "../tables/TB_VALIDITY";
+import { NumberToISOString } from "@/data/SQLDatabase";
+import { addDays, addMonths, differenceInDays, toDate } from "date-fns";
 export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> {
 
   db: DatabaseSQLInterface
@@ -127,18 +129,78 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
 
     const validityPks = recordsWithRecurrent.map(it => it.VALIDITY_ID!)
 
-    const validities: TB_VALIDITY[] = validityPks.length ? await this.db.query(
-      squel.select()
-        .from("TB_VALIDITY")
-        .where("ID IN ?", validityPks)
-        .toString()
-    ) : []
+    const validities: TB_VALIDITY[] = (validityPks.length ? await this.db.query(
+      squel.select().from("TB_VALIDITY").where("ID IN ?", validityPks).toString()
+    ) : []).filter((v: TB_VALIDITY) => v.END_DATE >= init && v.START_DATE <= end)
 
-    const recordsWithRecurrentFiltered = recordsWithRecurrent.filter(r => {
-      const v = validities.find(v => v.ID === r.VALIDITY_ID!)!
-      return v.END_DATE >= init && v.START_DATE <= end
-    })
+    let resultRecords: TB_REGISTRO[] = []
 
-    return recordsWithoutRecurrent.concat(recordsWithRecurrentFiltered)
+    for (const r of recordsWithRecurrent) {
+      const v = validities.find(v => v.ID === r.VALIDITY_ID!)
+      if (!v) continue
+
+      if (v.IS_EVER_DAYS) {
+        const startDate = NumberToISOString(v.START_DATE)
+        const endDate = NumberToISOString(v.END_DATE)
+        const total = differenceInDays(endDate, startDate) + 1
+        for (let i = 0; i < total; i++) {
+          const saleDate = addDays(startDate, i).getTime()
+
+          if (saleDate >= init && saleDate <= end) {
+            resultRecords.push({
+              ...r,
+              SALE_DATE: saleDate,
+              VALIDITY_ID: undefined,
+            })
+          }
+        }
+      }
+      if (v.IS_EVER_MONTH) {
+        const startDate = NumberToISOString(v.START_DATE)
+        const endDate = NumberToISOString(v.END_DATE)
+
+        let saleDate = toDate(startDate)
+
+        while (saleDate.getTime() <= toDate(endDate).getTime()) {
+          const saleDateNumber = saleDate.getTime()
+          if (saleDateNumber >= init && saleDateNumber <= end) {
+            resultRecords.push({
+              ...r,
+              SALE_DATE: saleDateNumber,
+              VALIDITY_ID: undefined,
+            })
+          }
+          saleDate = addMonths(saleDate, 1)
+        }
+      }
+    }
+
+    // for (const r of recordsWithRecurrent) {
+    //   const v = validities.find(v => v.ID === r.VALIDITY_ID!)
+    //   if (!v) continue
+    //
+    //   const start = NumberToISOString(v.START_DATE)
+    //   const endDate = NumberToISOString(v.END_DATE)
+    //
+    //   let total = 0
+    //   if (v.IS_EVER_DAYS) total = differenceInDays(endDate, start) + 1
+    //   if (v.IS_EVER_MONTH) total = differenceInMonths(endDate, start) + 1
+    //   if (total <= 0) continue
+    //
+    //   for (let i = 0; i < total; i++) {
+    //     let saleTime = r.SALE_DATE
+    //     if (v.IS_EVER_DAYS)
+    //       saleTime = addDays(start, i).getTime()
+    //     if (saleTime >= init && saleTime <= end) {
+    //       resultRecords.push({
+    //         ...r,
+    //         SALE_DATE: saleTime,
+    //         VALIDITY_ID: undefined,
+    //       })
+    //     }
+    //   }
+    // }
+
+    return recordsWithoutRecurrent.concat(resultRecords)
   }
 }

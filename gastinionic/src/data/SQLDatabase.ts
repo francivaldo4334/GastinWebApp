@@ -13,7 +13,7 @@ import { TB_REGISTRO } from "./SQL/tables/TB_REGISTRO";
 import { TB_VALIDITY } from "./SQL/tables/TB_VALIDITY";
 
 
-function NumberToISOString(timestamp: number): string {
+export function NumberToISOString(timestamp: number): string {
   try {
     return new Date(timestamp).toISOString();
   }
