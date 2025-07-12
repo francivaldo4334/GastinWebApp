@@ -175,32 +175,6 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
       }
     }
 
-    // for (const r of recordsWithRecurrent) {
-    //   const v = validities.find(v => v.ID === r.VALIDITY_ID!)
-    //   if (!v) continue
-    //
-    //   const start = NumberToISOString(v.START_DATE)
-    //   const endDate = NumberToISOString(v.END_DATE)
-    //
-    //   let total = 0
-    //   if (v.IS_EVER_DAYS) total = differenceInDays(endDate, start) + 1
-    //   if (v.IS_EVER_MONTH) total = differenceInMonths(endDate, start) + 1
-    //   if (total <= 0) continue
-    //
-    //   for (let i = 0; i < total; i++) {
-    //     let saleTime = r.SALE_DATE
-    //     if (v.IS_EVER_DAYS)
-    //       saleTime = addDays(start, i).getTime()
-    //     if (saleTime >= init && saleTime <= end) {
-    //       resultRecords.push({
-    //         ...r,
-    //         SALE_DATE: saleTime,
-    //         VALIDITY_ID: undefined,
-    //       })
-    //     }
-    //   }
-    // }
-
     return recordsWithoutRecurrent.concat(resultRecords)
   }
 }
