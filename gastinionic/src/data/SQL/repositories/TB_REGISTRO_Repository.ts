@@ -127,12 +127,12 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
 
     const validityPks = recordsWithRecurrent.map(it => it.VALIDITY_ID!)
 
-    const validities: TB_VALIDITY[] = await this.db.query(
+    const validities: TB_VALIDITY[] = validityPks.length ? await this.db.query(
       squel.select()
         .from("TB_VALIDITY")
         .where("ID IN ?", validityPks)
         .toString()
-    )
+    ) : []
 
     const recordsWithRecurrentFiltered = recordsWithRecurrent.filter(r => {
       const v = validities.find(v => v.ID === r.VALIDITY_ID!)!
