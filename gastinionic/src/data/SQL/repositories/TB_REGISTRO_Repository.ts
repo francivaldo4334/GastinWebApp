@@ -2,6 +2,7 @@ import squel from "squel";
 import { DatabaseSQLInterface } from "../DatabaseSQLInterface";
 import { TB_REGISTRO } from "../tables/TB_REGISTRO";
 import { RepositoryInterface } from "./RepositoryInterface";
+import { TB_VALIDITY } from "../tables/TB_VALIDITY";
 export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> {
 
   db: DatabaseSQLInterface
@@ -41,22 +42,23 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
   }
   async insert(data: TB_REGISTRO): Promise<TB_REGISTRO | undefined> {
     const datenow = new Date().getTime()
-    const queryString = squel.insert()
-      .into(this.tableName)
-      .set("CREATE_AT", datenow)
-      .set("VALUE", data.VALUE)
-      .set("DESCRIPTION", data.DESCRIPTION)
-      .set("IS_DEPESA", data.IS_DEPESA)
-      .set("IS_RECURRENT", data.IS_RECURRENT)
-      .set("IS_EVER_DAYS", data.IS_EVER_DAYS)
-      .set("SALE_DATE", data.SALE_DATE)
-      .set("CATEGORIA_FK", data.CATEGORIA_FK)
-      .set("VALIDITY_ID", data.VALIDITY_ID)
-      .set("UNIQUE_ID", data.UNIQUE_ID)
-      .set("START_DATE", data.START_DATE)
-      .set("END_DATE", data.END_DATE)
-      .set("UPDATE_AT", datenow)
-      .toString()
+    const insert = squel.insert().into(this.tableName)
+    insert.set("CREATE_AT", datenow)
+    insert.set("VALUE", data.VALUE)
+    insert.set("DESCRIPTION", data.DESCRIPTION)
+    insert.set("IS_DEPESA", data.IS_DEPESA)
+    insert.set("IS_RECURRENT", data.IS_RECURRENT)
+    insert.set("IS_EVER_DAYS", data.IS_EVER_DAYS)
+    insert.set("SALE_DATE", data.SALE_DATE)
+    insert.set("CATEGORIA_FK", data.CATEGORIA_FK)
+    insert.set("UNIQUE_ID", data.UNIQUE_ID)
+    insert.set("START_DATE", data.START_DATE)
+    insert.set("END_DATE", data.END_DATE)
+    insert.set("UPDATE_AT", datenow)
+    if (data.VALIDITY_ID)
+      insert.set("VALIDITY_ID", data.VALIDITY_ID)
+
+    const queryString = insert.toString()
     const pk = await this.db.query(queryString)
     if (pk) {
       const result = await this.getById(pk)
@@ -81,23 +83,25 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
   }
   async updateItem(ID: number, data: TB_REGISTRO): Promise<TB_REGISTRO | undefined> {
     const datenow = new Date().getTime()
-    const queryString = squel
-      .update()
-      .table(this.tableName)
-      .set("VALUE", data.VALUE)
-      .set("DESCRIPTION", data.DESCRIPTION)
-      .set("IS_DEPESA", data.IS_DEPESA)
-      .set("IS_RECURRENT", data.IS_RECURRENT)
-      .set("IS_EVER_DAYS", data.IS_EVER_DAYS)
-      .set("SALE_DATE", data.SALE_DATE)
-      .set("CATEGORIA_FK", data.CATEGORIA_FK)
-      .set("VALIDITY_ID", data.VALIDITY_ID)
-      .set("UNIQUE_ID", data.UNIQUE_ID)
-      .set("START_DATE", data.START_DATE)
-      .set("END_DATE", data.END_DATE)
-      .set("UPDATE_AT", datenow)
-      .where("ID = ?", ID)
-      .toString()
+    const insert = squel.update().table(this.tableName)
+    insert.set("VALUE", data.VALUE)
+    insert.set("DESCRIPTION", data.DESCRIPTION)
+    insert.set("IS_DEPESA", data.IS_DEPESA)
+    insert.set("IS_RECURRENT", data.IS_RECURRENT)
+    insert.set("IS_EVER_DAYS", data.IS_EVER_DAYS)
+    insert.set("SALE_DATE", data.SALE_DATE)
+    insert.set("CATEGORIA_FK", data.CATEGORIA_FK)
+    insert.set("UNIQUE_ID", data.UNIQUE_ID)
+    insert.set("START_DATE", data.START_DATE)
+    insert.set("END_DATE", data.END_DATE)
+    insert.set("UPDATE_AT", datenow)
+
+    if (data.VALIDITY_ID)
+      insert.set("VALIDITY_ID", data.VALIDITY_ID)
+
+    insert.where("ID = ?", ID)
+
+    const queryString = insert.toString()
     const pk: number | undefined = await this.db.query(queryString)
 
     if (pk) {
@@ -107,22 +111,34 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
     return
   }
   async selectRange(init: number, end: number): Promise<TB_REGISTRO[]> {
-    const queryString = squel.select().from(this.tableName)
-      // .join("TB_VALIDITY", "v", "v.ID = VALIDITY_ID")
-      // .where(
-      //   squel.expr()
-      //     .and("VALIDITY_ID IS NULL")
-      //     .and("SALE_DATE >= ?", init)
-      //     .and("SALE_DATE <= ?", end)
-      // .or(
-      //   squel.expr()
-      //     .and("VALIDITY_ID IS NOT NULL")
-      //     .and("v.START_DATE >= ?", init)
-      //     .and("v.END_DATE <= ?", end)
-      // )
-      // )
-      .toString()
-    const result = await this.db.query(queryString)
-    return result
+    const recordsWithoutRecurrent: TB_REGISTRO[] = await this.db.query(
+      squel.select()
+        .from(this.tableName)
+        .where(squel.expr().and("VALIDITY_ID IS NULL").and(`SALE_DATE BETWEEN ${init} AND ${end}`))
+        .toString()
+    )
+
+    const recordsWithRecurrent: TB_REGISTRO[] = await this.db.query(
+      squel.select()
+        .from(this.tableName)
+        .where(squel.expr().and("VALIDITY_ID IS NOT NULL"))
+        .toString()
+    )
+
+    const validityPks = recordsWithRecurrent.map(it => it.VALIDITY_ID!)
+
+    const validities: TB_VALIDITY[] = await this.db.query(
+      squel.select()
+        .from("TB_VALIDITY")
+        .where("ID IN ?", validityPks)
+        .toString()
+    )
+
+    const recordsWithRecurrentFiltered = recordsWithRecurrent.filter(r => {
+      const v = validities.find(v => v.ID === r.VALIDITY_ID!)!
+      return v.START_DATE >= init && v.END_DATE <= end
+    })
+
+    return recordsWithoutRecurrent.concat(recordsWithRecurrentFiltered)
   }
 }
