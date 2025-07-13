@@ -104,13 +104,10 @@ export class TB_REGISTRO_Repository implements RepositoryInterface<TB_REGISTRO> 
     insert.where("ID = ?", ID)
 
     const queryString = insert.toString()
-    const pk: number | undefined = await this.db.query(queryString)
+    await this.db.query(queryString)
 
-    if (pk) {
-      const result = await this.getById(pk)
-      return result
-    }
-    return
+    const result = await this.getById(ID)
+    return result
   }
   async selectRange(init: number, end: number): Promise<TB_REGISTRO[]> {
     const recordsWithoutRecurrent: TB_REGISTRO[] = await this.db.query(

@@ -76,12 +76,8 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_CATEGORIA
       .set("DESCRIPTION", data.DESCRIPTION)
       .where("ID = ?", ID)
       .toString()
-    const pk: number | undefined = await this.db.query(queryString)
-
-    if (pk) {
-      const result = this.getById(pk)
-      return result
-    }
-    return
+    await this.db.query(queryString)
+    const result = this.getById(ID)
+    return result
   }
 }

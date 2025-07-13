@@ -70,12 +70,9 @@ export class TB_VALIDITY_Repository implements RepositoryInterface<TB_VALIDITY> 
       .set("IS_EVER_DAYS", data.IS_EVER_DAYS)
       .where("ID = ?", ID)
       .toString()
-    const pk: number | undefined = await this.db.query(queryString)
+    await this.db.query(queryString)
 
-    if (pk) {
-      const result = await this.getById(pk)
-      return result
-    }
-    return
+    const result = await this.getById(ID)
+    return result
   }
 }
