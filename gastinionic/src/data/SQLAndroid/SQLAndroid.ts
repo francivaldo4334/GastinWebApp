@@ -73,6 +73,10 @@ export class SQLAndroid implements DatabaseSQLInterface {
   async query(query: string): Promise<any> {
     const db = await SQLAndroid.getDb()
     const result = await db.query(query);
+
+    if (query.toUpperCase().includes("DELETE")) {
+      return result.values
+    }
     if (query.toUpperCase().includes("INSERT")) {
       const querylastId = squel
         .select()
@@ -87,15 +91,9 @@ export class SQLAndroid implements DatabaseSQLInterface {
       if (!result.values?.length) {
         return []
       }
-      const mapValues = result.values
-      return mapValues
+      const { values } = result
+      return values
     }
-
-    if (query.toUpperCase().includes("UPDATE")) {
-      const id = result.values?.[0].ID
-      return id
-    }
-    return result;
+    return result.values;
   }
-
 }

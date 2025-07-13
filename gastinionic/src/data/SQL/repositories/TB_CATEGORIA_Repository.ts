@@ -47,8 +47,14 @@ export class TB_CATEGORIA_Repository implements RepositoryInterface<TB_CATEGORIA
   }
 
   async getById(ID: number): Promise<TB_CATEGORIA | undefined> {
+
+    console.log("#6", ID)
     const queryString = squel.select().from(this.tableName).where("ID = ?", ID).toString()
+
+    console.log("#7", queryString)
     const results: TB_CATEGORIA[] = await this.db.query(queryString)
+
+    console.log("#8", results)
     return results?.[0]
   }
   selectAll(): Promise<TB_CATEGORIA[]> {
