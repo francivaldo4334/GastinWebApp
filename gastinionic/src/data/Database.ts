@@ -15,16 +15,16 @@ export class Database implements InterfaceDatabase {
     if (!this._instance) {
       const platform = Capacitor.getPlatform()
       let db: DatabaseSQLInterface
-      if (platform === "android") {
+      // if (platform === "android") {
         db = new SQLAndroid()
-      }
-      else if (platform === "web") {
-        db = new SQLWeb()
-      }
-      else {
-        throw new Error("plataforma nao implementada")
-      }
-
+      // }
+      // else if (platform === "web") {
+      //   db = new SQLWeb()
+      // }
+      // else {
+      //   throw new Error("plataforma nao implementada")
+      // }
+      //
       this._instance = new SQLDatabase(db)
 
     }
