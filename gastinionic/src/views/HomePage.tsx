@@ -192,7 +192,7 @@ export default defineComponent({
           <IonHeader>
             <IonToolbar>
               <IonButtons slot="end"> <IonMenuButton /> </IonButtons>
-              <IonTitle> Tela Pricipal </IonTitle>
+              <IonTitle> Tela Inicial </IonTitle>
             </IonToolbar>
           </IonHeader>
           <IonContent>
