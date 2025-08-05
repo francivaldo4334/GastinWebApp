@@ -13,10 +13,10 @@ export class Database implements InterfaceDatabase {
 
   static get instance(): Database {
     if (!this._instance) {
-      const platform = Capacitor.getPlatform()
+      // const platform = Capacitor.getPlatform()
       let db: DatabaseSQLInterface
       // if (platform === "android") {
-        db = new SQLAndroid()
+      db = new SQLAndroid()
       // }
       // else if (platform === "web") {
       //   db = new SQLWeb()

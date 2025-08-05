@@ -1,4 +1,4 @@
-import { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonItem, IonLabel, IonRow } from "@ionic/vue";
+import { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonItem, IonLabel, IonRow, toastController } from "@ionic/vue";
 import { defineComponent, onMounted, ref, watch } from "vue";
 import { WidgetValidityRange } from "./WidgetValidityRange";
 import { formatMoney } from "@/utils/formatMoney";
@@ -6,6 +6,7 @@ import { FactoryRepositoryDomain } from "@/domain/FactoryRepositoryDomain";
 import { useModalStore } from "@/stores/useModalStore";
 import { storeToRefs } from "pinia";
 import { endOfMonth, startOfMonth } from "date-fns";
+import { string } from "zod";
 
 export const WidgetAccountBalance = defineComponent({
   setup() {
@@ -24,25 +25,35 @@ export const WidgetAccountBalance = defineComponent({
     } = storeToRefs(modalStore)
 
     const loadData = async () => {
-      const initDatestring = initValidity.value
-      const endDatestring = endValidity.value
+      try {
+        const initDatestring = initValidity.value
+        const endDatestring = endValidity.value
 
-      if (!initValidity || !endDatestring)
-        return
+        if (!initValidity || !endDatestring)
+          return
 
-      const initDate = new Date(initDatestring)
-      initDate.setHours(0, 0, 0, 0)
+        const initDate = new Date(initDatestring)
+        initDate.setHours(0, 0, 0, 0)
 
-      const endDate = new Date(endDatestring)
-      endDate.setHours(23, 59, 59, 0)
+        const endDate = new Date(endDatestring)
+        endDate.setHours(23, 59, 59, 0)
 
-      const balance = await repo.accountBalance(
-        initDate,
-        endDate
-      )
-      receivedValue.value = balance.received
-      spendValue.value = balance.spend
-      currentBalace.value = balance.currentBalance
+        const balance = await repo.accountBalance(
+          initDate,
+          endDate
+        )
+        receivedValue.value = balance.received
+        spendValue.value = balance.spend
+        currentBalace.value = balance.currentBalance
+      }
+      catch (e) {
+        const toast = await toastController.create({
+          message: "Erro inesperado" + String(e),
+          duration: 3000,
+          color: "danger"
+        })
+        await toast.present()
+      }
     }
 
     onMounted(() => {
